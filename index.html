@@ -571,6 +571,7 @@
       .fab { right: 32px; bottom: 32px; }
     }
   </style>
+  <script src="/js/loader.js"></script>
 </head>
 <body>
 
@@ -587,7 +588,7 @@
   <p>Click any topic to explore equations, rules, and practice problems.</p>
 </header>
 
-<div class="hub" id="hub"></div>
+<div class="hub topics-grid" id="hub"></div>
 
 <!-- FAB -->
 <button class="fab" onclick="openAnalyzer()" title="Analyze a question">🔍</button>
@@ -629,1032 +630,21 @@
 </div>
 
 <script>
-const topics = [
-  {
-    icon: "➗",
-    title: "Fractions & Operations",
-    preview: "\\(\\frac{a}{b} \\pm \\frac{c}{d} = \\frac{ad \\pm bc}{bd}\\)",
-    desc: "Adding, subtracting, multiplying, dividing fractions",
-    equations: [
-      { label: "Add — same denominator", formula: "$$\\frac{a}{b} + \\frac{c}{b} = \\frac{a+c}{b}$$", detail: "<strong>Rule:</strong> Add numerators only — the denominator stays the same.<br><strong>Example:</strong> 3/7 + 2/7 = 5/7<br><strong>Common mistake:</strong> Adding denominators too (3/7 + 2/7 ≠ 5/14)." },
-      { label: "Add — different denominators", formula: "$$\\frac{a}{b} + \\frac{c}{d} = \\frac{ad+bc}{bd}$$", detail: "<strong>Rule:</strong> Cross-multiply to get a common denominator (Bow Tie method).<br><strong>Steps:</strong> Multiply each numerator by the other's denominator, then use the product of denominators.<br><strong>Example:</strong> 2/5 + 3/4 = (8+15)/20 = 23/20.<br><strong>Common mistake:</strong> Forgetting to simplify the final fraction." },
-      { label: "Subtract — different denominators", formula: "$$\\frac{a}{b} - \\frac{c}{d} = \\frac{ad-bc}{bd}$$", detail: "<strong>Rule:</strong> Same as addition but subtract the cross products: ad−bc, not bc−ad.<br><strong>Example:</strong> 3/4 − 1/3 = (9−4)/12 = 5/12.<br><strong>Common mistake:</strong> Reversing the subtraction order — sign errors are the #1 trap." },
-      { label: "Multiply fractions", formula: "$$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{ac}{bd}$$", detail: "<strong>Rule:</strong> Multiply straight across — numerators together, denominators together.<br><strong>Shortcut:</strong> Cross-cancel BEFORE multiplying to keep numbers small.<br><strong>Example:</strong> (3/4) × (8/9) → cancel 3↔9 and 4↔8 → (1/1) × (2/3) = 2/3.<br><strong>Common mistake:</strong> Forgetting to simplify first, leading to large arithmetic." },
-      { label: "Divide fractions", formula: "$$\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c} = \\frac{ad}{bc}$$", detail: "<strong>Rule:</strong> Flip the second fraction and multiply (<span class=\"ref-term\">KCF<span class=\"ref-tip\">Keep-Change-Flip: keep the first fraction, change ÷ to ×, flip the second fraction.</span></span>: Keep-Change-Flip).<br><strong>Example:</strong> (3/4) ÷ (9/16) = (3/4) × (16/9) = 4/3.<br><strong>Common mistake:</strong> Flipping the wrong fraction — always flip the divisor (second fraction)." },
-      { label: "Compare size (Bow Tie)", formula: "$$\\frac{a}{b} > \\frac{c}{d} \\text{ if } ad > bc$$", detail: "<strong>Rule:</strong> Cross-multiply to compare: if ad > bc, then a/b > c/d.<br><strong>Example:</strong> Compare 3/5 vs 4/7 → 3×7=21 vs 4×5=20 → 21>20 → 3/5 > 4/7.<br><strong>Benefit:</strong> Faster than converting to decimals and avoids rounding errors." },
-      { label: "Square of a fraction", formula: "$$\\left(\\frac{a}{b}\\right)^2 = \\frac{a^2}{b^2}$$", detail: "<strong>Rule:</strong> Square numerator and denominator separately: (a/b)² = a²/b².<br><strong>Note:</strong> For fractions between 0 and 1, squaring makes the value SMALLER.<br><strong>Example:</strong> (1/3)² = 1/9, which is less than 1/3." },
-      { label: "Square root of a fraction", formula: "$$\\sqrt{\\frac{a}{b}} = \\frac{\\sqrt{a}}{\\sqrt{b}}$$", detail: "<strong>Rule:</strong> Take the square root of numerator and denominator separately.<br><strong>Note:</strong> For fractions between 0 and 1, the square root makes the value LARGER.<br><strong>Example:</strong> √(1/4) = 1/2, which is greater than 1/4." },
-    ],
-    details: [
-      { type: "rule", text: "<strong>Reciprocal:</strong> The reciprocal of \\(x\\) is \\(\\frac{1}{x}\\). Flip the fraction: reciprocal of \\(\\frac{3}{4}\\) is \\(\\frac{4}{3}\\)." },
-      { type: "rule", text: "<strong>Bow Tie example:</strong> Compare \\(\\frac{3}{5}\\) vs \\(\\frac{4}{7}\\) → \\(3 \\times 7 = 21\\), \\(4 \\times 5 = 20\\) → \\(21 > 20\\) → \\(\\frac{3}{5} > \\frac{4}{7}\\)" },
-      { type: "rule", text: "<strong>Convert to %:</strong> Divide numerator by denominator → multiply by 100 → add %." },
-      { type: "rule", text: "<strong>Between 0 and 1:</strong> If \\(0 < x < 1\\), then \\(x^2 < x < \\sqrt{x}\\). Squaring shrinks it; rooting grows it." },
-    ],
-    practice: [
-      {
-        q: "[Computation] Simplify: \\(\\frac{2}{5} + \\frac{3}{4}\\)",
-        steps: [
-          "Different denominators → use \\(\\frac{ad+bc}{bd}\\)",
-          "\\(= \\frac{2 \\times 4 + 3 \\times 5}{5 \\times 4} = \\frac{8+15}{20} = \\frac{23}{20}\\)",
-          "<strong>Answer: \\(\\frac{23}{20}\\)</strong>"
-        ]
-      },
-      {
-        q: "[Comparison] Which is larger: \\(\\frac{5}{8}\\) or \\(\\frac{7}{11}\\)?",
-        steps: [
-          "Bow Tie: \\(5 \\times 11 = 55\\) vs \\(7 \\times 8 = 56\\)",
-          "\\(56 > 55\\) → <strong>\\(\\frac{7}{11} > \\frac{5}{8}\\)</strong>"
-        ]
-      },
-      {
-        q: "[Conceptual] If \\(0 < x < 1\\), which is greatest: \\(x\\), \\(x^2\\), or \\(\\sqrt{x}\\)?",
-        steps: [
-          "Try \\(x = \\frac{1}{4}\\): \\(x^2 = \\frac{1}{16}\\), \\(\\sqrt{x} = \\frac{1}{2}\\)",
-          "\\(\\frac{1}{16} < \\frac{1}{4} < \\frac{1}{2}\\) → <strong>\\(\\sqrt{x}\\) is greatest</strong>"
-        ]
-      },
-      {
-        q: "[Computation] Simplify: \\(\\dfrac{\\frac{3}{4}}{\\frac{9}{16}}\\)",
-        steps: [
-          "Dividing fractions → multiply by reciprocal",
-          "\\(= \\frac{3}{4} \\times \\frac{16}{9} = \\frac{48}{36} = \\frac{4}{3}\\)",
-          "<strong>Answer: \\(\\frac{4}{3}\\)</strong>"
-        ]
-      },
-      {
-        q: "[Word Problem] A tank is \\(\\frac{3}{5}\\) full. After adding 12 litres it is \\(\\frac{4}{5}\\) full. What is the tank's total capacity?",
-        steps: [
-          "\\(\\frac{4}{5} - \\frac{3}{5} = \\frac{1}{5}\\) of the tank = 12 litres",
-          "Total capacity \\(= 12 \\times 5 = 60\\) litres",
-          "<strong>Answer: 60 litres</strong>"
-        ]
-      },
-      {
-        q: "[DS-style] Is \\(\\frac{x}{y} > 1\\)? Given: (1) \\(x > y\\); (2) \\(y > 0\\).",
-        steps: [
-          "Statement (1) alone: \\(x > y\\), but if both negative (e.g. \\(x=-1, y=-2\\)), \\(\\frac{-1}{-2} = 0.5 < 1\\). Not sufficient.",
-          "Statement (2) alone: only tells us \\(y > 0\\), says nothing about \\(x\\). Not sufficient.",
-          "Both together: \\(x > y > 0\\) → dividing both sides by positive \\(y\\) → \\(\\frac{x}{y} > 1\\). <strong>Sufficient.</strong>",
-          "<strong>Answer: Both statements together are needed (C)</strong>"
-        ]
-      },
-      {
-        q: "[Conversion] Express \\(\\frac{7}{8}\\) as a percentage.",
-        steps: [
-          "\\(\\frac{7}{8} = 0.875\\)",
-          "\\(0.875 \\times 100 = 87.5\\%\\)",
-          "<strong>Answer: 87.5%</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "Keep-Change-Flip (KCF)",
-        when: "Dividing fractions",
-        steps: ["Write a÷b", "Change ÷ to ×", "Flip c/d to d/c", "Multiply across"],
-        tip: "Always simplify by cross-canceling BEFORE multiplying."
-      },
-      {
-        name: "Bowtie Method",
-        when: "Comparing or adding fractions with different denominators",
-        steps: ["Multiply diagonally (top-left × bottom-right, top-right × bottom-left)", "Those products are your new numerators", "The new denominator is the product of both denominators"],
-        tip: "Faster than finding LCM for comparison questions."
-      },
-      {
-        name: "Benchmark Fractions",
-        when: "Estimating or comparing fractions quickly",
-        steps: ["Compare to benchmarks: 0, 1/4, 1/2, 3/4, 1", "Ask: is this fraction above or below 1/2?", "Use to eliminate answer choices"],
-        tip: "1/2 test — if numerator × 2 > denominator, fraction > 1/2."
-      }
-    ],
-    typicalQuestions: [
-      {
-        subtype: "Part-Whole with Absolute Difference",
-        q: "A jar contains red and blue marbles. If 2/5 of the marbles are red and there are 12 more blue marbles than red marbles, how many marbles are in the jar?\n\n(A) 24\n(B) 36\n(C) 48\n(D) 60\n(E) 72",
-        type: "Part-whole fraction setup — tests modeling the gap between complementary fractions and an absolute difference",
-        signals: "Fraction for one part (2/5) plus absolute difference (12 more blue). Connect fraction gap to the count.",
-        trap: "(B) 36 — setting up blue = 12 instead of blue − red = 12",
-        method: "Let total = T. Red = 2T/5, Blue = 3T/5. Blue − Red = T/5 = 12.",
-        steps: ["Red = (2/5)T, Blue = (3/5)T", "Blue − Red = (3/5)T − (2/5)T = (1/5)T = 12", "T = 60. Verify: Red = 24, Blue = 36, difference = 12 ✓", "Answer: (D) 60"]
-      },
-      {
-        subtype: "Fraction Comparison with Variable",
-        q: "If x/y = 3/4 where x and y are positive, which of the following must be true?\n\n(A) (x+1)/(y+1) < 3/4\n(B) (x+1)/(y+1) = 3/4\n(C) (x+1)/(y+1) > 3/4\n(D) (x+1)/(y+1) could be greater or less than 3/4\n(E) (x+1)/(y+1) = 4/5",
-        type: "Fraction behavior under equal addition — tests understanding of how adding the same number to numerator and denominator changes a fraction",
-        signals: "A ratio is given, then both parts increase by the same amount. Adding a positive constant to both parts of a proper fraction (< 1) moves it toward 1.",
-        trap: "(B) — assuming equal addition preserves the ratio, or (E) — mechanically adding 1 to num and denom of 3/4",
-        method: "Algebraic proof: (x+1)/(y+1) − x/y = (y−x)/[y(y+1)]. Since x/y = 3/4 < 1, we have y > x, so y − x > 0, meaning the difference is positive.",
-        steps: ["Cross-multiply to compare: (x+1)·y vs (y+1)·x → xy + y vs xy + x → y vs x", "Since x/y = 3/4 and both positive, y > x, so y > x is always true", "Therefore (x+1)/(y+1) > x/y = 3/4 always", "Verify: x=3, y=4 → 4/5 = 0.80 > 0.75 ✓; x=6, y=8 → 7/9 ≈ 0.778 > 0.75 ✓", "Answer: (C) (x+1)/(y+1) > 3/4"]
-      },
-      {
-        subtype: "Successive Fraction Operations",
-        q: "A store buys a jacket at cost and marks it up by 1/2 of its cost. During a sale, the store discounts the jacket by 1/5 of its marked-up price. The final selling price is what fraction of the original cost?\n\n(A) 3/10\n(B) 7/10\n(C) 6/5\n(D) 13/10\n(E) 3/2",
-        type: "Sequential fraction changes — tests whether you apply each change to the correct base (previous result, not original)",
-        signals: "'Marks up by 1/2 of cost' then 'discounts 1/5 of marked-up price' — two operations on different bases",
-        trap: "(B) 7/10 — subtracting 1/5 from the original cost instead of from the marked-up price",
-        method: "Apply sequentially: Cost = C → Marked = C + C/2 = 3C/2 → Discount = (1/5)(3C/2) → Final = 3C/2 − 3C/10.",
-        steps: ["Cost = C. Marked-up price = C + (1/2)C = 3C/2", "Discount amount = (1/5)(3C/2) = 3C/10", "Final selling price = 3C/2 − 3C/10 = 15C/10 − 3C/10 = 12C/10 = 6C/5", "Answer: (C) 6/5 — the final price is 6/5 of the original cost"]
-      }
-    ]
-  },
-  {
-    icon: "📐",
-    title: "Linear & Quadratic Equations",
-    preview: "\\(ax^2 + bx + c = 0\\)",
-    desc: "Factoring, FOILing, quadratic identities",
-    equations: [
-      { label: "Factor common terms", formula: "$$ab + ac = a(b+c)$$", detail: "<strong>Strategy:</strong> Always look for common factors first before trying other methods.<br><strong>Rule:</strong> Pull out the <span class=\"ref-term\">GCF<span class=\"ref-tip\">Greatest Common Factor: the largest number that divides evenly into all terms.</span></span> of all terms.<br><strong>Example:</strong> 6x² + 9x → GCF is 3x → 3x(2x + 3)." },
-      { label: "General quadratic form", formula: "$$ax^2 + bx + c = 0$$", detail: "<strong>Rule:</strong> Always rearrange to ax²+bx+c=0 before factoring.<br><strong>Strategy:</strong> Move everything to one side first — the standard form makes it easy to identify a, b, and c.<br><strong>Common mistake:</strong> Trying to factor before rearranging to standard form." },
-      { label: "Factored form (where p\u00b7q = c, p+q = b)", formula: "$$(x+p)(x+q) = 0$$", detail: "<strong>Rule:</strong> Find two numbers p and q where p·q = c and p+q = b.<br><strong>Strategy:</strong> Practice mental math for common factor pairs — speed here saves significant time.<br><strong>Example:</strong> x²−5x+6=0 → p=−2, q=−3 → (x−2)(x−3)=0." },
-      { label: "Identity 1 \u2014 Perfect square sum", formula: "$$(x+y)^2 = x^2 + 2xy + y^2$$", detail: "<strong>Rule:</strong> (x+y)² = x² + 2xy + y² — the middle term 2xy is the key identifier.<br><strong>Trap:</strong> x²+y² without the 2xy term is NOT a perfect square.<br><strong>Example:</strong> (2x+3)² = 4x² + 12x + 9." },
-      { label: "Identity 2 \u2014 Perfect square difference", formula: "$$(x-y)^2 = x^2 - 2xy + y^2$$", detail: "<strong>Rule:</strong> (x−y)² = x² − 2xy + y² — same pattern but with a minus sign.<br><strong>Note:</strong> (x−y)² is always positive (or zero) regardless of x and y.<br><strong>Common mistake:</strong> Confusing (x−y)² with x²−y² (<span class=\"ref-term\">difference of squares<span class=\"ref-tip\">x²−y² = (x+y)(x−y) — a completely different identity.</span></span>)." },
-      { label: "Identity 3 \u2014 Difference of squares", formula: "$$(x+y)(x-y) = x^2 - y^2$$", detail: "<strong>Rule:</strong> x²−y² = (x+y)(x−y) — the most tested identity on the GMAT.<br><strong>Strategy:</strong> Look for hidden forms: 100−x² = (10+x)(10−x).<br><strong>Example:</strong> 49−9 = (7+3)(7−3) = 10×4 = 40." },
-      { label: "Zero product property", formula: "$$\\text{If } a \\times b = 0 \\Rightarrow a=0 \\text{ or } b=0$$", detail: "<strong>Rule:</strong> If a × b = 0, then a=0 or b=0 (or both).<br><strong>Strategy:</strong> After factoring a quadratic into (x+p)(x+q)=0, set each factor to zero separately.<br><strong>Common mistake:</strong> Finding only one solution — always check BOTH factors." },
-    ],
-    details: [
-      { type: "rule", text: "<strong>FOIL:</strong> \\((x+a)(x+b) = x^2\\) (First) \\(+ bx\\) (Outside) \\(+ ax\\) (Inside) \\(+ ab\\) (Last)" },
-      { type: "rule", text: "<strong>Factoring rule:</strong> Find \\(p\\) and \\(q\\) such that \\(p \\cdot q = c\\) and \\(p + q = b\\)." },
-      { type: "rule", text: "<strong>Diff of squares:</strong> Always look for \\(a^2 - b^2\\) patterns — they factor quickly as \\((a+b)(a-b)\\)." },
-      { type: "rule", text: "<strong>Key step:</strong> Always rewrite in \\(ax^2 + bx + c = 0\\) form before factoring." },
-    ],
-    practice: [
-      {
-        q: "[Factoring] Solve: \\(x^2 - 5x + 6 = 0\\)",
-        steps: [
-          "Find \\(p, q\\) where \\(p \\cdot q = 6\\) and \\(p + q = -5\\)",
-          "\\(p = -2,\\ q = -3\\) → \\((x-2)(x-3) = 0\\)",
-          "<strong>Answer: \\(x = 2\\) or \\(x = 3\\)</strong>"
-        ]
-      },
-      {
-        q: "[Identity] If \\((x+3)(x-3) = 7\\), what is \\(x^2\\)?",
-        steps: [
-          "Recognize difference of squares: \\(x^2 - 9 = 7\\)",
-          "\\(x^2 = 16\\)",
-          "<strong>Answer: \\(x^2 = 16\\)</strong>"
-        ]
-      },
-      {
-        q: "[Expansion] Expand: \\((2x + 3)^2\\)",
-        steps: [
-          "Use identity \\((a+b)^2 = a^2 + 2ab + b^2\\)",
-          "\\(= 4x^2 + 12x + 9\\)",
-          "<strong>Answer: \\(4x^2 + 12x + 9\\)</strong>"
-        ]
-      },
-      {
-        q: "[Word Problem] The product of two consecutive positive integers is 56. What are the integers?",
-        steps: [
-          "Let integers be \\(n\\) and \\(n+1\\): \\(n(n+1) = 56\\)",
-          "\\(n^2 + n - 56 = 0\\) → \\((n+8)(n-7) = 0\\)",
-          "Since positive: \\(n = 7\\)",
-          "<strong>Answer: 7 and 8</strong>"
-        ]
-      },
-      {
-        q: "[Roots] If \\(x^2 - 7x + k = 0\\) has roots 3 and 4, what is \\(k\\)?",
-        steps: [
-          "Sum of roots \\(= 3 + 4 = 7\\) ✓ (matches \\(-b/a = 7\\))",
-          "Product of roots \\(= 3 \\times 4 = 12 = k/a = k\\)",
-          "<strong>Answer: \\(k = 12\\)</strong>"
-        ]
-      },
-      {
-        q: "[Conceptual] If \\(x^2 = x\\), what are the possible values of \\(x\\)?",
-        steps: [
-          "\\(x^2 - x = 0\\) → \\(x(x-1) = 0\\)",
-          "Zero product property: \\(x = 0\\) or \\(x = 1\\)",
-          "<strong>Answer: \\(x = 0\\) or \\(x = 1\\)</strong>"
-        ]
-      },
-      {
-        q: "[Difference of Squares] Simplify: \\(\\frac{x^2 - 25}{x - 5}\\)",
-        steps: [
-          "Factor numerator: \\(x^2 - 25 = (x+5)(x-5)\\)",
-          "Cancel \\((x-5)\\): \\(= x + 5\\) (where \\(x \\neq 5\\))",
-          "<strong>Answer: \\(x + 5\\)</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "Substitution Method",
-        when: "Solving systems of 2 equations",
-        steps: ["Isolate one variable in the simpler equation", "Substitute into the other equation", "Solve for one variable", "Back-substitute to find the other"],
-        tip: "Pick the equation and variable that give the cleanest isolation."
-      },
-      {
-        name: "FOIL + Factoring",
-        when: "Solving quadratics",
-        steps: ["Set equation = 0", "Find two numbers that multiply to c and add to b", "Write as (x+p)(x+q)=0", "Set each factor to 0"],
-        tip: "If factoring fails, use the quadratic formula."
-      },
-      {
-        name: "Difference of Squares",
-        when: "You see an a²−b² pattern",
-        steps: ["Recognize a²−b²", "Factor as (a+b)(a−b)", "Solve each factor"],
-        tip: "Memorize: x²−1=(x+1)(x−1), x²−4=(x+2)(x−2), x²−9=(x+3)(x−3)."
-      }
-    ],
-    typicalQuestions: [
-      {
-        subtype: "Rate-Time-Distance: Opposite Directions",
-        q: "Two trains leave the same station at the same time, traveling in opposite directions. Train A travels at 60 mph and Train B at 90 mph. After how many hours will they be 450 miles apart?\n\n(A) 2\n(B) 3\n(C) 4\n(D) 5\n(E) 7.5",
-        type: "Combined rate for objects moving apart — tests whether you add or use only one rate",
-        signals: "'Opposite directions' and 'apart' — combined rate = sum of individual rates",
-        trap: "(D) 5 — using only one train's speed (450/90 = 5) instead of combined rate",
-        method: "Combined rate = 60 + 90 = 150 mph. Time = Distance / Rate = 450/150.",
-        steps: ["Objects moving in opposite directions: combined rate = 60 + 90 = 150 mph", "Time = Distance ÷ Combined Rate = 450 ÷ 150 = 3 hours", "Verify: Train A covers 180 mi, Train B covers 270 mi, total gap = 450 ✓", "Answer: (B) 3"]
-      },
-      {
-        subtype: "Quadratic in Disguised Form",
-        q: "If x⁴ − 13x² + 36 = 0, how many distinct real values of x satisfy the equation?\n\n(A) 1\n(B) 2\n(C) 3\n(D) 4\n(E) 6",
-        type: "Higher-degree equation reducible to quadratic — tests recognition of substitution u = x²",
-        signals: "x⁴ and x² terms with no x³ or x term — classic quadratic-in-disguise pattern",
-        trap: "(B) 2 — finding only the positive square roots and missing the negative ones",
-        method: "Let u = x². Equation becomes u² − 13u + 36 = 0. Solve for u, then back-substitute.",
-        steps: ["Substitute u = x²: u² − 13u + 36 = 0", "Factor: (u − 4)(u − 9) = 0, so u = 4 or u = 9", "Back-substitute: x² = 4 → x = ±2; x² = 9 → x = ±3", "Four distinct real values: −3, −2, 2, 3", "Answer: (D) 4"]
-      },
-      {
-        subtype: "System with Hidden Constraint (DS)",
-        q: "What is the value of a + b?\n\n(1) 3a + 2b = 19\n(2) a − b = 2\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
-        type: "System of equations DS — tests whether you can extract a + b without solving for a and b individually",
-        signals: "Two linear equations in two unknowns — together they yield unique a and b (and hence a + b), but neither alone pins down a + b",
-        trap: "(E) — students who try to solve for a and b individually and get confused, or who think two equations aren't enough because the question asks for a sum",
-        method: "Two independent linear equations in two unknowns → unique solution → a + b is determined. Or solve directly.",
-        steps: ["Statement (1) alone: 3a + 2b = 19 — infinitely many (a,b) pairs, so a + b varies. NOT sufficient.", "Statement (2) alone: a − b = 2 — infinitely many pairs. NOT sufficient.", "Together: From (2), a = b + 2. Substitute into (1): 3(b+2) + 2b = 19 → 5b + 6 = 19 → b = 13/5, a = 23/5, a+b = 36/5.", "Two equations, two unknowns → unique solution → sufficient.", "Answer: (C) BOTH statements TOGETHER are sufficient"]
-      }
-    ]
-  },
-  {
-    icon: "🔢",
-    title: "Number Properties",
-    preview: "\\(\\text{odd} \\times \\text{odd} = \\text{odd}\\)",
-    desc: "Even/odd rules, sign rules, prime numbers",
-    equations: [
-      { label: "Even \u00b1 Even", formula: "$$\\text{even} \\pm \\text{even} = \\text{even}$$", detail: "<strong>Rule:</strong> Even ± even is always even.<br><strong>Why:</strong> Both numbers have a factor of 2, and adding/subtracting preserves that.<br><strong>Example:</strong> 4 + 6 = 10 (even); 8 − 2 = 6 (even)." },
-      { label: "Odd \u00b1 Odd", formula: "$$\\text{odd} \\pm \\text{odd} = \\text{even}$$", detail: "<strong>Rule:</strong> Odd ± odd is always even.<br><strong>Why:</strong> Each odd number is 'one away' from even — combining two brings you back to even.<br><strong>Example:</strong> 3 + 5 = 8 (even); 9 − 3 = 6 (even)." },
-      { label: "Even \u00b1 Odd", formula: "$$\\text{even} \\pm \\text{odd} = \\text{odd}$$", detail: "<strong>Rule:</strong> Even ± odd is always odd.<br><strong>Why:</strong> One has a factor of 2, the other doesn't — the result won't have a complete factor of 2.<br><strong>Example:</strong> 6 + 3 = 9 (odd); 10 − 7 = 3 (odd)." },
-      { label: "Even \u00d7 anything", formula: "$$\\text{even} \\times n = \\text{even}$$", detail: "<strong>Rule:</strong> Even × anything = even. No exceptions.<br><strong>Why:</strong> Once a factor of 2 enters the product, the result is always even.<br><strong>Example:</strong> 4 × 7 = 28 (even); 2 × 13 = 26 (even)." },
-      { label: "Odd \u00d7 Odd", formula: "$$\\text{odd} \\times \\text{odd} = \\text{odd}$$", detail: "<strong>Rule:</strong> Odd × odd = odd — the ONLY multiplication case that stays odd.<br><strong>Note:</strong> If even one factor is even, the entire product is even.<br><strong>Example:</strong> 3 × 5 = 15 (odd); 7 × 9 = 63 (odd)." },
-      { label: "Same sign multiplication", formula: "$$(+)(+) = (+) \\quad \\text{and} \\quad (-)(-) = (+)$$", detail: "<strong>Rule:</strong> (+)(+) = (+) and (−)(−) = (+) — two negatives cancel out.<br><strong>Note:</strong> This applies to division too.<br><strong>Strategy:</strong> Count negatives: even count → positive result; odd count → negative." },
-      { label: "Different sign multiplication", formula: "$$(+)(-) = (-)$$", detail: "<strong>Rule:</strong> (+)(−) = (−) — different signs always give a negative result.<br><strong>Strategy:</strong> When multiplying multiple numbers, count the negatives: even count → positive, odd count → negative.<br><strong>Example:</strong> (−2)(3)(−4) → two negatives (even) → positive: 24." },
-      { label: "Two consecutive integers \u2014 GCF", formula: "$$\\gcd(n,\\, n+1) = 1 \\quad \\text{(no shared prime factors)}$$", detail: "<strong>Rule:</strong> Consecutive integers never share <span class=\"ref-term\">prime factors<span class=\"ref-tip\">Prime factors are the prime numbers that multiply together to give the original number. E.g., 12 = 2² × 3.</span></span>, so their GCF is always 1.<br><strong>Example:</strong> GCF(14, 15) = 1 even though 14=2×7 and 15=3×5.<br><strong>Note:</strong> This means n and n+1 are always coprime." },
-      { label: "Multiples of n", formula: "$$\\text{Multiples of } n = n, 2n, 3n, \\ldots, kn \\quad (k \\in \\mathbb{Z})$$", detail: "<strong>Definition:</strong> Multiples of n are n, 2n, 3n, ... — they go on forever.<br><strong>Formula:</strong> Count of multiples of n between a and b: floor(b/n) − floor((a−1)/n).<br><strong>Note:</strong> Every multiple of n is also a multiple of n's factors." },
-      { label: "Division formula", formula: "$$x = (\\text{Quotient} \\times y) + r \\quad \\text{where } 0 \\leq r < y$$", detail: "<strong>Formula:</strong> x = Quotient × y + Remainder, where 0 ≤ r < y.<br><strong>Rule:</strong> The remainder must always be less than the divisor and non-negative.<br><strong>Example:</strong> 23 = 4 × 5 + 3 (dividing 23 by 5)." },
-    ],
-    details: [
-      { type: "title", text: "Prime Numbers < 100" },
-      { type: "rule", text: "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97<br><em>Note: 2 is the only even prime.</em>" },
-      { type: "title", text: "Multiples vs Factors" },
-      { type: "rule", text: "<strong>Factor:</strong> divides evenly into a number. Factors of 12: 1, 2, 3, 4, 6, 12.<br><strong>Multiple:</strong> the product of a number and any integer. Multiples of 4: 4, 8, 12, 16 …" },
-      { type: "title", text: "Two Consecutive Integers" },
-      { type: "rule", text: "Consecutive integers never share prime factors → \\(\\gcd(n, n+1) = 1\\) always.<br><em>Example: \\(\\gcd(14, 15) = 1\\) even though 14=2×7 and 15=3×5.</em>" },
-      { type: "title", text: "Division Formula" },
-      { type: "rule", text: "\\(x = (\\text{Quotient} \\times y) + r\\) where \\(0 \\leq r < y\\)<br>Example: \\(23 = 4 \\times 5 + 3\\)" },
-    ],
-    practice: [
-      {
-        q: "[Conceptual] If \\(n\\) is odd, which must be even: \\(n^2\\), \\(n^2 + n\\), or \\(n+1\\)?",
-        steps: [
-          "\\(n^2\\) = odd×odd = odd ✗",
-          "\\(n^2 + n\\) = odd + odd = <strong>even ✓</strong>",
-          "\\(n+1\\) = odd + odd = even ✓ (but both \\(n^2+n\\) and \\(n+1\\) work here — on GMAT pick the one asked)",
-          "<strong>Answer: Both \\(n^2+n\\) and \\(n+1\\) are always even when \\(n\\) is odd</strong>"
-        ]
-      },
-      {
-        q: "[Divisibility] Is the product of three consecutive integers always divisible by 6?",
-        steps: [
-          "Any 3 consecutive integers always include one multiple of 2 and one multiple of 3.",
-          "Example: \\(4 \\times 5 \\times 6 = 120\\), \\(7 \\times 8 \\times 9 = 504\\) — both divisible by 6.",
-          "<strong>Answer: Yes — always divisible by 6</strong>"
-        ]
-      },
-      {
-        q: "[Consecutive Integers] What is \\(\\gcd(51, 52)\\)?",
-        steps: [
-          "51 and 52 are consecutive integers → never share prime factors.",
-          "<strong>Answer: \\(\\gcd = 1\\)</strong>"
-        ]
-      },
-      {
-        q: "[Must Be True] If \\(a\\) is even and \\(b\\) is odd, which of the following must be odd: \\(a+b\\), \\(ab\\), \\(a^2+b\\)?",
-        steps: [
-          "\\(a + b\\) = even + odd = <strong>odd ✓</strong>",
-          "\\(ab\\) = even × odd = even ✗",
-          "\\(a^2 + b\\) = even + odd = odd ✓",
-          "<strong>Answer: \\(a+b\\) and \\(a^2+b\\) must be odd; \\(ab\\) must be even</strong>"
-        ]
-      },
-      {
-        q: "[Prime] If \\(p\\) is prime and \\(p > 2\\), which must be true: \\(p\\) is odd, \\(p+1\\) is prime, or \\(p-1\\) is divisible by 2?",
-        steps: [
-          "All primes > 2 are odd (2 is the only even prime).",
-          "\\(p\\) odd → \\(p - 1\\) is even → divisible by 2 ✓",
-          "\\(p+1\\) is NOT necessarily prime (e.g. \\(p=5\\), \\(p+1=6\\) not prime).",
-          "<strong>Answer: Both '\\(p\\) is odd' and '\\(p-1\\) divisible by 2' must be true</strong>"
-        ]
-      },
-      {
-        q: "[Sign Rules] If \\(xy < 0\\) and \\(yz > 0\\), what is the sign of \\(xz\\)?",
-        steps: [
-          "\\(xy < 0\\) → \\(x\\) and \\(y\\) have <em>opposite</em> signs.",
-          "\\(yz > 0\\) → \\(y\\) and \\(z\\) have the <em>same</em> sign.",
-          "So \\(x\\) and \\(z\\) have opposite signs → \\(xz < 0\\)",
-          "<strong>Answer: \\(xz < 0\\)</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "NOFZ Testing (Negative, One, Fraction, Zero)",
-        when: "Any property question about a variable",
-        steps: ["Test x=−2", "Test x=−1 and x=1", "Test x=1/2", "Test x=0"],
-        tip: "If ANY test breaks a property, the property is NOT always true."
-      },
-      {
-        name: "Even/Odd Tracking",
-        when: "A problem involves parity (even/odd results)",
-        steps: ["Label each number E or O", "Apply rules: E+E=E, O+O=E, E+O=O, E×any=E, O×O=O", "Track through the expression"],
-        tip: "Even + Even = Even is the one students most often forget."
-      },
-      {
-        name: "Prime Factorization",
-        when: "Divisibility, LCM/GCF, or factor counting questions",
-        steps: ["Divide by 2 repeatedly", "Then try 3, 5, 7, 11...", "Write as product of primes: n = 2^a × 3^b × 5^c..."],
-        tip: "Build a factor tree starting from obvious factors."
-      }
-    ],
-    typicalQuestions: [
-      {
-        subtype: "Must-Be-True Parity",
-        q: "If n is an odd integer, which of the following must be even?\n\n(A) n²\n(B) n² + 1\n(C) n(n + 2)\n(D) 3n + 1\n(E) n² + n + 1",
-        type: "Odd/even properties — tests systematic parity analysis rather than testing a single value",
-        signals: "'Must be even' and 'n is odd' — need to prove for ALL odd n, not just test n = 1",
-        trap: "(C) n(n+2) — since n is odd and n+2 is odd, the product is odd × odd = odd. Students pick this thinking one factor is even.",
-        method: "Test each choice with n = odd. odd² = odd, odd²+1 = even, odd(odd+2) = odd·odd = odd, 3·odd+1 = odd+1 = even, odd²+odd+1 = odd+odd+1 = odd.",
-        steps: ["(A) n² = odd² = odd ✗", "(B) n² + 1 = odd + 1 = even ✓ — candidate", "(C) n(n+2) = odd × odd = odd ✗", "(D) 3n + 1 = 3(odd) + 1 = odd + 1 = even ✓ — also works", "Both (B) and (D) are even, but GMAT would only list one. Check (D): 3(1)+1=4 ✓, 3(3)+1=10 ✓, 3(5)+1=16 ✓", "Answer: (B) n² + 1 — always even when n is odd"]
-      },
-      {
-        subtype: "Consecutive Integer Sum",
-        q: "The sum of 5 consecutive integers is 235. What is the largest of these integers?\n\n(A) 45\n(B) 47\n(C) 48\n(D) 49\n(E) 51",
-        type: "Consecutive integer properties — tests the shortcut that the sum of consecutive integers equals the middle value × count",
-        signals: "'5 consecutive integers' and a sum — for an odd count, the middle integer equals sum ÷ count",
-        trap: "(A) 45 — dividing 235 ÷ 5 = 47 but forgetting that 47 is the MIDDLE number, not the largest, or (E) 51 — adding 5 to the middle instead of 2",
-        method: "Middle of 5 consecutive integers = sum ÷ 5. Largest = middle + 2.",
-        steps: ["Let the 5 consecutive integers be n, n+1, n+2, n+3, n+4", "Sum = 5n + 10 = 235 → 5n = 225 → n = 45", "The integers are 45, 46, 47, 48, 49", "Largest = 49. Or: middle = 235/5 = 47, largest = 47 + 2 = 49", "Answer: (D) 49"]
-      },
-      {
-        subtype: "Sign of Product (DS)",
-        q: "Is the product xyz positive?\n\n(1) xy > 0\n(2) xz > 0\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
-        type: "Sign analysis DS — tests systematic consideration of positive/negative cases for multiple variables",
-        signals: "Product sign question with pair-product clues — need to determine the sign of all three variables",
-        trap: "(C) — students think both together determine the sign, but they actually do: if xy > 0 and xz > 0, then x,y same sign AND x,z same sign → all three same sign → xyz = positive (all positive) or negative (all negative). Need to check: if all positive, xyz > 0; if all negative, xyz < 0. So answer is E!",
-        method: "Analyze sign combinations. xy > 0 means same sign. xz > 0 means same sign. Together: all three have the same sign. But xyz: if all positive → positive; if all negative → negative.",
-        steps: ["Statement (1): xy > 0 → x,y same sign. Nothing about z. NOT sufficient.", "Statement (2): xz > 0 → x,z same sign. Nothing about y. NOT sufficient.", "Together: x,y same sign AND x,z same sign → all three same sign", "All positive: xyz > 0 ✓. All negative: xyz = (−)(−)(−) < 0 ✗", "Cannot determine — xyz could be positive or negative", "Answer: (E) Statements (1) and (2) TOGETHER are NOT sufficient"]
-      }
-    ]
-  },
-  {
-    icon: "🧮",
-    title: "Divisibility Rules",
-    preview: "\\(\\text{div by 3 if } \\sum\\text{digits} \\div 3\\)",
-    desc: "Divisibility shortcuts for 2 through 11",
-    equations: [
-      { label: "Divisible by 2", formula: "$$\\text{Last digit} \\in \\{0, 2, 4, 6, 8\\}$$", detail: "<strong>Rule:</strong> Check only the last digit — if it's 0, 2, 4, 6, or 8, the number is divisible by 2.<br><strong>Note:</strong> This is equivalent to asking 'is the number even?'" },
-      { label: "Divisible by 3", formula: "$$\\text{Sum of digits is divisible by 3}$$", note: "e.g. 123 \u2192 1+2+3 = 6 \u00f7 3 \u2713", detail: "<strong>Rule:</strong> Add all digits together — if the sum is divisible by 3, so is the number.<br><strong>Strategy:</strong> You can repeat the process on the sum itself.<br><strong>Example:</strong> 5,832 → 5+8+3+2=18 → 1+8=9 → divisible by 3." },
-      { label: "Divisible by 4", formula: "$$\\text{Last two digits divisible by } 4$$", detail: "<strong>Rule:</strong> Check only the last TWO digits — if they form a number divisible by 4, the whole number is.<br><strong>Example:</strong> 1,324 → last two digits are 24 → 24÷4=6 → yes." },
-      { label: "Divisible by 5", formula: "$$\\text{Last digit is } 0 \\text{ or } 5$$", detail: "<strong>Rule:</strong> Check only the last digit — if it's 0 or 5, the number is divisible by 5.<br><strong>Note:</strong> The simplest divisibility test to apply." },
-      { label: "Divisible by 6", formula: "$$\\text{Divisible by both } 2 \\text{ and } 3$$", detail: "<strong>Rule:</strong> Must pass BOTH the test for 2 (even) AND the test for 3 (digit sum divisible by 3).<br><strong>Common mistake:</strong> Satisfying just one condition — both are required.<br><strong>Example:</strong> 234 → even ✓ and 2+3+4=9 divisible by 3 ✓ → divisible by 6." },
-      { label: "Divisible by 8", formula: "$$\\text{Last three digits divisible by } 8$$", detail: "<strong>Rule:</strong> Check the last THREE digits — if they form a number divisible by 8, the whole number is.<br><strong>Strategy:</strong> For smaller numbers, just divide by 8 directly.<br><strong>Example:</strong> 5,128 → 128÷8=16 → yes." },
-      { label: "Divisible by 9", formula: "$$\\text{Sum of digits is divisible by 9}$$", note: "e.g. 729 \u2192 7+2+9 = 18 \u00f7 9 \u2713", detail: "<strong>Rule:</strong> Same method as <span class=\"ref-term\">divisibility by 3<span class=\"ref-tip\">Add all digits — if the sum is divisible by 3, the number is divisible by 3.</span></span>, but the digit sum must be divisible by 9.<br><strong>Note:</strong> Divisible by 9 always implies divisible by 3, but not vice versa.<br><strong>Example:</strong> 729 → 7+2+9=18 → 18÷9=2 → yes." },
-      { label: "Divisible by 11", formula: "$$\\text{(Sum of odd-position digits)} - \\text{(Sum of even-position digits) is 0 or divisible by 11}$$", note: "e.g. 2728: (2+2) \u2212 (7+8) = 4\u221215 = \u221211 \u2713", detail: "<strong>Rule:</strong> Alternate adding and subtracting digits from left to right — result must be 0 or divisible by 11.<br><strong>Example:</strong> 2728 → (2+2)−(7+8) = 4−15 = −11 → divisible by 11 ✓<br><strong>Note:</strong> Rarely tested but appears in harder problems." },
-      { label: "Trailing zeros \u2014 count (5\u00d72) pairs", formula: "$$\\text{trailing zeros of } n = \\text{number of } (5 \\times 2) \\text{ pairs in prime factorization}$$", note: "Example: 5200 = 52 \u00d7 10\u00b2 \u2192 2 trailing zeros", detail: "<strong>Rule:</strong> Each trailing zero needs one pair of factors 5 and 2.<br><strong>Strategy:</strong> Since factors of 2 are always more abundant, just count factors of 5.<br><strong>Formula:</strong> For n!, count: floor(n/5) + floor(n/25) + floor(n/125) + ..." },
-      { label: "Leading zeros in 1/x (x has k digits)", formula: "$$\\frac{1}{x} \\text{ has } (k-1) \\text{ leading zeros, or } (k-2) \\text{ if } x = 10^m$$", note: "Example: 1/400 \u2192 k=3 digits, not power of 10 \u2192 2 leading zeros: 0.0025", detail: "<strong>Rule:</strong> If x has k digits, 1/x has (k−1) leading zeros after the decimal point.<br><strong>Exception:</strong> If x is a perfect power of 10, then (k−2) leading zeros.<br><strong>Example:</strong> 1/500 → k=3 digits → 2 leading zeros (0.002)." },
-      { label: "Terminating decimal condition", formula: "$$\\frac{p}{q} \\text{ terminates} \\iff q = 2^a \\cdot 5^b \\text{ (reduced form)}$$", detail: "<strong>Rule:</strong> A fraction p/q (in lowest terms) terminates iff q has only <span class=\"ref-term\">prime factors<span class=\"ref-tip\">The prime numbers that multiply together to give the original number.</span></span> of 2 and/or 5.<br><strong>Example:</strong> 1/20 = 0.05 ✓ (20=2²×5); 1/12 repeats (12=2²×3, has factor 3).<br><strong>Common mistake:</strong> Forgetting to reduce the fraction first." },
-      { label: "Factorial units digit rule", formula: "$$n! \\text{ has units digit } 0 \\text{ for all } n \\geq 5$$", detail: "<strong>Rule:</strong> For n≥5, n! always ends in 0 (units digit = 0).<br><strong>Why:</strong> 5!=120 contains the factor pair 5×2, guaranteeing a trailing zero.<br><strong>Note:</strong> Each additional multiple of 5 adds another trailing zero — 10! has 2, 15! has 3, etc." },
-    ],
-    details: [
-      { type: "rule", text: "<strong>Remainder range:</strong> Remainder must satisfy \\(0 \\leq r < \\text{divisor}\\). Dividing by 7 → remainder \\(\\in \\{0,1,2,3,4,5,6\\}\\)." },
-      { type: "title", text: "Trailing Zeros" },
-      { type: "rule", text: "Count \\((5 \\times 2)\\) pairs in prime factorization.<br>\\(520 = 52 \\times 10\\) → 1 trailing zero.<br>\\(5200 = 52 \\times 10^2\\) → 2 trailing zeros." },
-      { type: "title", text: "Leading Zeros in Decimals" },
-      { type: "rule", text: "If \\(x\\) is a \\(k\\)-digit integer, then \\(\\frac{1}{x}\\) has \\((k-1)\\) leading zeros — unless \\(x\\) is a perfect power of 10, in which case \\((k-2)\\) leading zeros.<br><em>Example: \\(\\frac{1}{1200}\\) → 4-digit, not power of 10 → 3 leading zeros: 0.000833…</em>" },
-      { type: "title", text: "Terminating Decimals" },
-      { type: "rule", text: "\\(\\frac{p}{q}\\) terminates iff the reduced denominator \\(q\\) has <em>only</em> prime factors of 2 and/or 5.<br>\\(\\frac{1}{20} = 0.05\\) ✓ (20=2²×5) &nbsp; \\(\\frac{1}{12}\\) does not terminate (12=2²×3, has factor 3)." },
-      { type: "title", text: "Factorials ≥ 5!" },
-      { type: "rule", text: "\\(5! = 120,\\ 6! = 720,\\ 7! = 5040 \\ldots\\) All end in 0 because \\(5! = 5 \\times 4 \\times 3 \\times 2 \\times 1\\) contains the pair \\(5 \\times 2\\)." },
-    ],
-    practice: [
-      {
-        q: "[Divisibility Test] Is 3,456 divisible by 9?",
-        steps: [
-          "Sum digits: \\(3+4+5+6 = 18\\)",
-          "\\(18 \\div 9 = 2\\) → no remainder",
-          "<strong>Answer: Yes</strong>"
-        ]
-      },
-      {
-        q: "[Remainder] What is the remainder when 100 is divided by 7?",
-        steps: [
-          "\\(7 \\times 14 = 98\\) → \\(100 = 7 \\times 14 + 2\\)",
-          "<strong>Answer: remainder = 2</strong>"
-        ]
-      },
-      {
-        q: "[Terminating Decimal] Which terminates: \\(\\frac{7}{40}\\) or \\(\\frac{7}{42}\\)?",
-        steps: [
-          "\\(\\frac{7}{40}\\): \\(40 = 2^3 \\times 5\\) → only 2s and 5s → <strong>terminates</strong>",
-          "\\(\\frac{7}{42} = \\frac{1}{6}\\): \\(6 = 2 \\times 3\\) → has factor 3 → <strong>does not terminate</strong>",
-          "<strong>Answer: only \\(\\frac{7}{40}\\) terminates</strong>"
-        ]
-      },
-      {
-        q: "[Trailing Zeros] How many trailing zeros does \\(25!\\) have?",
-        steps: [
-          "Count factors of 5: \\(\\lfloor 25/5 \\rfloor + \\lfloor 25/25 \\rfloor = 5 + 1 = 6\\)",
-          "Each 5 pairs with a 2 (there are plenty of 2s).",
-          "<strong>Answer: 6 trailing zeros</strong>"
-        ]
-      },
-      {
-        q: "[DS-style] Is integer \\(n\\) divisible by 12? Given: (1) \\(n\\) is divisible by 4; (2) \\(n\\) is divisible by 6.",
-        steps: [
-          "Statement (1): divisible by 4 only → e.g. \\(n=4\\), not divisible by 12. Not sufficient.",
-          "Statement (2): divisible by 6 only → e.g. \\(n=6\\), not divisible by 12. Not sufficient.",
-          "Both: \\(4=2^2\\) and \\(6=2\\times3\\) → LCM\\((4,6)=12\\) → \\(n\\) must be divisible by 12. <strong>Sufficient.</strong>",
-          "<strong>Answer: Both together are sufficient (C)</strong>"
-        ]
-      },
-      {
-        q: "[Remainder Pattern] When a number \\(n\\) is divided by 5, the remainder is 3. What is the remainder when \\(2n\\) is divided by 5?",
-        steps: [
-          "\\(n = 5q + 3\\) for some integer \\(q\\)",
-          "\\(2n = 10q + 6 = 10q + 5 + 1 = 5(2q+1) + 1\\)",
-          "<strong>Answer: remainder = 1</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "Divisibility Quick-Check",
-        when: "Asked if a large number is divisible",
-        steps: ["Check last digit for 2, 5, 10", "Sum digits for 3, 9", "Check last 2 digits for 4", "Combine: if divisible by 2 AND 3, then by 6"],
-        tip: "For 7 and 11, use the alternating sum method."
-      },
-      {
-        name: "Trailing Zeros Count",
-        when: "Asked about trailing zeros in n! or large products",
-        steps: ["Count factors of 5: ⌊n/5⌋ + ⌊n/25⌋ + ⌊n/125⌋...", "Count factors of 2 (always more than 5s)", "Trailing zeros = count of 5s"],
-        tip: "Every factor of 10 = one 5 paired with one 2."
-      },
-      {
-        name: "Factor of n! Method",
-        when: "Questions about divisibility of factorials",
-        steps: ["Write out n! = n × (n−1) × ... × 1", "Check which primes appear", "All integers ≤ n are factors"],
-        tip: "n! is divisible by ALL integers from 1 to n."
-      }
-    ],
-    typicalQuestions: [
-      {
-        subtype: "Trailing Zeros in Factorial",
-        q: "How many trailing zeros does 75! have?\n\n(A) 15\n(B) 16\n(C) 18\n(D) 19\n(E) 25",
-        type: "Trailing zeros = pairs of 2×5 in prime factorization. Since factors of 2 are abundant, count factors of 5.",
-        signals: "Trailing zeros + factorial — always count factors of 5 using floor division",
-        trap: "(A) 15 — counting only multiples of 5 (75/5 = 15) and missing that 25, 50, 75 contribute an extra factor of 5 each",
-        method: "Count factors of 5: ⌊75/5⌋ + ⌊75/25⌋ + ⌊75/125⌋ = 15 + 3 + 0",
-        steps: ["Multiples of 5 up to 75: ⌊75/5⌋ = 15", "Multiples of 25 (extra factor of 5): ⌊75/25⌋ = 3", "Multiples of 125: ⌊75/125⌋ = 0", "Total factors of 5 = 15 + 3 = 18", "Answer: (C) 18"]
-      },
-      {
-        subtype: "Divisibility Sufficiency (DS)",
-        q: "Is positive integer n divisible by 12?\n\n(1) n is divisible by 8\n(2) n is divisible by 6\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
-        type: "LCM-based divisibility reasoning — tests whether students correctly use LCM rather than multiplying",
-        signals: "Two divisibility conditions and asking about a third. Key: if n divisible by 8 and 6, is it divisible by 12?",
-        trap: "(E) — students who think 8 and 6 don't guarantee 12, or those who multiply 8 × 6 = 48. The key is LCM(8,6) = 24, and 12 divides 24.",
-        method: "S1: n div by 8 → n could be 8,16,24,32... not all div by 12. S2: n div by 6 → n could be 6,12,18... not all div by 12. Together: n div by LCM(8,6) = 24. Is 24 div by 12? Yes.",
-        steps: ["Statement (1): n divisible by 8. Try n=8: 8/12 = no. NOT sufficient.", "Statement (2): n divisible by 6. Try n=6: 6/12 = no. NOT sufficient.", "Together: n must be divisible by LCM(8,6) = 24", "24 is divisible by 12, so any multiple of 24 is divisible by 12 ✓", "Answer: (C) BOTH statements TOGETHER are sufficient"]
-      },
-      {
-        subtype: "Factorial Expression: Largest Prime Factor",
-        q: "What is the largest prime factor of 15! − 13! ?\n\n(A) 11\n(B) 13\n(C) 17\n(D) 19\n(E) 29",
-        type: "Factorial simplification — tests ability to factor out common terms rather than computing huge numbers",
-        signals: "Subtraction of factorials — factor out the smaller factorial: 15! − 13! = 13!(15·14 − 1)",
-        trap: "(B) 13 — students who assume the largest prime factor of a factorial expression is the largest prime in the factorial itself",
-        method: "Factor out 13!: 15! − 13! = 13!(15 × 14 − 1) = 13! × 209. Then find largest prime factor of 209.",
-        steps: ["Factor: 15! = 15 × 14 × 13!, so 15! − 13! = 13!(15 × 14 − 1) = 13! × 209", "Factor 209: 209 = 11 × 19", "13! contains primes up to 13. The expression = 13! × 11 × 19", "All prime factors: 2, 3, 5, 7, 11, 13, 19. Largest = 19", "Answer: (D) 19"]
-      }
-    ]
-  },
-  {
-    icon: "🔬",
-    title: "Factors, Multiples, LCM & GCF",
-    preview: "\\(\\text{LCM} \\times \\text{GCF} = x \\times y\\)",
-    desc: "Factor counting, LCM, GCF, perfect squares & cubes",
-    equations: [
-      { label: "Number of factors", formula: "$$n = p_1^a \\cdot p_2^b \\cdot p_3^c \\Rightarrow \\text{factors} = (a+1)(b+1)(c+1)$$", detail: "<strong>Steps:</strong> (1) <span class=\"ref-term\">Prime factorize<span class=\"ref-tip\">Break the number into its prime factors: e.g., 72 = 2³ × 3².</span></span> → (2) Add 1 to each exponent → (3) Multiply the results.<br><strong>Example:</strong> 72 = 2³×3² → (3+1)(2+1) = 12 factors.<br><strong>Note:</strong> Perfect squares have an ODD number of factors." },
-      { label: "LCM \u00d7 GCF relationship", formula: "$$\\text{LCM}(x,y) \\times \\text{GCF}(x,y) = x \\times y$$", detail: "<strong>Formula:</strong> LCM(x,y) × GCF(x,y) = x × y.<br><strong>Strategy:</strong> Use this to find a missing value when you know three of the four.<br><strong>Example:</strong> LCM=60, GCF=4, x=12 → y = (60×4)/12 = 20." },
-      { label: "Perfect square condition", formula: "$$n \\text{ is a perfect square} \\iff \\text{all prime exponents are even}$$", note: "Example: 144 = 2\u2074 \u00d7 3\u00b2 \u2713 (all even exponents)", detail: "<strong>Rule:</strong> All prime exponents must be even.<br><strong>Strategy:</strong> If any exponent is odd, multiply by that prime once to make it a perfect square.<br><strong>Example:</strong> 18 = 2×3² → multiply by 2 → 36 = 2²×3² ✓" },
-      { label: "Perfect cube condition", formula: "$$n \\text{ is a perfect cube} \\iff \\text{all prime exponents are divisible by } 3$$", note: "Example: 216 = 2\u00b3 \u00d7 3\u00b3 \u2713", detail: "<strong>Rule:</strong> All prime exponents must be divisible by 3.<br><strong>Strategy:</strong> If not, multiply by the prime raised to the needed power.<br><strong>Example:</strong> 24 = 2³×3¹ → multiply by 3²=9 → 216 = 2³×3³ ✓" },
-      { label: "Multiples of n", formula: "$$\\text{Multiples of } n: \\quad n,\\ 2n,\\ 3n,\\ \\ldots \\ (\\text{infinite, always } \\geq n)$$", detail: "<strong>Definition:</strong> Multiples of n form an infinite sequence: n, 2n, 3n, ...<br><strong>Rule:</strong> Every multiple of n is also a multiple of n's factors.<br><strong>Note:</strong> The <span class=\"ref-term\">LCM<span class=\"ref-tip\">Least Common Multiple: the smallest number that is a multiple of both numbers.</span></span> of two numbers is the smallest number that is a multiple of both." },
-    ],
-    details: [
-      { type: "title", text: "Counting Factors Example" },
-      { type: "rule", text: "\\(240 = 2^4 \\times 3^1 \\times 5^1\\) → \\((4+1)(1+1)(1+1) = 20\\) factors" },
-      { type: "title", text: "Perfect Squares to Memorize" },
-      { type: "rule", text: "0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225" },
-      { type: "title", text: "Perfect Cubes to Memorize" },
-      { type: "rule", text: "0, 1, 8, 27, 64, 125, 216, 343, 512, 729, 1000" },
-      { type: "title", text: "LCM — Steps" },
-      { type: "rule", text: "1. Prime factorize each number.<br>2. Take repeated primes with the <em>largest</em> exponent.<br>3. Include all non-repeated primes.<br>4. Multiply.<br><em>LCM(24, 60): \\(24=2^3 \\times 3,\\ 60=2^2 \\times 3 \\times 5\\) → take \\(2^3, 3, 5\\) → \\(8 \\times 3 \\times 5 = 120\\)</em>" },
-      { type: "title", text: "GCF — Steps" },
-      { type: "rule", text: "1. Prime factorize each number.<br>2. Take repeated primes with the <em>smallest</em> exponent.<br>3. Multiply.<br><em>GCF(24, 60): take \\(2^2, 3^1\\) → \\(4 \\times 3 = 12\\)</em>" },
-    ],
-    practice: [
-      {
-        q: "[Factor Counting] How many factors does 72 have?",
-        steps: [
-          "\\(72 = 2^3 \\times 3^2\\)",
-          "Factors \\(= (3+1)(2+1) = 12\\)",
-          "<strong>Answer: 12 factors</strong>"
-        ]
-      },
-      {
-        q: "[LCM×GCF] The LCM of two numbers is 60 and the GCF is 4. If one number is 12, what is the other?",
-        steps: [
-          "\\(x \\times y = \\text{LCM} \\times \\text{GCF}\\)",
-          "\\(12 \\times y = 60 \\times 4 = 240\\) → \\(y = 20\\)",
-          "<strong>Answer: 20</strong>"
-        ]
-      },
-      {
-        q: "[Perfect Square/Cube] Is 360 a perfect square? A perfect cube?",
-        steps: [
-          "\\(360 = 2^3 \\times 3^2 \\times 5^1\\)",
-          "Perfect square? All exponents must be even → 3 and 1 are odd → <strong>No</strong>",
-          "Perfect cube? All exponents divisible by 3 → 2 and 1 are not → <strong>No</strong>"
-        ]
-      },
-      {
-        q: "[Word Problem] Bus A departs every 12 minutes; Bus B every 18 minutes. They depart together at 8:00 AM. When is the next time they depart together?",
-        steps: [
-          "Find LCM(12, 18): \\(12=2^2 \\times 3,\\ 18=2 \\times 3^2\\) → LCM \\(= 2^2 \\times 3^2 = 36\\) minutes",
-          "\\(8{:}00 + 36\\) minutes \\(= 8{:}36\\) AM",
-          "<strong>Answer: 8:36 AM</strong>"
-        ]
-      },
-      {
-        q: "[Smallest Multiple] What is the smallest perfect square that is a multiple of 12?",
-        steps: [
-          "\\(12 = 2^2 \\times 3\\) — the exponent of 3 is odd (1), so not a perfect square.",
-          "Multiply by 3 to make all exponents even: \\(12 \\times 3 = 36 = 2^2 \\times 3^2\\) ✓",
-          "<strong>Answer: 36</strong>"
-        ]
-      },
-      {
-        q: "[DS-style] How many positive factors does \\(n\\) have? Given: (1) \\(n = p^3\\) where \\(p\\) is prime; (2) \\(n = 8\\).",
-        steps: [
-          "Statement (1): \\(n=p^3\\) → factors \\(=(3+1)=4\\). Could be \\(2^3=8\\) or \\(3^3=27\\) — answer is always 4. <strong>Sufficient.</strong>",
-          "Statement (2): \\(n=8=2^3\\) → factors \\(= 1,2,4,8\\) → 4. <strong>Sufficient.</strong>",
-          "<strong>Answer: Either statement alone is sufficient (D)</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "Prime Factorization for GCF/LCM",
-        when: "Any GCF or LCM question",
-        steps: ["Prime factorize both numbers", "GCF = product of common prime factors with LOWER exponents", "LCM = product of ALL prime factors with HIGHER exponents"],
-        tip: "GCF × LCM = Product of the two numbers (for two numbers)."
-      },
-      {
-        name: "Listing Factors Method",
-        when: "Small numbers or when prime factorization seems slow",
-        steps: ["List all factor pairs of n: 1×n, 2×?, 3×?, ...", "Stop when factors start repeating", "Count total"],
-        tip: "Perfect squares have an ODD number of factors."
-      },
-      {
-        name: "Factor Count Formula",
-        when: "Counting total factors without listing",
-        steps: ["Prime factorize: n = p₁^a × p₂^b × p₃^c", "Total factors = (a+1)(b+1)(c+1)"],
-        tip: "Add 1 to each exponent because you include the 0 power (= 1)."
-      }
-    ],
-    typicalQuestions: [
-      {
-        subtype: "GCF Word Problem",
-        q: "A carpenter has two boards, one 72 inches long and one 90 inches long. He wants to cut them into equal-length pieces with no wood left over. What is the greatest possible length of each piece, in inches?\n\n(A) 6\n(B) 9\n(C) 12\n(D) 18\n(E) 36",
-        type: "GCF application — tests recognizing when 'greatest equal piece with no remainder' means GCF",
-        signals: "'Equal-length pieces,' 'no wood left over,' 'greatest possible' — all signal GCF",
-        trap: "(E) 36 — picking the smaller board length's factor without checking it divides both, or (A) 6 — picking any common factor instead of the greatest",
-        method: "GCF(72, 90). Use prime factorization: 72 = 2³ × 3², 90 = 2 × 3² × 5. GCF = 2 × 3² = 18.",
-        steps: ["72 = 2³ × 3² and 90 = 2 × 3² × 5", "GCF = product of lowest powers of shared primes = 2¹ × 3² = 18", "Check: 72 ÷ 18 = 4 pieces, 90 ÷ 18 = 5 pieces, no remainder ✓", "Answer: (D) 18"]
-      },
-      {
-        subtype: "LCM Scheduling Problem",
-        q: "Bus A departs every 12 minutes and Bus B departs every 18 minutes. If both buses depart together at 9:00 AM, at what time will they next depart together?\n\n(A) 9:18 AM\n(B) 9:30 AM\n(C) 9:36 AM\n(D) 10:00 AM\n(E) 12:36 PM",
-        type: "LCM application — tests recognizing 'next coincidence' of two repeating events means LCM of their periods",
-        signals: "'Every 12 minutes,' 'every 18 minutes,' 'next depart together' — LCM finds the next sync point",
-        trap: "(B) 9:30 — adding the two periods (12 + 18 = 30) instead of finding LCM",
-        method: "LCM(12, 18). 12 = 2² × 3, 18 = 2 × 3². LCM = 2² × 3² = 36. Next together = 36 min after 9:00.",
-        steps: ["12 = 2² × 3, 18 = 2 × 3²", "LCM = 2² × 3² = 36 minutes", "36 minutes after 9:00 AM = 9:36 AM", "Verify: 36/12 = 3 departures of A, 36/18 = 2 departures of B ✓", "Answer: (C) 9:36 AM"]
-      },
-      {
-        subtype: "Number of Factors: Perfect Square Trap",
-        q: "How many positive integers less than 100 have exactly 3 positive divisors?\n\n(A) 2\n(B) 3\n(C) 4\n(D) 5\n(E) 10",
-        type: "Number-of-divisors theory — tests the insight that exactly 3 divisors means the number is the square of a prime",
-        signals: "'Exactly 3 positive divisors' — only numbers of the form p² (prime squared) have exactly 3 divisors: 1, p, p²",
-        trap: "(E) 10 — counting all perfect squares under 100, not realizing only PRIME squares have exactly 3 divisors",
-        method: "A number has exactly 3 divisors iff it is p² for some prime p. Find all primes p with p² < 100.",
-        steps: ["If n = p² (p prime), divisors are 1, p, p² — exactly 3", "Primes p where p² < 100: p < 10", "Primes less than 10: 2, 3, 5, 7", "Their squares: 4, 9, 25, 49 — all less than 100", "Answer: (C) 4"]
-      }
-    ]
-  },
-  {
-    icon: "√",
-    title: "Roots & Radicals",
-    preview: "\\(\\sqrt{ab} = \\sqrt{a} \\cdot \\sqrt{b}\\)",
-    desc: "Simplifying, multiplying, dividing radicals",
-    equations: [
-      { label: "Multiply radicals", formula: "$$\\sqrt{a} \\cdot \\sqrt{b} = \\sqrt{ab}$$", detail: "<strong>Rule:</strong> √a × √b = √(ab) — combine under one root sign.<br><strong>Strategy:</strong> Always simplify after combining.<br><strong>Example:</strong> √6 × √10 = √60 = √(4×15) = 2√15." },
-      { label: "Divide radicals", formula: "$$\\frac{\\sqrt{a}}{\\sqrt{b}} = \\sqrt{\\frac{a}{b}}$$", detail: "<strong>Rule:</strong> √a / √b = √(a/b) — combine under one root sign.<br><strong>Strategy:</strong> This often simplifies messy expressions quickly.<br><strong>Example:</strong> √75/√3 = √25 = 5." },
-      { label: "Radical as exponent", formula: "$$\\sqrt{x} = x^{1/2} \\qquad \\sqrt[3]{x} = x^{1/3}$$", detail: "<strong>Rule:</strong> √x = x^(1/2) and ∛x = x^(1/3).<br><strong>Strategy:</strong> Convert to fractional <span class=\"ref-term\">exponents<span class=\"ref-tip\">When multiplying same bases, ADD exponents. When raising a power to a power, MULTIPLY exponents.</span></span> to apply exponent rules more easily.<br><strong>Example:</strong> x^(1/2) × x^(1/3) = x^(5/6)." },
-      { label: "General form", formula: "$$\\sqrt[n]{x} = x^{1/n}$$", detail: "<strong>Rule:</strong> The nth root of x equals x^(1/n).<br><strong>Note:</strong> Generalizes square roots and cube roots.<br><strong>GMAT focus:</strong> You'll mostly see square roots and occasionally cube roots." },
-      { label: "Square root identity", formula: "$$\\sqrt{x^2} = |x|$$", detail: "<strong>Rule:</strong> √(x²) = |x|, NOT just x.<br><strong>Trap:</strong> If x is negative, √(x²) gives the positive value.<br><strong>Example:</strong> √((-3)²) = √9 = 3, not -3." },
-      { label: "Addition of radicals (warning)", formula: "$$\\sqrt{a+b} \\neq \\sqrt{a} + \\sqrt{b}$$", detail: "<strong>Rule:</strong> √(a+b) ≠ √a + √b — you CANNOT split a root across addition.<br><strong>Note:</strong> This is one of the most common algebra mistakes.<br><strong>Example:</strong> √(9+16) = √25 = 5, but √9 + √16 = 3+4 = 7 ≠ 5." },
-      { label: "Multiple roots", formula: "$$\\sqrt{\\sqrt{x}} = x^{1/4}$$", detail: "<strong>Rule:</strong> √(√x) = x^(1/4) — nested roots multiply their indices.<br><strong>Strategy:</strong> Convert to fractional exponents: (1/2)×(1/2) = 1/4.<br><strong>Example:</strong> √(√16) = 16^(1/4) = 2." },
-    ],
-    details: [
-      { type: "title", text: "Approximate values to memorize" },
-      { type: "rule", text: "\\(\\sqrt{2} \\approx 1.4\\) &nbsp;&nbsp; \\(\\sqrt{3} \\approx 1.7\\) &nbsp;&nbsp; \\(\\sqrt{5} \\approx 2.2\\)" },
-      { type: "title", text: "Perfect squares" },
-      { type: "rule", text: "0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225" },
-      { type: "title", text: "Perfect cubes" },
-      { type: "rule", text: "0, 1, 8, 27, 64, 125, 216, 343, 512, 729, 1000" },
-    ],
-    practice: [
-      {
-        q: "[Simplify] Simplify \\(\\sqrt{72}\\)",
-        steps: [
-          "\\(72 = 36 \\times 2\\)",
-          "\\(\\sqrt{72} = \\sqrt{36} \\cdot \\sqrt{2} = 6\\sqrt{2}\\)",
-          "<strong>Answer: \\(6\\sqrt{2}\\)</strong>"
-        ]
-      },
-      {
-        q: "[Conceptual] Is \\(\\sqrt{25} + \\sqrt{16} = \\sqrt{41}\\)?",
-        steps: [
-          "Left: \\(5 + 4 = 9\\); Right: \\(\\sqrt{41} \\approx 6.4\\)",
-          "<strong>Answer: No — \\(\\sqrt{a} + \\sqrt{b} \\neq \\sqrt{a+b}\\)</strong>"
-        ]
-      },
-      {
-        q: "[Division] Simplify \\(\\dfrac{\\sqrt{50}}{\\sqrt{2}}\\)",
-        steps: [
-          "\\(= \\sqrt{\\frac{50}{2}} = \\sqrt{25} = 5\\)",
-          "<strong>Answer: 5</strong>"
-        ]
-      },
-      {
-        q: "[Rationalize] Simplify \\(\\dfrac{6}{\\sqrt{3}}\\)",
-        steps: [
-          "Multiply numerator and denominator by \\(\\sqrt{3}\\)",
-          "\\(= \\frac{6\\sqrt{3}}{3} = 2\\sqrt{3}\\)",
-          "<strong>Answer: \\(2\\sqrt{3}\\)</strong>"
-        ]
-      },
-      {
-        q: "[Comparison] Which is greater: \\(\\sqrt{50}\\) or \\(7\\)?",
-        steps: [
-          "Compare squares: \\((\\sqrt{50})^2 = 50\\) vs \\(7^2 = 49\\)",
-          "\\(50 > 49\\) → \\(\\sqrt{50} > 7\\)",
-          "<strong>Answer: \\(\\sqrt{50} > 7\\)</strong>"
-        ]
-      },
-      {
-        q: "[Equation] Solve: \\(\\sqrt{x+5} = 4\\)",
-        steps: [
-          "Square both sides: \\(x + 5 = 16\\)",
-          "\\(x = 11\\)",
-          "Check: \\(\\sqrt{11+5} = \\sqrt{16} = 4\\) ✓",
-          "<strong>Answer: \\(x = 11\\)</strong>"
-        ]
-      },
-      {
-        q: "[Exponent Form] Simplify: \\(x^{1/2} \\cdot x^{1/3}\\)",
-        steps: [
-          "Same base → add exponents: \\(x^{\\frac{1}{2} + \\frac{1}{3}} = x^{\\frac{3+2}{6}} = x^{5/6}\\)",
-          "<strong>Answer: \\(x^{5/6}\\)</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "Simplify Radicals",
-        when: "Simplifying √n or ⁿ√x",
-        steps: ["Find largest perfect square factor", "Split: √(a×b)=√a×√b", "Take √ of the perfect square"],
-        tip: "Memorize perfect squares: 1,4,9,16,25,36,49,64,81,100,121,144."
-      },
-      {
-        name: "Rationalize the Denominator",
-        when: "A radical appears in the denominator",
-        steps: ["Multiply numerator and denominator by the radical", "Simplify"],
-        tip: "For a+√b in denominator, multiply by its conjugate (a−√b)."
-      },
-      {
-        name: "Exponent-Radical Conversion",
-        when: "Converting between radical and exponent form",
-        steps: ["√x = x^(1/2), ∛x = x^(1/3), ⁿ√x = x^(1/n)", "Apply exponent rules"],
-        tip: "Once in exponent form, all standard exponent rules apply."
-      }
-    ],
-    typicalQuestions: [
-      {
-        subtype: "Nested Radical Simplification",
-        q: "What is the value of √75 + √27 − √12 ?\n\n(A) √90\n(B) 6√3\n(C) 4√3\n(D) 5√3\n(E) 8√3",
-        type: "Radical simplification by extracting perfect squares — tests combining like radical terms",
-        signals: "Sum/difference of radicals with different radicands — simplify each to k√n form, then combine like terms",
-        trap: "(A) √90 — adding numbers under the radical directly: √(75+27−12) = √90",
-        method: "Simplify each: √75 = 5√3, √27 = 3√3, √12 = 2√3. Combine like terms.",
-        steps: ["√75 = √(25×3) = 5√3", "√27 = √(9×3) = 3√3", "√12 = √(4×3) = 2√3", "5√3 + 3√3 − 2√3 = 6√3", "Answer: (B) 6√3"]
-      },
-      {
-        subtype: "Radical Equation: Extraneous Solution",
-        q: "If √(2x + 3) = x, how many real solutions does the equation have?\n\n(A) 0\n(B) 1\n(C) 2\n(D) 3\n(E) Infinitely many",
-        type: "Radical equations requiring squaring — tests whether students check for extraneous solutions",
-        signals: "Square root equals a variable expression — squaring may introduce extraneous solutions. Must verify.",
-        trap: "(C) 2 — squaring gives x² = 2x + 3 → x² − 2x − 3 = 0 → (x−3)(x+1) = 0 → x = 3 or x = −1, but failing to check that √(2x+3) ≥ 0 means x ≥ 0",
-        method: "Square both sides, solve quadratic, then CHECK each solution in the original equation.",
-        steps: ["Square both sides: 2x + 3 = x²", "Rearrange: x² − 2x − 3 = 0 → (x − 3)(x + 1) = 0", "x = 3 or x = −1", "Check x = 3: √(6+3) = √9 = 3 = x ✓", "Check x = −1: √(−2+3) = √1 = 1 ≠ −1 ✗ (extraneous)", "Answer: (B) 1 — only x = 3 is valid"]
-      },
-      {
-        subtype: "Comparing Expressions with Roots",
-        q: "Which of the following is greatest?\n\n(A) √5 + √3\n(B) √15\n(C) 2√2\n(D) 4\n(E) √7 + 1",
-        type: "Radical comparison — tests systematic comparison by squaring rather than estimating",
-        signals: "Multiple radical expressions to compare — squaring eliminates radicals for cleaner comparison",
-        trap: "(B) √15 ≈ 3.87 looks large, but (A) √5 + √3 ≈ 2.24 + 1.73 = 3.97 is larger. Picking √15 by eyeballing.",
-        method: "Approximate or square each value. Compare systematically.",
-        steps: ["(A) √5 + √3 ≈ 2.236 + 1.732 = 3.968", "(B) √15 ≈ 3.873", "(C) 2√2 ≈ 2.828", "(D) 4.000", "(E) √7 + 1 ≈ 2.646 + 1 = 3.646", "Answer: (D) 4 — it is the greatest value"]
-      }
-    ]
-  },
-  {
-    icon: "⬆️",
-    title: "Exponents",
-    preview: "\\(x^a \\cdot x^b = x^{a+b}\\)",
-    desc: "Multiplication, division, power rules, units digits",
-    equations: [
-      { label: "Multiply like bases", formula: "$$x^a \\cdot x^b = x^{a+b}$$", detail: "<strong>Rule:</strong> x^a × x^b = x^(a+b) — ADD the exponents.<br><strong>Note:</strong> The most fundamental exponent rule. Works for any base.<br><strong>Example:</strong> 2³ × 2⁴ = 2⁷ = 128." },
-      { label: "Divide like bases", formula: "$$\\frac{x^a}{x^b} = x^{a-b}$$", detail: "<strong>Rule:</strong> x^a / x^b = x^(a−b) — SUBTRACT the exponents.<br><strong>Note:</strong> If result is negative, flip to a fraction: x^(−n) = 1/x^n.<br><strong>Example:</strong> 5⁶ / 5⁴ = 5² = 25." },
-      { label: "Power to a power", formula: "$$(x^a)^b = x^{ab}$$", detail: "<strong>Rule:</strong> (x^a)^b = x^(ab) — MULTIPLY the exponents.<br><strong>Common mistake:</strong> Adding instead of multiplying: (2³)⁴ = 2¹² (not 2⁷).<br><strong>Example:</strong> (3²)³ = 3⁶ = 729." },
-      { label: "Multiply different bases, same exponent", formula: "$$x^a \\cdot y^a = (xy)^a$$", detail: "<strong>Rule:</strong> x^a × y^a = (xy)^a — combine bases under one exponent.<br><strong>Example:</strong> 2³ × 5³ = 10³ = 1000.<br><strong>Note:</strong> Useful for simplifying expressions with matching exponents." },
-      { label: "Divide different bases, same exponent", formula: "$$\\frac{x^a}{y^a} = \\left(\\frac{x}{y}\\right)^a$$", detail: "<strong>Rule:</strong> x^a / y^a = (x/y)^a — combine into one fraction raised to that power.<br><strong>Example:</strong> 6⁴/3⁴ = (6/3)⁴ = 2⁴ = 16." },
-      { label: "Zero exponent", formula: "$$x^0 = 1 \\quad (x \\neq 0)$$", detail: "<strong>Rule:</strong> x⁰ = 1 for any x ≠ 0.<br><strong>Why:</strong> x^n / x^n = x^(n−n) = x⁰ = 1.<br><strong>Note:</strong> 0⁰ is undefined on the GMAT." },
-      { label: "Negative exponent", formula: "$$x^{-a} = \\frac{1}{x^a}$$", detail: "<strong>Rule:</strong> x^(−a) = 1/x^a — a negative exponent means 'take the reciprocal.'<br><strong>Trap:</strong> This is NOT a negative number — it's a fraction.<br><strong>Example:</strong> 2^(−3) = 1/8, which is positive." },
-      { label: "Units digit \u2014 cycle-4 bases", formula: "$$2: 2{\\to}4{\\to}8{\\to}6 \\quad 3: 3{\\to}9{\\to}7{\\to}1 \\quad 7: 7{\\to}9{\\to}3{\\to}1 \\quad 8: 8{\\to}4{\\to}2{\\to}6$$", note: "Find remainder of exponent \u00f7 4, then pick that position in the cycle.", detail: "<strong>Rule:</strong> Bases 2, 3, 7, 8 cycle through 4 units digits.<br><strong>Strategy:</strong> Divide the exponent by 4 — use the remainder to find position in the cycle. Remainder 0 = 4th position.<br><strong>Note:</strong> Memorize all four cycles for speed." },
-      { label: "Units digit \u2014 cycle-2 bases", formula: "$$4: 4{\\to}6 \\quad 9: 9{\\to}1 \\quad (\\text{odd power} = \\text{first}, \\text{even power} = \\text{second})$$", detail: "<strong>Rule:</strong> Bases 4 and 9 alternate between two units digits.<br><strong>Strategy:</strong> Odd power → first digit (4 or 9); even power → second digit (6 or 1).<br><strong>Example:</strong> 4⁵ ends in 4 (odd power); 9⁶ ends in 1 (even power)." },
-      { label: "Units digit \u2014 fixed bases", formula: "$$0 \\to 0 \\quad 1 \\to 1 \\quad 5 \\to 5 \\quad 6 \\to 6 \\quad (\\text{always})$$", detail: "<strong>Rule:</strong> Bases 0, 1, 5, and 6 always have the same units digit regardless of exponent.<br><strong>Note:</strong> No calculation needed — any power of 5 ends in 5, any power of 6 ends in 6.<br><strong>Example:</strong> 5¹⁰⁰ ends in 5; 6⁹⁹ ends in 6." },
-    ],
-    details: [
-      { type: "title", text: "Powers of 2" },
-      { type: "rule", text: "\\(2^1=2,\\ 2^2=4,\\ 2^3=8,\\ 2^4=16,\\ 2^5=32,\\ 2^6=64,\\ 2^7=128,\\ 2^8=256,\\ 2^9=512,\\ 2^{10}=1024\\)" },
-      { type: "title", text: "Powers of 3, 4, 5" },
-      { type: "rule", text: "\\(3^1=3,\\ 3^2=9,\\ 3^3=27,\\ 3^4=81,\\ 3^5=243\\)<br>\\(4^1=4,\\ 4^2=16,\\ 4^3=64,\\ 4^4=256\\)<br>\\(5^1=5,\\ 5^2=25,\\ 5^3=125,\\ 5^4=625\\)" },
-      { type: "title", text: "How to Find Any Units Digit" },
-      { type: "rule", text: "1. Identify the base's units digit.<br>2. Find its cycle length (4 for 2,3,7,8 — 2 for 4,9 — 1 for 0,1,5,6).<br>3. Divide the exponent by the cycle length, take the remainder.<br>4. Remainder 0 = last in cycle.<br><em>Example: \\(3^{47}\\) → cycle 3,9,7,1 → \\(47 \\div 4 = 11\\) rem 3 → 3rd in cycle = <strong>7</strong></em>" },
-    ],
-    practice: [
-      {
-        q: "[Units Digit] What is the units digit of \\(7^{23}\\)?",
-        steps: [
-          "Cycle for 7: 7→9→3→1 (every 4)",
-          "\\(23 \\div 4\\) = rem 3 → 3rd in cycle = 3",
-          "<strong>Answer: 3</strong>"
-        ]
-      },
-      {
-        q: "[Like Bases] Simplify: \\(\\dfrac{4^6 \\cdot 4^2}{4^5}\\)",
-        steps: [
-          "Numerator: \\(4^{6+2} = 4^8\\)",
-          "\\(\\frac{4^8}{4^5} = 4^3 = 64\\)",
-          "<strong>Answer: 64</strong>"
-        ]
-      },
-      {
-        q: "[Solve for Exponent] If \\(2^x = 64\\), what is \\(x\\)?",
-        steps: [
-          "\\(64 = 2^6\\)",
-          "<strong>Answer: \\(x = 6\\)</strong>"
-        ]
-      },
-      {
-        q: "[Negative Exponent] Simplify: \\(\\dfrac{3^5}{3^8}\\)",
-        steps: [
-          "\\(= 3^{5-8} = 3^{-3} = \\frac{1}{3^3} = \\frac{1}{27}\\)",
-          "<strong>Answer: \\(\\frac{1}{27}\\)</strong>"
-        ]
-      },
-      {
-        q: "[Comparison] Which is greater: \\(2^{30}\\) or \\(3^{20}\\)?",
-        steps: [
-          "Rewrite with same exponent base: \\(2^{30} = (2^3)^{10} = 8^{10}\\); \\(3^{20} = (3^2)^{10} = 9^{10}\\)",
-          "\\(9^{10} > 8^{10}\\)",
-          "<strong>Answer: \\(3^{20} > 2^{30}\\)</strong>"
-        ]
-      },
-      {
-        q: "[Power to a Power] Simplify: \\((2^3)^4 \\cdot 2^{-5}\\)",
-        steps: [
-          "\\((2^3)^4 = 2^{12}\\)",
-          "\\(2^{12} \\cdot 2^{-5} = 2^{12-5} = 2^7 = 128\\)",
-          "<strong>Answer: 128</strong>"
-        ]
-      },
-      {
-        q: "[Units Digit — Large Power] What is the units digit of \\(3^{100}\\)?",
-        steps: [
-          "Cycle for 3: 3→9→7→1 (every 4)",
-          "\\(100 \\div 4 = 25\\) rem 0 → remainder 0 means last in cycle = 1",
-          "<strong>Answer: 1</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "MADSPM Rules (Multiply-Add, Divide-Subtract, Power-Multiply)",
-        when: "Simplifying exponential expressions",
-        steps: ["M: xᵃ×xᵇ=xᵃ⁺ᵇ", "D: xᵃ÷xᵇ=xᵃ⁻ᵇ", "P: (xᵃ)ᵇ=xᵃˣᵇ"],
-        tip: "Never add or subtract expressions with different bases directly — only multiply/divide."
-      },
-      {
-        name: "Units Digit Pattern Method",
-        when: "'What is the units digit of x^n' questions",
-        steps: ["Find the units digit of the base", "Write out the cycle: 2→2,4,8,6,2,4,8,6...", "Use n mod (cycle length) to find position"],
-        tip: "Most bases cycle with length 4. Exceptions: 0,1,5,6 always give same units digit."
-      },
-      {
-        name: "Negative/Fractional Exponents",
-        when: "You see x⁻ⁿ or x^(p/q)",
-        steps: ["x⁻ⁿ = 1/xⁿ (flip to denominator)", "x^(p/q) = qth root of xᵖ", "Combine: x^(−p/q) = 1/(qth root of xᵖ)"],
-        tip: "Negative exponent = reciprocal; fractional exponent = root."
-      }
-    ],
-    typicalQuestions: [
-      {
-        subtype: "Units Digit of Large Power",
-        q: "What is the units digit of 7⁴³ + 3¹⁷?\n\n(A) 0\n(B) 3\n(C) 6\n(D) 8\n(E) 10",
-        type: "Units digit cycling — tests knowledge of the repeating units-digit pattern for bases",
-        signals: "Large exponents + units digit — find cycle length for each base, use modular arithmetic",
-        trap: "(E) 10 — adding 7 + 3 = 10, or (A) 0 — computing units digits separately but adding wrong",
-        method: "7's cycle: 7,9,3,1 (period 4). 3's cycle: 3,9,7,1 (period 4). Find position in cycle.",
-        steps: ["7's units digits cycle: 7¹=7, 7²=9, 7³=3, 7⁴=1, repeats every 4", "43 mod 4 = 3, so 7⁴³ has units digit = 7³'s units digit = 3", "3's units digits cycle: 3¹=3, 3²=9, 3³=7, 3⁴=1, repeats every 4", "17 mod 4 = 1, so 3¹⁷ has units digit = 3¹'s units digit = 3", "Units digit of sum: 3 + 3 = 6", "Answer: (C) 6"]
-      },
-      {
-        subtype: "Exponential Equation: Unequal Bases",
-        q: "If 4ˣ = 8ˣ⁻¹, what is the value of x?\n\n(A) 1\n(B) 2\n(C) 3\n(D) 4\n(E) 6",
-        type: "Exponential equation with different bases — tests converting to a common base",
-        signals: "4 and 8 are both powers of 2 — rewrite as 2²ˣ = 2³⁽ˣ⁻¹⁾ and equate exponents",
-        trap: "(A) 1 — guessing, or arithmetic errors when equating exponents",
-        method: "Convert: 4 = 2², 8 = 2³. So 2²ˣ = 2³⁽ˣ⁻¹⁾. Equate exponents: 2x = 3(x−1).",
-        steps: ["Rewrite: 4ˣ = (2²)ˣ = 2²ˣ and 8ˣ⁻¹ = (2³)ˣ⁻¹ = 2³ˣ⁻³", "Equate exponents: 2x = 3x − 3", "Solve: −x = −3, so x = 3", "Verify: 4³ = 64, 8² = 64 ✓", "Answer: (C) 3"]
-      },
-      {
-        subtype: "Variable Exponent (DS)",
-        q: "Is 2ⁿ > n² ?\n\n(1) n > 4\n(2) n is a positive integer\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
-        type: "Exponential vs polynomial growth DS — tests understanding that 2ⁿ eventually dominates n²",
-        signals: "Comparing exponential to polynomial — for n > 4, 2ⁿ > n² always. But need n > 4 to be definitive.",
-        trap: "(C) — thinking both statements are needed, but actually Statement (1) alone is sufficient since for ALL n > 4 (including non-integers), 2ⁿ > n²",
-        method: "Check: at n=4, 2⁴=16 = 4²=16 (equal). For n > 4, 2ⁿ grows faster. S1 gives n > 4, sufficient. S2 alone: n could be 1,2,3,... not always true.",
-        steps: ["Statement (1): n > 4. Check n=5: 2⁵=32 > 25=5². For all n > 4, 2ⁿ > n². SUFFICIENT.", "Statement (2): n is a positive integer. n=1: 2>1 yes. n=2: 4=4 no. NOT sufficient.", "Statement (1) alone is sufficient.", "Answer: (A) Statement (1) ALONE is sufficient"]
-      }
-    ]
-  },
-  {
-    icon: "📋",
-    title: "PEMDAS",
-    preview: "\\(P \\to E \\to MD \\to AS\\)",
-    desc: "Order of operations & distributive property",
-    equations: [
-      { label: "Order of operations", formula: "$$\\underbrace{P}_{\\text{Parentheses}} \\to \\underbrace{E}_{\\text{Exponents}} \\to \\underbrace{MD}_{\\text{Mult/Div}} \\to \\underbrace{AS}_{\\text{Add/Sub}}$$", detail: "<strong>Rule:</strong> Parentheses → Exponents → Multiplication/Division (left to right) → Addition/Subtraction (left to right).<br><strong>Note:</strong> M and D have EQUAL priority — process left to right. Same for A and S.<br><strong>Common mistake:</strong> Doing multiplication before division regardless of order — they should go left to right." },
-      { label: "Distributive property", formula: "$$a(b+c) = ab + ac$$", detail: "<strong>Rule:</strong> a(b+c) = ab + ac — multiply the outside term by EACH inside term.<br><strong>Note:</strong> Works in reverse too: ab + ac = a(b+c) (<span class=\"ref-term\">factoring<span class=\"ref-tip\">Factoring is pulling out the common factor from all terms — the reverse of distribution.</span></span>).<br><strong>Example:</strong> 4(x+3) = 4x + 12." },
-      { label: "Reverse distribution (factoring)", formula: "$$ab + ac = a(b+c)$$", detail: "<strong>Rule:</strong> ab + ac = a(b+c) — pull out the common factor from all terms.<br><strong>Strategy:</strong> Find the <span class=\"ref-term\">GCF<span class=\"ref-tip\">Greatest Common Factor: the largest number that divides evenly into all terms.</span></span> of all terms and factor it out.<br><strong>Example:</strong> 6x² + 9x = 3x(2x + 3)." },
-    ],
-    details: [
-      { type: "rule", text: "<strong>P</strong>arentheses — always resolve \\((\\ldots)\\) first." },
-      { type: "rule", text: "<strong>E</strong>xponents — evaluate all powers/roots next." },
-      { type: "rule", text: "<strong>M/D</strong> — Multiplication and Division left to right (equal priority)." },
-      { type: "rule", text: "<strong>A/S</strong> — Addition and Subtraction left to right (equal priority)." },
-      { type: "rule", text: "<strong>Distributive example:</strong> \\(4(x+y) = 4x + 4y\\)" },
-    ],
-    practice: [
-      {
-        q: "[Order of Operations] Evaluate: \\(3 + 4 \\times 2^2 - (5-3)\\)",
-        steps: [
-          "P: \\((5-3)=2\\) → E: \\(2^2=4\\) → M: \\(4 \\times 4=16\\) → A/S: \\(3+16-2=17\\)",
-          "<strong>Answer: 17</strong>"
-        ]
-      },
-      {
-        q: "[Distributive] Simplify: \\(\\dfrac{4(x+3) - 12}{4}\\)",
-        steps: [
-          "Distribute: \\(4x + 12 - 12 = 4x\\)",
-          "\\(\\frac{4x}{4} = x\\)",
-          "<strong>Answer: \\(x\\)</strong>"
-        ]
-      },
-      {
-        q: "[Common Error] A student says \\(2 + 3 \\times 4 = 20\\). What's the correct answer?",
-        steps: [
-          "Multiplication before addition: \\(3 \\times 4 = 12\\) first",
-          "Then: \\(2 + 12 = 14\\)",
-          "<strong>Answer: 14 (not 20 — the student forgot PEMDAS)</strong>"
-        ]
-      },
-      {
-        q: "[Nested Expression] Evaluate: \\(2 \\times (3 + 4^2) - 10 \\div 2\\)",
-        steps: [
-          "P + E inside: \\(3 + 16 = 19\\)",
-          "Multiply: \\(2 \\times 19 = 38\\)",
-          "Divide: \\(10 \\div 2 = 5\\)",
-          "Subtract: \\(38 - 5 = 33\\)",
-          "<strong>Answer: 33</strong>"
-        ]
-      },
-      {
-        q: "[Factoring via Distributive] Factor: \\(6x^2 + 9x\\)",
-        steps: [
-          "GCF of \\(6x^2\\) and \\(9x\\) is \\(3x\\)",
-          "\\(= 3x(2x + 3)\\)",
-          "<strong>Answer: \\(3x(2x+3)\\)</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "PEMDAS Order",
-        when: "Any complex arithmetic expression",
-        steps: ["P: Parentheses/brackets first, innermost first", "E: Exponents", "MD: Multiply and Divide left-to-right", "AS: Add and Subtract left-to-right"],
-        tip: "Multiplication and division have equal priority — go left to right, don't assume × comes before ÷."
-      },
-      {
-        name: "Nested Parentheses",
-        when: "Expressions have multiple layers of brackets",
-        steps: ["Start with innermost bracket", "Work outward layer by layer", "Replace each bracket with its value before moving out"],
-        tip: "Use different bracket types [()] to keep track: solve () first, then [], then {}."
-      },
-      {
-        name: "Distribution Before Addition",
-        when: "Parentheses have a multiplier outside",
-        steps: ["Multiply the outside term by EACH term inside", "Then combine like terms", "Then continue with PEMDAS"],
-        tip: "A negative sign outside parentheses changes the sign of EVERY term inside."
-      }
-    ],
-    typicalQuestions: [
-      {
-        subtype: "Left-to-Right Division Trap",
-        q: "What is the value of 48 ÷ 4 × 3 + 2² − (10 − 3)?\n\n(A) 4\n(B) 26\n(C) 33\n(D) 36\n(E) 40",
-        type: "Order of operations with left-to-right rule for × and ÷ — tests PEMDAS precision",
-        signals: "Mixed ÷ and × at same level — must go left to right, not multiplication first",
-        trap: "(A) 4 — doing 4 × 3 = 12 first, then 48 ÷ 12 = 4, instead of left-to-right: 48 ÷ 4 = 12, then 12 × 3 = 36",
-        method: "PEMDAS: Parentheses first, then Exponents, then Multiply/Divide left-to-right, then Add/Subtract left-to-right.",
-        steps: ["Parentheses: (10 − 3) = 7", "Exponents: 2² = 4", "Multiply/Divide left-to-right: 48 ÷ 4 = 12, then 12 × 3 = 36", "Add/Subtract left-to-right: 36 + 4 − 7 = 33", "Answer: (C) 33"]
-      },
-      {
-        subtype: "Negative Sign Distribution",
-        q: "What is the value of −(3 − 8x) + 2(x − 5) when x = 3?\n\n(A) −7\n(B) 7\n(C) 11\n(D) 17\n(E) 23",
-        type: "Distributing negative signs and substitution — tests careful sign handling",
-        signals: "Leading negative sign before parentheses — must distribute to ALL terms inside before substituting",
-        trap: "(A) −7 — not distributing the negative to the −8x term (getting −3 − 8x instead of −3 + 8x)",
-        method: "Distribute first, combine like terms, then substitute.",
-        steps: ["Distribute: −(3 − 8x) = −3 + 8x", "Distribute: 2(x − 5) = 2x − 10", "Combine: −3 + 8x + 2x − 10 = 10x − 13", "Substitute x = 3: 10(3) − 13 = 30 − 13 = 17", "Answer: (D) 17"]
-      },
-      {
-        subtype: "Absolute Value + PEMDAS",
-        q: "What is the value of |3² − 4 × 5| + |3 − 7|² ?\n\n(A) 5\n(B) 11\n(C) 21\n(D) 27\n(E) 33",
-        type: "Absolute value within order-of-operations — tests when to apply absolute value in the PEMDAS sequence",
-        signals: "Absolute value bars act like parentheses — evaluate inside first, then apply absolute value, then continue with operations outside",
-        trap: "(B) 11 — applying absolute value to individual terms inside (|9| − |20| = 9 − 20 = −11 → 11) instead of evaluating 9 − 20 = −11 → |−11| = 11, then forgetting to square the second absolute value",
-        method: "Treat | | as grouping symbols. Evaluate inside → take absolute value → then apply outside exponents/operations.",
-        steps: ["First absolute value: 3² − 4×5 = 9 − 20 = −11, so |−11| = 11", "Second absolute value: 3 − 7 = −4, so |−4| = 4", "Apply exponent to second: 4² = 16", "Add: 11 + 16 = 27", "Answer: (D) 27"]
-      }
-    ]
-  }
-];
-
+// Data now loaded from database via /api/topics
+window.renderTopics = function(topics) {
 const hub = document.getElementById('hub');
+hub.innerHTML = '';
 
 topics.forEach((topic, i) => {
   const card = document.createElement('div');
   card.className = 'topic-card';
   card.id = `topic-${i}`;
 
-  const eqItems = topic.equations.map(eq => {
-    // Only bypass KaTeX for formulas that are PURELY $$\text{plain text}$$ — no math symbols inside
-    const textOnlyMatch = eq.formula.match(/^\$\$\\text\{([^\\{}]+)\}\$\$$/);
+  const eqItems = (topic.equations || []).map(eq => {
+    const textOnlyMatch = eq.formula ? eq.formula.match(/^\$\$\\text\{([^\\{}]+)\}\$\$$/) : null;
     const rendered = textOnlyMatch
       ? `<span class="eq-plain-text">${textOnlyMatch[1]}</span>`
-      : eq.formula;
+      : (eq.formula || '');
     return `
     <div class="eq-item">
       <div class="eq-label">${eq.label}<span class="eq-chevron">▼</span></div>
@@ -1665,41 +655,42 @@ topics.forEach((topic, i) => {
   }).join('');
 
   let detailHTML = '<div class="rule-list">';
-  topic.details.forEach(d => {
-    if (d.type === 'title') {
-      detailHTML += `<div class="section-title">${d.text}</div>`;
+  const details = topic.details || topic.rules || [];
+  details.forEach(d => {
+    if (d.type === 'title' || d.title) {
+      detailHTML += `<div class="section-title">${d.text || d.title || ''}</div>`;
     } else {
-      detailHTML += `<div class="rule-item">${d.text}</div>`;
+      detailHTML += `<div class="rule-item">${d.text || d.content || ''}</div>`;
     }
   });
   detailHTML += '</div>';
 
-  const practiceHTML = topic.practice.map((p, j) => `
+  const practiceHTML = (topic.practice || []).map((p, j) => `
     <div class="practice-item" id="prac-${i}-${j}">
       <div class="practice-q" onclick="toggleAnswer(${i},${j})">
         <div class="q-num">${j+1}</div>
-        <div class="q-text">${p.q}</div>
+        <div class="q-text">${p.q || p.question || ''}</div>
         <div class="q-toggle">▼</div>
       </div>
       <div class="practice-ans">
         <div class="ans-label">Solution</div>
-        ${p.steps.map(s => `<div class="step">${s}</div>`).join('')}
+        ${p.steps ? p.steps.map(s => `<div class="step">${s}</div>`).join('') : (p.a ? `<div class="step">${p.a}</div>` : '')}
       </div>
     </div>
   `).join('');
 
-  const methodsHTML = topic.methods.map(m => `
+  const methodsHTML = (topic.methods || []).map(m => `
     <div class="method-item">
       <div class="method-name">${m.name}</div>
-      <div class="method-when"><em>Use when:</em> ${m.when}</div>
+      <div class="method-when"><em>Use when:</em> ${m.when || m.when_to_use || ''}</div>
       <ol class="method-steps">
-        ${m.steps.map(s => `<li>${s}</li>`).join('')}
+        ${(m.steps || []).map(s => `<li>${s}</li>`).join('')}
       </ol>
       ${m.tip ? `<div class="method-tip">💡 ${m.tip}</div>` : ''}
     </div>
   `).join('');
 
-  const tqHTML = topic.typicalQuestions.map((tq, j) => `
+  const tqHTML = (topic.typicalQuestions || []).map((tq, j) => `
     <div class="tq-item" id="tq-${i}-${j}">
       <div class="tq-header" onclick="toggleTQ1('tq-${i}-${j}')">
         <div class="tq-type-badge">${tq.subtype}</div>
@@ -1716,7 +707,7 @@ topics.forEach((topic, i) => {
         <button class="tq-sol-btn" onclick="toggleTQ2(event,'tq-${i}-${j}')">Show Solution ▼</button>
         <div class="tq-layer2">
           <ol class="tq-steps">
-            ${tq.steps.map(s => `<li>${s}</li>`).join('')}
+            ${(tq.steps || []).map(s => `<li>${s}</li>`).join('')}
           </ol>
         </div>
       </div>
@@ -1725,11 +716,11 @@ topics.forEach((topic, i) => {
 
   card.innerHTML = `
     <div class="card-header" onclick="toggleCard(${i})">
-      <div class="card-icon">${topic.icon}</div>
+      <div class="card-icon">${topic.icon || ''}</div>
       <div class="card-meta">
         <h2>${topic.title}</h2>
-        <div class="preview">${topic.preview}</div>
-        <div class="desc">${topic.desc}</div>
+        <div class="preview">${topic.preview || topic.subtitle || ''}</div>
+        <div class="desc">${topic.desc || ''}</div>
       </div>
       <div class="expand-arrow">▼</div>
     </div>
@@ -1765,6 +756,21 @@ topics.forEach((topic, i) => {
 document.querySelectorAll('.eq-item').forEach(function(el) {
   el.addEventListener('click', function() { el.classList.toggle('open'); });
 });
+
+// KaTeX re-render after dynamic content
+if (window.renderMathInElement) {
+  renderMathInElement(hub, {
+    delimiters: [
+      {left:'$$',right:'$$',display:true},
+      {left:'\\(',right:'\\)',display:false}
+    ],
+    throwOnError: false
+  });
+}
+
+// Rebuild desktop sidebar after topics render
+buildDesktopSidebar();
+};
 
 // Ref-term tooltip toggle (tap to show, tap elsewhere to hide)
 document.addEventListener('click', function(e) {
@@ -1852,7 +858,6 @@ function handleImageUpload(e) {
     const result = ev.target.result;
     const base64 = result.split(',')[1];
     uploadedImageData = base64;
-    // Use MIME type from data URL (accurate) — file.type can lie if extension mismatches content
     uploadedMimeType = result.split(';')[0].split(':')[1] || file.type;
     const preview = document.getElementById('imgPreview');
     preview.src = result;
@@ -1987,9 +992,24 @@ async function analyzeQuestion() {
 function revealHint(i) {
   document.getElementById(`hint-${i}`).classList.toggle('revealed');
 }
+
+// Data load
+document.addEventListener('DOMContentLoaded', function() {
+  window.initPage('math');
+});
 </script>
 <script>
-(function buildDesktopSidebar() {
+function buildDesktopSidebar() {
+  // Remove existing sidebar if re-rendering
+  var existing = document.getElementById('dt-sidebar');
+  if (existing) {
+    var existingWrap = document.querySelector('.dt-main-wrap');
+    if (existingWrap) {
+      while (existingWrap.firstChild) document.body.insertBefore(existingWrap.firstChild, existingWrap);
+      existingWrap.remove();
+    }
+    existing.remove();
+  }
   if (window.innerWidth < 1024) return;
   var path = window.location.pathname;
   var isIndex = path === '/' || path.endsWith('index.html') || path === '';
@@ -2026,7 +1046,7 @@ function revealHint(i) {
   wrap.className = 'dt-main-wrap';
   while (sidebar.nextSibling) wrap.appendChild(sidebar.nextSibling);
   document.body.appendChild(wrap);
-})();
+}
 function dtScrollToCard(idx) {
   var cards = document.querySelectorAll('.topic-card');
   var card = cards[idx];

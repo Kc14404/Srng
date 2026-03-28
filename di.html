@@ -374,6 +374,7 @@
       header { text-align: left; padding: 32px 36px 28px; }
     }
   </style>
+  <script src="/js/loader.js"></script>
 </head>
 <body>
 
@@ -390,666 +391,24 @@
   <p>Click any topic to explore frameworks, rules, and practice problems.</p>
 </header>
 
-<div class="hub" id="hub"></div>
+<div class="hub topics-grid" id="hub"></div>
 
 <script>
-const topics = [
-  {
-    icon: "⚖️",
-    title: "DS Framework",
-    preview: "A · B · C · D · E",
-    desc: "Data Sufficiency answer choices and evaluation method",
-    equations: [
-      { label: "Answer A", formula: "$$\\text{Statement 1 ALONE is sufficient; Statement 2 alone is NOT}$$", detail: "<strong>Definition:</strong> Statement 1 alone is sufficient; Statement 2 alone is NOT.<br><strong>Strategy:</strong> Evaluate S1 completely in isolation — pretend S2 doesn't exist.<br><strong>Rule:</strong> For yes/no questions, a definite NO counts as sufficient.<br><strong>Common mistake:</strong> Checking S1 and S2 together before confirming S1 alone." },
-      { label: "Answer B", formula: "$$\\text{Statement 2 ALONE is sufficient; Statement 1 alone is NOT}$$", detail: "<strong>Definition:</strong> Statement 2 alone is sufficient; Statement 1 alone is NOT.<br><strong>Strategy:</strong> Evaluate S2 completely in isolation — pretend you've never seen S1.<br><strong>Common mistake:</strong> After finding S1 insufficient, rushing to B without properly testing S2 alone." },
-      { label: "Answer C", formula: "$$\\text{BOTH statements TOGETHER are sufficient, but NEITHER alone}$$", detail: "<strong>Definition:</strong> BOTH statements together are sufficient; neither alone is.<br><strong>Process:</strong> Only consider combining after confirming each statement fails individually.<br><strong>Example:</strong> S1 gives x, S2 gives y — together you can solve for x+y.<br><strong>Common mistake:</strong> Jumping to C without properly isolating each statement first." },
-      { label: "Answer D", formula: "$$\\text{EACH statement ALONE is sufficient}$$", detail: "<strong>Definition:</strong> EACH statement, independently, is sufficient on its own.<br><strong>Strategy:</strong> If S1 is sufficient (answer is A or D), test S2 independently — if it also works, upgrade to D.<br><strong>Common mistake:</strong> Finding S1 sufficient and stopping — missing that S2 also works independently." },
-      { label: "Answer E", formula: "$$\\text{Statements 1 and 2 TOGETHER are NOT sufficient}$$", detail: "<strong>Definition:</strong> Even combining BOTH statements doesn't give a definite answer.<br><strong>How to confirm:</strong> Construct two different scenarios — both satisfying all conditions — that give different answers.<br><strong>Rule:</strong> If you can find even one ambiguous case using both statements, the answer is E.<br><strong>Common mistake:</strong> Giving up before truly checking if combining helps." },
-      { label: "Value Question", formula: "$$\\text{Need exactly ONE numerical answer}$$", detail: "<strong>Definition:</strong> The question asks for a specific number (e.g., \"What is x?\").<br><strong>Sufficient condition:</strong> A statement is sufficient if it narrows down to EXACTLY ONE value.<br><strong>Rule:</strong> You don't need to calculate the actual answer — just confirm only one value is possible.<br><strong>Common mistake:</strong> Accepting a statement as sufficient when it allows two possible values." },
-      { label: "Yes/No Question", formula: "$$\\text{Need a DEFINITE yes OR a DEFINITE no}$$", detail: "<strong>Definition:</strong> The question asks if something is definitely true (e.g., \"Is x > 0?\").<br><strong>Sufficient condition:</strong> A statement must give a CONSISTENT answer — always YES or always NO.<br><strong>Rule:</strong> A definite \"No\" IS sufficient — consistency is what matters, not which answer.<br><strong>Common mistake:</strong> Thinking \"sufficient\" means the answer must be YES." }
-    ],
-    details: [
-      { type: "title", text: "Evaluation Process" },
-      { type: "rule", text: "<strong>Step 1:</strong> Evaluate Statement 1 alone → Sufficient or Not?" },
-      { type: "rule", text: "<strong>Step 2:</strong> Evaluate Statement 2 alone → Sufficient or Not?" },
-      { type: "rule", text: "<strong>Step 3:</strong> If neither alone works, combine both → Sufficient or Not?" },
-      { type: "title", text: "AD/BCE Split" },
-      { type: "rule", text: "If S1 sufficient → answer is <strong>A or D</strong>. Then test S2: if also sufficient → D, if not → A." },
-      { type: "rule", text: "If S1 NOT sufficient → answer is <strong>B, C, or E</strong>. Then test S2: if sufficient → B, if not → test both together: sufficient → C, not → E." },
-      { type: "title", text: "Key Principles" },
-      { type: "rule", text: "<strong>Never calculate the actual answer</strong> — only determine IF it CAN be answered." },
-      { type: "rule", text: "<strong>Yes/No trap:</strong> 'Sometimes yes + sometimes no' = NOT sufficient. A definite 'no' IS sufficient." }
-    ],
-    practice: [
-      {
-        q: "What is the value of \\(x\\)? (1) \\(x^2 = 9\\) (2) \\(x > 0\\)",
-        steps: [
-          "S1: \\(x^2 = 9\\) → \\(x = 3\\) or \\(x = -3\\). Two values → Not sufficient.",
-          "S2: \\(x > 0\\) → infinite positive values → Not sufficient.",
-          "Both: \\(x^2 = 9\\) AND \\(x > 0\\) → \\(x = 3\\) only. One value → <strong>Sufficient.</strong>",
-          "<strong>Answer: C</strong>"
-        ]
-      },
-      {
-        q: "Is \\(x > 0\\)? (1) \\(x^3 > 0\\) (2) \\(x^2 > 0\\)",
-        steps: [
-          "S1: \\(x^3 > 0\\). Since cubing preserves sign, \\(x > 0\\). Definite YES → Sufficient.",
-          "S2: \\(x^2 > 0\\). Both positive and negative numbers have positive squares. Could be yes or no → Not sufficient.",
-          "<strong>Answer: A</strong> (S1 alone sufficient, S2 not)"
-        ]
-      },
-      {
-        q: "Is integer \\(n\\) even? (1) \\(2n\\) is even (2) \\(n + 1\\) is odd",
-        steps: [
-          "S1: \\(2n\\) is even. But \\(2 \\times\\) anything is always even — this tells us nothing about \\(n\\). Not sufficient.",
-          "S2: \\(n + 1\\) is odd → \\(n\\) must be even (even + 1 = odd). Definite YES → Sufficient.",
-          "<strong>Answer: B</strong>"
-        ]
-      },
-      {
-        q: "What is the value of \\(x + y\\)? (1) \\(x = 3\\) (2) \\(y = 7\\)",
-        steps: [
-          "S1: \\(x = 3\\) but \\(y\\) unknown → infinite values for \\(x + y\\) → Not sufficient.",
-          "S2: \\(y = 7\\) but \\(x\\) unknown → Not sufficient.",
-          "Both: \\(x = 3\\) and \\(y = 7\\) → \\(x + y = 10\\). One value → Sufficient.",
-          "<strong>Answer: C</strong>"
-        ]
-      },
-      {
-        q: "Is \\(xy > 0\\)? (1) \\(x > 0\\) (2) \\(y < 0\\)",
-        steps: [
-          "S1: \\(x > 0\\) but \\(y\\) unknown → if \\(y > 0\\) then yes, if \\(y < 0\\) then no → Not sufficient.",
-          "S2: \\(y < 0\\) but \\(x\\) unknown → same issue → Not sufficient.",
-          "Both: \\(x > 0\\) and \\(y < 0\\) → \\(xy < 0\\). Definite NO → Sufficient (a definite NO is sufficient!).",
-          "<strong>Answer: C</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "AD/BCE Split",
-        when: "Eliminating answer choices early",
-        steps: ["Evaluate S1 alone", "If sufficient → answer is A or D, eliminate B/C/E", "If not sufficient → answer is B/C/E, eliminate A/D", "Then test S2 alone"],
-        tip: "This halves your remaining choices after just one evaluation."
-      },
-      {
-        name: "Construct a Counterexample (for E)",
-        when: "Proving answer is E",
-        steps: ["Find two scenarios using BOTH statements", "One scenario gives answer YES", "Other gives NO", "If both scenarios satisfy all conditions → answer is E"],
-        tip: "If you find even one ambiguous case, E is correct."
-      },
-      {
-        name: "Yes/No Consistency Check",
-        when: "Yes/no DS questions",
-        steps: ["Test several values satisfying the statement", "If ALWAYS yes → sufficient", "If ALWAYS no → sufficient", "If sometimes yes AND sometimes no → NOT sufficient"],
-        tip: "'Always' is the key word — even one counterexample breaks sufficiency."
-      }
-    ],
-    typicalQuestions: [
-      {
-        subtype: "Value DS: Absolute Value Equation",
-        q: "What is the value of x?\n\n(1) |x| = 5\n(2) x² = 25\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
-        type: "Value DS — need exactly one value. Both statements give two possible values and don't narrow to one.",
-        signals: "Absolute value and squared term — both produce ± solutions. Even combined, they give the same two values.",
-        trap: "(C) — students think combining two statements with the same info might help, but |x| = 5 and x² = 25 both give x = ±5. Together: still x = ±5.",
-        method: "AD/BCE split. Test each statement for a unique value. Then test together.",
-        steps: ["Statement (1): |x| = 5 → x = 5 or x = −5. Two values. NOT sufficient.", "Statement (2): x² = 25 → x = 5 or x = −5. Two values. NOT sufficient.", "Together: both give x = ±5. Still two possible values. NOT sufficient.", "Answer: (E) Statements (1) and (2) TOGETHER are NOT sufficient"]
-      },
-      {
-        subtype: "Yes/No DS: Divisibility",
-        q: "Is the positive integer n divisible by 6?\n\n(1) n is divisible by 12\n(2) n + 6 is divisible by 6\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
-        type: "Yes/No DS — need a definitive yes or definitive no, not a specific value",
-        signals: "Divisibility question with two divisibility clues. Check if each statement guarantees the answer is always YES or always NO.",
-        trap: "(A) — students think S2 is tricky because 'n + 6 divisible by 6' seems different from 'n divisible by 6,' but n + 6 ≡ n (mod 6), so they're equivalent.",
-        method: "Yes/No DS: each statement is sufficient if it always gives YES or always gives NO.",
-        steps: ["Statement (1): n divisible by 12 → n = 12k → n/6 = 2k, always an integer. Always YES. SUFFICIENT.", "Statement (2): n + 6 divisible by 6 → n + 6 = 6m → n = 6m − 6 = 6(m−1). So n is divisible by 6. Always YES. SUFFICIENT.", "Each statement alone is sufficient.", "Answer: (D) EACH statement ALONE is sufficient"]
-      },
-      {
-        subtype: "Value DS: System of Equations Trick",
-        q: "What is the value of x + y?\n\n(1) 2x + 3y = 12\n(2) 3x + 2y = 13\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
-        type: "Value DS with system of equations — tests whether you can extract x + y without solving for x and y individually",
-        signals: "Two linear equations. Adding them gives a multiple of (x + y) directly. Don't need individual values.",
-        trap: "(E) — students try to solve for x and y individually, get non-integer values, panic and pick E. Or they think they need a third equation.",
-        method: "Add the two equations: (2x+3y) + (3x+2y) = 12+13 → 5x+5y = 25 → x+y = 5.",
-        steps: ["Statement (1) alone: one equation, two unknowns. x+y could be many values. NOT sufficient.", "Statement (2) alone: same issue. NOT sufficient.", "Together: add equations: 2x+3y + 3x+2y = 12+13 → 5x+5y = 25 → x+y = 5", "Unique value for x+y. SUFFICIENT together.", "Answer: (C) BOTH statements TOGETHER are sufficient"]
-      }
-    ]
-  },
-  {
-    icon: "🧠",
-    title: "DS Advanced Traps",
-    preview: "Zero · Negative · Fraction traps",
-    desc: "Common traps and edge cases in Data Sufficiency",
-    equations: [
-      { label: "Zero Trap", formula: "$$\\text{Always test } x = 0 \\text{ — it breaks many assumptions}$$", detail: "<strong>Definition:</strong> Zero is neither positive nor negative — and breaks many assumptions.<br><strong>Properties of zero:</strong> x × 0 = 0 | x/0 = undefined | 0² = 0 | 0 is even.<br><strong>When to test:</strong> Whenever a statement says \"x > y\" or \"x is positive\" — always check if x = 0 satisfies the conditions.<br><strong>Common mistake:</strong> Assuming all variables are \"normal\" positive integers." },
-      { label: "Negative Trap", formula: "$$\\text{Test negative numbers — signs flip with multiplication}$$", detail: "<strong>Rule:</strong> Multiplying/dividing both sides of an inequality by a negative FLIPS the sign.<br><strong>Surprising negatives:</strong> x = -3 → x² = 9 (positive) | x³ = -27 (negative) | 1/x = -1/3.<br><strong>Strategy:</strong> Force yourself to test at least one negative value in every DS problem with inequalities or exponents.<br><strong>Common mistake:</strong> Defaulting to positive numbers when testing values." },
-      { label: "Fraction Trap", formula: "$$0 < x < 1: \\quad x^2 < x < \\sqrt{x}$$", note: "Squaring makes fractions SMALLER", detail: "<strong>Rule:</strong> Numbers between 0 and 1 break normal intuition.<br><strong>Key behaviors:</strong><br>— x² < x (squaring makes it smaller)<br>— √x > x (square root makes it larger)<br>— 1/x > x (reciprocal is larger)<br><strong>Strategy:</strong> Always test x = 1/2 when a statement says \"x is positive\" without specifying integer.<br><strong>Common mistake:</strong> Testing only x = 2 and x = 3, missing the 0–1 range entirely." },
-      { label: "Integer Constraint", formula: "$$\\text{Integer constraints are very restrictive — few values to test}$$", detail: "<strong>Rule:</strong> \"n is an integer\" dramatically limits possible values — use this aggressively.<br><strong>Example:</strong> \"10 < n < 13 and n is an integer\" → only n = 11 or n = 12. Very constrained.<br><strong>Strategy:</strong> Count the possible integer values explicitly before deciding sufficiency.<br><strong>When it matters:</strong> Integer constraints often turn an \"insufficient\" statement into a \"sufficient\" one." },
-      { label: "Absolute Value", formula: "$$|x| = 3 \\Rightarrow x = 3 \\text{ OR } x = -3$$", detail: "<strong>Rule:</strong> |x| = 3 gives TWO solutions: x = 3 OR x = -3.<br><strong>Inequality form:</strong> |x| > 2 means x > 2 OR x < -2 — both positive and negative.<br><strong>DS impact:</strong> Absolute value statements often look sufficient but aren't — you can't determine the sign of the original value.<br><strong>Common mistake:</strong> Accepting |x| = 3 as sufficient for a value question when x could be ±3." }
-    ],
-    details: [
-      { type: "title", text: "Testing Strategy" },
-      { type: "rule", text: "<strong>Never assume positive.</strong> If the problem doesn't say 'positive,' test negatives and zero." },
-      { type: "rule", text: "<strong>If 'positive integer' is stated,</strong> use it — this eliminates fractions, negatives, and zero." },
-      { type: "title", text: "Numbers to Always Test" },
-      { type: "rule", text: "Test these values: <strong>negative integer</strong> (e.g., −2), <strong>zero</strong>, <strong>positive fraction</strong> (e.g., ½), <strong>one</strong>, <strong>positive integer</strong> (e.g., 3), <strong>large number</strong> (e.g., 100)" },
-      { type: "title", text: "Geometry Trap" },
-      { type: "rule", text: "Knowing area alone does NOT determine shape dimensions. A rectangle with area 12 could be 3×4, 2×6, 1×12, etc." }
-    ],
-    practice: [
-      {
-        q: "Is \\(x > 0\\)? (1) \\(x^2 > 0\\) (2) \\(x^3 > 0\\)",
-        steps: [
-          "S1: \\(x^2 > 0\\). Test \\(x = 2\\): \\(4 > 0\\) ✓ (yes). Test \\(x = -2\\): \\(4 > 0\\) ✓ (but \\(x < 0\\)). Sometimes yes, sometimes no → Not sufficient.",
-          "S2: \\(x^3 > 0\\). Cubing preserves sign → \\(x > 0\\). Definite YES → Sufficient.",
-          "Note: \\(x^2 > 0\\) means \\(x \\neq 0\\) but doesn't determine sign. The <strong>zero trap</strong> — \\(x^2 > 0\\) already excludes zero, but the <strong>negative trap</strong> remains.",
-          "<strong>Answer: B</strong>"
-        ]
-      },
-      {
-        q: "Is \\(x^2 > x\\)? (1) \\(x > 1\\) (2) \\(x < 0\\)",
-        steps: [
-          "S1: \\(x > 1\\). Try \\(x = 2\\): \\(4 > 2\\) ✓. Try \\(x = 1.5\\): \\(2.25 > 1.5\\) ✓. For all \\(x > 1\\), \\(x^2 > x\\). Definite YES → Sufficient.",
-          "S2: \\(x < 0\\). Try \\(x = -2\\): \\(4 > -2\\) ✓. Try \\(x = -0.5\\): \\(0.25 > -0.5\\) ✓. For all \\(x < 0\\), \\(x^2\\) is positive and \\(x\\) is negative. Definite YES → Sufficient.",
-          "<strong>Answer: D</strong> (Each alone sufficient)"
-        ]
-      },
-      {
-        q: "Is \\(x^2 < x\\)? (1) \\(x > 0\\) (2) \\(x < 1\\)",
-        steps: [
-          "\\(x^2 < x\\) means \\(0 < x < 1\\) (the fraction trap zone).",
-          "S1: \\(x > 0\\). Try \\(x = 0.5\\): \\(0.25 < 0.5\\) ✓. Try \\(x = 2\\): \\(4 < 2\\) ✗. Not sufficient.",
-          "S2: \\(x < 1\\). Try \\(x = 0.5\\): \\(0.25 < 0.5\\) ✓. Try \\(x = -1\\): \\(1 < -1\\) ✗. Not sufficient.",
-          "Both: \\(0 < x < 1\\) → always \\(x^2 < x\\). Definite YES → Sufficient.",
-          "<strong>Answer: C</strong>"
-        ]
-      },
-      {
-        q: "Is \\(n\\) prime? (1) \\(10 < n < 14\\) (2) \\(n\\) is odd",
-        steps: [
-          "S1: \\(10 < n < 14\\) → \\(n\\) could be 11, 12, or 13. If integer: 11 (prime), 12 (not prime), 13 (prime). Not sufficient.",
-          "S2: \\(n\\) is odd → could be any odd number. Not sufficient.",
-          "Both: odd integers where \\(10 < n < 14\\) → \\(n = 11\\) or \\(n = 13\\). Both are prime → Definite YES → Sufficient.",
-          "<strong>Answer: C</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "ZOFNI Testing (Zero, One, Fraction, Negative, Integer)",
-        when: "Any DS question with variables",
-        steps: ["Test x=0", "Test x=1 and x=−1", "Test x=1/2", "Test x=−3", "Test a large integer"],
-        tip: "If any test gives a different answer, the statement is NOT sufficient."
-      },
-      {
-        name: "Integer Trap Exploit",
-        when: "'Integer' is mentioned in the problem",
-        steps: ["Count all possible integer values under the given constraints", "If only one value → definite answer → sufficient", "If multiple values that all give same answer → sufficient", "If multiple values give different answers → not sufficient"],
-        tip: "Small ranges of integers (like 1-10) can be listed exhaustively."
-      },
-      {
-        name: "Inequality Sign Flip Alert",
-        when: "Dividing/multiplying inequalities",
-        steps: ["If you multiply or divide by a NEGATIVE number → FLIP the inequality sign", "If variable could be negative, you CANNOT divide both sides by it", "Instead, test cases"],
-        tip: "'x > 0 is NOT stated' = do NOT divide by x without checking sign."
-      }
-    ],
-    typicalQuestions: [
-      {
-        subtype: "The Zero and Negative Trap",
-        q: "Is x > 0?\n\n(1) x² > 4\n(2) x³ > 8\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
-        type: "Yes/No DS with sign determination — tests awareness that even powers hide sign, odd powers preserve sign",
-        signals: "x² (even power) vs x³ (odd power). Even power loses sign information; odd power preserves it.",
-        trap: "(D) — students think S1 tells you x > 2 (forgetting x < −2 is also possible), then pick D thinking both work independently.",
-        method: "S1: x² > 4 → |x| > 2 → x > 2 OR x < −2. Can't determine sign. S2: x³ > 8 → x > 2 (cube root preserves sign).",
-        steps: ["Statement (1): x² > 4 → x > 2 or x < −2. Could be positive or negative. NOT sufficient.", "Statement (2): x³ > 8 → cube root both sides → x > 2. Definitely positive. SUFFICIENT.", "Answer: (B) Statement (2) ALONE is sufficient"]
-      },
-      {
-        subtype: "Integer Constraint Exploitation",
-        q: "If n is a positive integer less than 10, what is the value of n?\n\n(1) n² < 50\n(2) n is a prime number\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
-        type: "Value DS with integer constraint — tests careful enumeration when constraints narrow but don't uniquely determine",
-        signals: "Positive integer < 10 plus additional constraints. Must check if intersection gives exactly one value.",
-        trap: "(C) — students think combining the constraints narrows to one value, but the intersection {2, 3, 5, 7} still has four elements.",
-        method: "Enumerate. S1: n can be 1–7. S2: n can be 2,3,5,7. Together: intersection = {2,3,5,7}. Still multiple values.",
-        steps: ["Statement (1): n² < 50, n positive integer < 10 → n ∈ {1,2,3,4,5,6,7}. Multiple values. NOT sufficient.", "Statement (2): n is prime, n < 10 → n ∈ {2,3,5,7}. Multiple values. NOT sufficient.", "Together: intersection of {1,2,3,4,5,6,7} and {2,3,5,7} = {2,3,5,7}. Still 4 values.", "Answer: (E) Statements (1) and (2) TOGETHER are NOT sufficient"]
-      },
-      {
-        subtype: "Ratio Sufficiency: Same Sign Trap",
-        q: "Is the product ab > 0?\n\n(1) a + b > 0\n(2) a/b > 0\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
-        type: "Yes/No DS with sign analysis — tests understanding of what sum vs ratio tell you about individual signs",
-        signals: "Product sign question. a + b > 0 allows mixed signs. a/b > 0 guarantees same sign → product positive.",
-        trap: "(C) — students think neither alone works and both are needed. But S2 alone IS sufficient: a/b > 0 means same sign, and same-sign numbers always have positive product.",
-        method: "S1: a+b > 0 could be (5,−2) → ab < 0 or (3,4) → ab > 0. Not sufficient. S2: a/b > 0 → same sign → ab > 0 always.",
-        steps: ["Statement (1): a+b > 0. Try a=5, b=−2: ab = −10 < 0. Try a=3, b=4: ab = 12 > 0. NOT sufficient.", "Statement (2): a/b > 0 → a and b have the same sign (both positive or both negative)", "If both positive: ab > 0. If both negative: ab = (neg)(neg) > 0. Always yes. SUFFICIENT.", "Answer: (B) Statement (2) ALONE is sufficient"]
-      }
-    ]
-  },
-  {
-    icon: "📑",
-    title: "Multi-Source Reasoning",
-    preview: "Combine data across multiple tabs",
-    desc: "Synthesizing information from 2-3 data sources",
-    equations: [
-      { label: "Synthesis", formula: "$$\\text{Combine information from 2+ tabs to answer the question}$$", detail: "<strong>Strategy:</strong> Read each tab's title and first line before diving into questions.<br><strong>Rule:</strong> Most MSR questions require combining data from TWO different tabs.<br><strong>Process:</strong> (1) Identify which tab has relevant info → (2) Cross-reference with other tabs → (3) Synthesize.<br><strong>Common mistake:</strong> Only reading one tab and missing the cross-tab synthesis required." },
-      { label: "Contradiction Check", formula: "$$\\text{Identify conflicts between sources and resolve them}$$", detail: "<strong>When it appears:</strong> Two tabs seem to present conflicting information.<br><strong>Common sources:</strong> Different time periods | Different units | Different populations | Different definitions.<br><strong>Strategy:</strong> Look for a structural difference between tabs (e.g., Tab 1 = 2020, Tab 2 = 2023).<br><strong>Rule:</strong> Contradictions always have a logical resolution — find the difference in context." },
-      { label: "True / False / Cannot Determine", formula: "$$\\text{Cannot Determine = data literally absent from ALL tabs}$$", detail: "<strong>Rule:</strong> \"Cannot be determined\" is ONLY correct when the data point is genuinely absent from ALL tabs.<br><strong>NOT Cannot Determine:</strong> When you have to calculate it | When it requires combining tabs.<br><strong>IS Cannot Determine:</strong> When you'd need outside information not present in any tab.<br><strong>Common mistake:</strong> Choosing \"Cannot Determine\" when the data IS there but requires more careful reading." }
-    ],
-    details: [
-      { type: "title", text: "Reading Strategy" },
-      { type: "rule", text: "<strong>Read tab titles first</strong> to understand what each source contains." },
-      { type: "rule", text: "Most MSR questions test your ability to <strong>combine information across tabs</strong>." },
-      { type: "title", text: "Cannot Determine" },
-      { type: "rule", text: "'Cannot be determined' is correct ONLY when the data is <strong>genuinely absent</strong> from all sources." },
-      { type: "title", text: "Common Traps" },
-      { type: "rule", text: "Watch for: <strong>different time periods</strong> across tabs, <strong>different units</strong> (thousands vs millions), <strong>different sample groups</strong> (all employees vs managers only)." }
-    ],
-    practice: [
-      {
-        q: "Tab 1 shows Company revenue: $5M. Tab 2 shows Company has 250 employees. Question: What is the revenue per employee?",
-        steps: [
-          "This requires synthesizing data from BOTH tabs.",
-          "Revenue per employee = \\(\\frac{\\$5{,}000{,}000}{250} = \\$20{,}000\\)",
-          "Key skill: neither tab alone answers the question — you must combine.",
-          "<strong>Answer: $20,000 per employee</strong>"
-        ]
-      },
-      {
-        q: "Tab 1: 'Company grew 15% in 2023.' Tab 2: 'Industry average growth was 20% in 2023.' Tab 3: 'Company CEO states: Our growth outpaced the industry.' — Is the CEO's statement supported?",
-        steps: [
-          "Tab 1: Company grew 15%. Tab 2: Industry grew 20%.",
-          "15% < 20% → Company underperformed the industry.",
-          "Tab 3 contradicts Tabs 1+2. The CEO's statement is NOT supported.",
-          "<strong>Answer: False</strong> — the data shows company growth (15%) was below industry average (20%)."
-        ]
-      },
-      {
-        q: "Tab 1 shows Q1-Q3 sales data. Tab 2 shows annual employee counts. Question: 'What were Q4 sales?' — Can this be determined?",
-        steps: [
-          "Tab 1 has Q1-Q3 sales but NOT Q4.",
-          "Tab 2 has employee data, which is irrelevant to Q4 sales.",
-          "No source contains Q4 sales data → genuinely absent.",
-          "<strong>Answer: Cannot be determined</strong> — Q4 data is not provided in any source."
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "Tab-First Scanning",
-        when: "The start of every MSR question set",
-        steps: ["Read each tab title", "Read first sentence of each tab", "Note: what type of data is in each tab? numbers? text? dates?", "Build a mental map before answering"],
-        tip: "30 seconds scanning upfront saves 2 minutes per question."
-      },
-      {
-        name: "Source Triangulation",
-        when: "A question requires combining tabs",
-        steps: ["Identify which tabs have relevant data", "Extract the specific data point from each", "Combine/compare as required", "Check if any tab contradicts or qualifies the data"],
-        tip: "Most MSR questions are specifically designed to require 2+ tabs — if one tab seems to fully answer it, double-check the others."
-      },
-      {
-        name: "Cannot Determine Filter",
-        when: "'Cannot be determined' is an option",
-        steps: ["Check ALL tabs for the relevant data", "Check if it can be calculated from available data", "Only choose 'Cannot Determine' if the data literally does not exist anywhere in the tabs"],
-        tip: "'I'd have to calculate it' ≠ Cannot Determine. 'The data isn't there at all' = Cannot Determine."
-      }
-    ],
-    scenario: '<p style="color:#b8c0d4;margin-bottom:10px;">A marketing firm ran three digital campaigns (Alpha, Bravo, Charlie) across three regions (North, South, West).</p><p style="color:#a78bfa;font-weight:600;margin:10px 0 4px;">Tab 1 — Campaign Performance</p><table><tr><th>Campaign</th><th>Budget ($K)</th><th>Impressions (K)</th><th>Conversions</th></tr><tr><td>Alpha</td><td>120</td><td>800</td><td>480</td></tr><tr><td>Bravo</td><td>90</td><td>600</td><td>360</td></tr><tr><td>Charlie</td><td>150</td><td>1,200</td><td>540</td></tr></table><p style="color:#a78bfa;font-weight:600;margin:10px 0 4px;">Tab 2 — Regional Budget Allocation</p><table><tr><th>Region</th><th>Alpha ($K)</th><th>Bravo ($K)</th><th>Charlie ($K)</th></tr><tr><td>North</td><td>40</td><td>30</td><td>60</td></tr><tr><td>South</td><td>50</td><td>35</td><td>50</td></tr><tr><td>West</td><td>30</td><td>25</td><td>40</td></tr></table>',
-    typicalQuestions: [
-      {
-        subtype: "Cross-Tab Calculation: Cost per Conversion",
-        q: "Based on Tab 1, which campaign had the lowest cost per conversion?",
-        type: "Basic cross-column calculation — divide budget by conversions for each campaign and compare",
-        signals: "'Cost per conversion' = Budget ÷ Conversions. Requires simple division across columns in one table.",
-        trap: "Picking Charlie because it has the most conversions (540), without checking cost-efficiency. Charlie has the HIGHEST cost per conversion.",
-        method: "Calculate Budget/Conversions for each campaign. Compare the three ratios.",
-        steps: ["Alpha: $120K ÷ 480 = $250 per conversion", "Bravo: $90K ÷ 360 = $250 per conversion", "Charlie: $150K ÷ 540 ≈ $278 per conversion", "Alpha and Bravo are tied at $250; Charlie is highest at $278", "Answer: Alpha and Bravo are tied for lowest cost per conversion at $250"]
-      },
-      {
-        subtype: "Cross-Tab Synthesis: Regional Budget",
-        q: "Based on both tabs, which region received the highest total budget allocation across all three campaigns?",
-        type: "Multi-source synthesis — requires summing across columns in Tab 2 for each region",
-        signals: "'Total budget allocation' by region requires adding all three campaign allocations per region from Tab 2.",
-        trap: "Looking at Tab 1 for regional data — Tab 1 only has campaign totals. Regional breakdown is in Tab 2.",
-        method: "Sum each row of Tab 2: North, South, West total budgets. Compare.",
-        steps: ["North: $40K + $30K + $60K = $130K", "South: $50K + $35K + $50K = $135K", "West: $30K + $25K + $40K = $95K", "Answer: South received the highest total allocation at $135K"]
-      },
-      {
-        subtype: "Cannot Be Determined",
-        q: "What was Campaign Bravo's conversion count in the North region?",
-        type: "Cannot-be-determined question — tests recognition that some data combinations are not available",
-        signals: "Tab 1 has total conversions by campaign. Tab 2 has budget allocation by region. But no tab shows conversions broken down by region.",
-        trap: "Attempting to estimate by assuming conversions are proportional to budget — this is an assumption not supported by the data.",
-        method: "Check both tabs. Tab 1: campaign-level conversions (not regional). Tab 2: regional budget allocation (not conversions). No way to derive regional conversions.",
-        steps: ["Tab 1 tells us Bravo had 360 total conversions — but not by region", "Tab 2 tells us Bravo's budget in North was $30K — but budget doesn't tell us conversions", "No data links regional budget allocation to regional conversion counts", "Assuming proportional distribution would be an unsupported assumption", "Answer: Cannot be determined from the given information"]
-      }
-    ]
-  },
-  {
-    icon: "📊",
-    title: "Table Analysis",
-    preview: "Sort · Filter · Calculate",
-    desc: "Analyzing data tables with sort and filter operations",
-    equations: [
-      { label: "Sort by Column", formula: "$$\\text{Reorder rows by a specific column (ascending or descending)}$$", detail: "<strong>Rule:</strong> Sort by the column relevant to the question BEFORE answering.<br><strong>Use cases:</strong> \"Find top 3\" → sort descending | \"Find lowest\" → sort ascending | \"Find range\" → sort both ways.<br><strong>Benefit:</strong> Sorting prevents row-by-row scanning and arithmetic errors.<br><strong>Note:</strong> The GMAT interface lets you click column headers to sort." },
-      { label: "Filter by Criteria", formula: "$$\\text{Select only rows meeting specific conditions}$$", detail: "<strong>Strategy:</strong> Apply each condition as a filter to narrow the row set, then work within the filtered set.<br><strong>Process:</strong> (1) Apply first condition → (2) Apply second condition → (3) Count or calculate remaining rows.<br><strong>Rule:</strong> Never evaluate all rows at once for multi-condition questions.<br><strong>Example:</strong> \"Revenue > $1M AND employees < 50\" → filter for both, then count." },
-      { label: "Percentage", formula: "$$\\text{Percentage} = \\frac{\\text{Part}}{\\text{Whole}} \\times 100$$", detail: "<strong>Formula:</strong> Percentage = (Part ÷ Whole) × 100<br><strong>Common mistake 1:</strong> Using the wrong \"whole\" — always identify the total before calculating.<br><strong>Common mistake 2:</strong> Confusing percentage points with percentages (a change from 20% to 25% is 5 percentage points, not 25%).<br><strong>Tip:</strong> Total rows are often in a summary row at the bottom of the table." },
-      { label: "True/False Format", formula: "$$\\text{Each sub-question is evaluated independently}$$", detail: "<strong>Rule:</strong> Each True/False sub-question is completely independent — evaluate each separately.<br><strong>Watch for:</strong> \"All,\" \"most,\" \"at least\" — these require checking ALL relevant rows, not just finding one example.<br><strong>Most:</strong> Means strictly more than 50% — verify by counting.<br><strong>Common mistake:</strong> Finding one example that supports a statement and calling it True without checking the rest." }
-    ],
-    details: [
-      { type: "title", text: "Strategy" },
-      { type: "rule", text: "<strong>Read the question FIRST,</strong> then determine which column to sort/filter by." },
-      { type: "rule", text: "'At least' means \\(\\geq\\) (includes the value). 'More than' means \\(>\\) (excludes the value)." },
-      { type: "title", text: "Sorting" },
-      { type: "rule", text: "Sort ascending to find <strong>minimum</strong> values. Sort descending to find <strong>maximum</strong> values." },
-      { type: "rule", text: "When comparing, sort by the relevant column to quickly identify rankings." }
-    ],
-    practice: [
-      {
-        q: "Table: Countries with GDP and Population. Sort by GDP per capita to find the country with the highest GDP per capita.",
-        steps: [
-          "GDP per capita = GDP ÷ Population for each country.",
-          "Calculate for each row, then sort descending.",
-          "The country at the top after sorting has the highest GDP per capita.",
-          "<strong>Strategy:</strong> Don't calculate all — estimate first, then verify the top candidates."
-        ]
-      },
-      {
-        q: "Table shows 20 products with Category, Price, and Rating columns. How many products are in the 'Electronics' category with a rating of at least 4.0?",
-        steps: [
-          "Filter 1: Category = 'Electronics' → narrow down rows.",
-          "Filter 2: Rating \\(\\geq 4.0\\) (note: 'at least' includes 4.0 exactly).",
-          "Count the rows that pass BOTH filters.",
-          "<strong>Key:</strong> Apply the most restrictive filter first to reduce the counting work."
-        ]
-      },
-      {
-        q: "True or False: 'The majority of companies in the table have revenue above $10M.' Table has 15 companies, 8 with revenue above $10M.",
-        steps: [
-          "Majority means more than half → more than \\(\\frac{15}{2} = 7.5\\).",
-          "8 companies have revenue above $10M.",
-          "\\(8 > 7.5\\) → Yes, a majority.",
-          "<strong>Answer: True</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "Sort-Then-Answer",
-        when: "Any table question",
-        steps: ["Read the question FIRST", "Identify which column is relevant", "Sort that column ascending or descending", "Then answer"],
-        tip: "Never look at all rows unsorted — always sort first for efficiency."
-      },
-      {
-        name: "Two-Column Filter",
-        when: "Multi-condition questions",
-        steps: ["Identify both conditions", "Sort by first condition, eliminate failing rows", "Within survivors, check second condition", "Count or calculate from final filtered set"],
-        tip: "Apply the most restrictive condition first to minimize rows to check."
-      },
-      {
-        name: "True/False Independent Evaluation",
-        when: "True/False format questions",
-        steps: ["Treat each sub-question as completely independent", "Read each sub-question as if it's the only one", "Go to the table, test it, mark T or F", "Never let your T/F on one affect your reasoning on another"],
-        tip: "One wrong sub-answer is costly — take time on each one."
-      }
-    ],
-    scenario: '<p style="color:#a78bfa;font-weight:600;margin-bottom:4px;">Product Performance Data</p><table><tr><th>Product</th><th>Category</th><th>Q1 Sales ($K)</th><th>Q2 Sales ($K)</th><th>Units Sold</th><th>Rating (1-5)</th><th>Launch Year</th></tr><tr><td>ProMax</td><td>Electronics</td><td>340</td><td>310</td><td>2,800</td><td>4.5</td><td>2019</td></tr><tr><td>AquaPure</td><td>Home</td><td>180</td><td>220</td><td>1,500</td><td>4.2</td><td>2018</td></tr><tr><td>FitBand</td><td>Electronics</td><td>260</td><td>290</td><td>3,200</td><td>3.8</td><td>2021</td></tr><tr><td>EcoClean</td><td>Home</td><td>150</td><td>170</td><td>900</td><td>4.6</td><td>2017</td></tr><tr><td>SmartLamp</td><td>Electronics</td><td>90</td><td>130</td><td>600</td><td>3.5</td><td>2022</td></tr><tr><td>PureAir</td><td>Home</td><td>210</td><td>195</td><td>1,100</td><td>4.0</td><td>2020</td></tr><tr><td>TechPad</td><td>Electronics</td><td>310</td><td>280</td><td>2,400</td><td>4.1</td><td>2018</td></tr><tr><td>GreenGrow</td><td>Home</td><td>95</td><td>140</td><td>750</td><td>4.3</td><td>2016</td></tr></table>',
-    typicalQuestions: [
-      {
-        subtype: "Sort & Multi-Condition True/False",
-        q: "True or False: The product with the highest Q1 sales also has a customer rating above 4.0.",
-        type: "Sort-and-check — requires identifying an extreme value in one column and verifying a condition in another",
-        signals: "'Highest Q1 sales' requires sorting/scanning one column. 'Also has rating above 4.0' requires cross-referencing another column for the same row.",
-        trap: "Confusing Q1 and Q2 columns, or not checking the rating carefully. ProMax has Q1 = $340K and rating = 4.5.",
-        method: "Scan Q1 Sales column for maximum. Find that product's rating.",
-        steps: ["Scan Q1 Sales: ProMax 340, TechPad 310, FitBand 260, PureAir 210, AquaPure 180, EcoClean 150, GreenGrow 95, SmartLamp 90", "Highest Q1 Sales: ProMax at $340K", "ProMax's customer rating: 4.5", "4.5 > 4.0 ✓", "Answer: TRUE"]
-      },
-      {
-        subtype: "Calculated Column: Filter & Compare",
-        q: "True or False: More than half of the products launched before 2020 have higher Q2 sales than Q1 sales.",
-        type: "Filter-then-calculate — requires subsetting data by one condition, then evaluating another condition across the subset",
-        signals: "'Launched before 2020' is the filter. 'Higher Q2 than Q1' is the condition to check. 'More than half' sets the threshold.",
-        trap: "Including 2020 in 'before 2020' (it should be excluded: 2016, 2017, 2018, 2019 only).",
-        method: "Filter to pre-2020 products. For each, compare Q2 vs Q1. Count how many have Q2 > Q1. Check if that's more than half.",
-        steps: ["Products launched before 2020: GreenGrow (2016), EcoClean (2017), AquaPure (2018), TechPad (2018), ProMax (2019) — 5 products", "Q2 > Q1? GreenGrow: 140 > 95 ✓; EcoClean: 170 > 150 ✓; AquaPure: 220 > 180 ✓; TechPad: 280 < 310 ✗; ProMax: 310 < 340 ✗", "3 out of 5 have Q2 > Q1. 3/5 = 60% > 50%", "Answer: TRUE — 3 of 5 pre-2020 products have higher Q2 than Q1"]
-      },
-      {
-        subtype: "Category Aggregation with Condition",
-        q: "True or False: The category with the highest average customer rating has at least 2 products with unit sales above 1,000.",
-        type: "Multi-step aggregation — average by group, identify top group, then apply a secondary filter",
-        signals: "Requires: (1) average rating by category, (2) identify highest, (3) count units > 1000 in that category. Three-step operation.",
-        trap: "Averaging wrong or miscounting. Home products have higher average rating, and only 2 of 4 Home products have units > 1000.",
-        method: "Calculate average rating per category. Find the top category. Then check the units condition.",
-        steps: ["Electronics ratings: ProMax 4.5, FitBand 3.8, SmartLamp 3.5, TechPad 4.1 → avg = 15.9/4 = 3.975", "Home ratings: AquaPure 4.2, EcoClean 4.6, PureAir 4.0, GreenGrow 4.3 → avg = 17.1/4 = 4.275", "Highest average: Home (4.275)", "Home products with units > 1,000: AquaPure 1,500 ✓, EcoClean 900 ✗, PureAir 1,100 ✓, GreenGrow 750 ✗", "2 Home products have units > 1,000. At least 2 required. ✓", "Answer: TRUE"]
-      }
-    ]
-  },
-  {
-    icon: "📈",
-    title: "Graphics Interpretation",
-    preview: "Charts · Graphs · Visual data",
-    desc: "Reading bar charts, line graphs, scatter plots, and pie charts",
-    equations: [
-      { label: "Bar Chart", formula: "$$\\text{Compare heights/lengths to compare values}$$", detail: "<strong>Strategy:</strong> Always check: Does the y-axis start at 0? If not, bars exaggerate differences.<br><strong>Non-zero baseline trap:</strong> A bar at 55 vs. 50 looks 10× taller if the axis starts at 45 — but it's only a 10% difference.<br><strong>Stacked bars:</strong> Read each segment's height independently, not the total bar height.<br><strong>Common mistake:</strong> Comparing bar heights without checking the axis scale." },
-      { label: "Line Graph", formula: "$$\\text{Trends (up/down) + Rate of change (slope) + Intersections}$$", detail: "<strong>Key concepts:</strong><br>— Slope = rate of change (steeper = faster change)<br>— Flat segment = no change<br>— Intersection = two values are equal at that point<br><strong>Common question:</strong> \"In which period was change greatest?\" → find the steepest slope, NOT the highest point.<br><strong>Common mistake:</strong> Confusing the highest point (maximum value) with the fastest change (steepest slope)." },
-      { label: "Scatter Plot", formula: "$$\\text{Correlation: positive (↗), negative (↘), none (random)}$$", detail: "<strong>Direction:</strong> Positive correlation (both increase) | Negative (one up, other down) | No correlation (random).<br><strong>Strength:</strong> Tight cluster = strong correlation | Loose scatter = weak correlation.<br><strong>Outliers:</strong> Points far from the cluster — note them, they can affect trend lines.<br><strong>Rule:</strong> Correlation does NOT imply causation — even a perfect correlation could be coincidental." },
-      { label: "Pie Chart", formula: "$$\\text{All slices sum to 100\\%}$$", detail: "<strong>Formula:</strong> Absolute value = Percentage × Total<br><strong>Rule:</strong> All slices must sum to 100%.<br><strong>Trap:</strong> Comparing two pie charts with different totals — a bigger slice % doesn't mean a bigger absolute value.<br><strong>Example:</strong> 30% of $1M = $300K. 40% of $500K = $200K. Bigger % but smaller absolute value." },
-      { label: "Drop-down Format", formula: "$$\\text{Select the correct value from a dropdown menu}$$", detail: "<strong>Rule:</strong> Each drop-down is independent — treat each as a separate question.<br><strong>Common types:</strong> Trends (increased/decreased/stayed the same) | Specific values | Comparisons.<br><strong>Precision:</strong> The answer must be exactly correct — don't pick \"approximately\" when an exact value is available.<br><strong>Strategy:</strong> Identify which part of the chart is relevant to each drop-down before selecting." }
-    ],
-    details: [
-      { type: "title", text: "First Steps — ALWAYS Check" },
-      { type: "rule", text: "Check <strong>axis labels</strong> — what is being measured?" },
-      { type: "rule", text: "Check <strong>scale and units</strong> — thousands? millions? percentages?" },
-      { type: "rule", text: "Check <strong>legend</strong> — what does each color/line represent?" },
-      { type: "title", text: "Common Traps" },
-      { type: "rule", text: "<strong>Non-zero baseline:</strong> A y-axis starting at 50 (not 0) makes small differences look huge. A bar going from 50 to 100 is NOT a 100% increase if the baseline is 50 — it's a \\(\\frac{100-50}{50} = 100\\%\\) increase, but visually it looks like the bar doubled from nothing." },
-      { type: "rule", text: "<strong>Correlation ≠ Causation:</strong> A scatter plot showing correlation does NOT prove one variable causes the other." },
-      { type: "rule", text: "<strong>Steeper slope = faster rate of change.</strong> A steeper line means the value is increasing/decreasing more rapidly." }
-    ],
-    practice: [
-      {
-        q: "A bar chart shows Sales in Year 1 = 200 and Year 2 = 250, but the y-axis starts at 150. A student says 'Sales almost tripled.' Is this correct?",
-        steps: [
-          "The y-axis starts at 150 (non-zero baseline trap).",
-          "Visually, the Year 2 bar looks ~3× taller than Year 1.",
-          "But actual increase: \\(\\frac{250 - 200}{200} = 25\\%\\) increase, not tripled.",
-          "<strong>Answer: No — sales increased by 25%, not tripled. The non-zero baseline distorted the visual.</strong>"
-        ]
-      },
-      {
-        q: "A line graph shows Product A's sales rising steeply from Q1 to Q2, then gradually from Q2 to Q4. Product B's sales rise gradually throughout. When did Product A's growth rate slow?",
-        steps: [
-          "Growth RATE = slope of the line.",
-          "Steep slope (Q1→Q2) = fast growth. Gradual slope (Q2→Q4) = slower growth.",
-          "The growth rate slowed starting at Q2, even though sales continued to increase.",
-          "<strong>Answer: After Q2</strong> — the slope decreased, indicating slowing growth."
-        ]
-      },
-      {
-        q: "A scatter plot shows a negative correlation between 'Hours of TV watched' and 'Test scores.' Can we conclude TV causes lower scores?",
-        steps: [
-          "Negative correlation: as TV hours increase, test scores tend to decrease.",
-          "But correlation ≠ causation. Possible confounders: students who watch more TV may study less, come from different backgrounds, etc.",
-          "The scatter plot shows a relationship, not a cause.",
-          "<strong>Answer: No — correlation does not prove causation.</strong>"
-        ]
-      },
-      {
-        q: "A pie chart shows: Product A = 35%, Product B = 25%, Product C = 20%, Other = ?%. Total revenue is $400,000. What is Product C's revenue?",
-        steps: [
-          "Other = 100% - 35% - 25% - 20% = 20%.",
-          "Product C revenue = 20% × $400,000 = $80,000.",
-          "<strong>Answer: $80,000</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "ABLS Check",
-        when: "The start of every graph question",
-        steps: ["A: Axes — what do they measure? what are units?", "B: Baseline — does y-axis start at 0?", "L: Legend — what do colors/shapes mean?", "S: Scale — is the scale uniform or logarithmic?"],
-        tip: "80% of graph trap answers exploit baseline or scale misreading."
-      },
-      {
-        name: "Rate of Change vs Level",
-        when: "Line graph questions",
-        steps: ["Level = height of the line at a point", "Rate of change = steepness of the slope between two points", "'Greatest increase' → find steepest positive slope, NOT the highest point"],
-        tip: "Draw a mental tangent to compare slopes at different points."
-      },
-      {
-        name: "Pie Chart Absolute Calculation",
-        when: "Total is given with a pie chart",
-        steps: ["Find the percentage of the target slice", "Multiply by the total: Absolute value = % × Total", "Compare absolute values carefully — a bigger % on a smaller total may be less"],
-        tip: "Always ask 'is a total given?' before attempting any pie chart calculation."
-      }
-    ],
-    scenario: '<p style="color:#a78bfa;font-weight:600;margin-bottom:4px;">Annual Revenue ($ millions)</p><table><tr><th>Year</th><th>Company A</th><th>Company B</th></tr><tr><td>2019</td><td>50</td><td>55</td></tr><tr><td>2020</td><td>55</td><td>80</td></tr><tr><td>2021</td><td>70</td><td>95</td></tr><tr><td>2022</td><td>100</td><td>105</td></tr><tr><td>2023</td><td>120</td><td>115</td></tr></table><p style="color:#b8c0d4;font-size:0.76rem;margin-top:6px;"><em>Imagine this data as a line graph. Both lines start close together, diverge (B pulls ahead), then converge (A overtakes B).</em></p>',
-    typicalQuestions: [
-      {
-        subtype: "Percent Change vs Absolute Change",
-        q: "In which year did Company A show the greatest percentage increase in revenue compared to the previous year?",
-        type: "Percent change vs absolute change — tests whether you compute % change (not just absolute difference)",
-        signals: "'Greatest percentage increase' — must divide change by the BASE year, not just find the largest jump in dollar terms.",
-        trap: "Picking 2023 ($120M − $100M = $20M) because it's the most recent or appears visually steep. But 2022's percentage increase (42.9%) exceeds 2023's (20%).",
-        method: "Calculate year-over-year % change for each year. Compare the percentages, not the dollar amounts.",
-        steps: ["2020: (55−50)/50 = 10.0%", "2021: (70−55)/55 = 27.3%", "2022: (100−70)/70 = 42.9%", "2023: (120−100)/100 = 20.0%", "Answer: 2022 — Company A's revenue grew by approximately 43%, the highest percentage increase"]
-      },
-      {
-        subtype: "Relative Position: Ratio Comparison",
-        q: "For approximately how many years was Company B's revenue more than 20% greater than Company A's revenue?",
-        type: "Ratio comparison across data points — tests whether you check B > 1.2 × A for each year",
-        signals: "'More than 20% greater' means B/A > 1.20. Must check this ratio for each year, not eyeball the gap.",
-        trap: "Counting years where B > A (which is 3 years: 2019-2021) instead of where B > 1.2A (stricter condition).",
-        method: "For each year, compute B/A. Count years where B/A > 1.20.",
-        steps: ["2019: 55/50 = 1.10 — not more than 20% greater", "2020: 80/55 = 1.45 — yes, more than 20% greater ✓", "2021: 95/70 = 1.36 — yes, more than 20% greater ✓", "2022: 105/100 = 1.05 — no", "2023: 115/120 = 0.96 — no (B is less than A)", "Answer: 2 years (2020 and 2021)"]
-      },
-      {
-        subtype: "Growth Rate Comparison",
-        q: "Between 2019 and 2023, Company A's revenue grew by approximately ___%, and Company B's revenue grew by approximately ___%.",
-        type: "Endpoint-to-endpoint growth calculation — tests reading correct values and computing percentage change",
-        signals: "Growth over full period = (End − Start)/Start × 100. Must use the correct endpoint values.",
-        trap: "Using a non-zero baseline incorrectly. For example, if the graph's y-axis starts at 40M, students might read A's 2019 value as 10 instead of 50.",
-        method: "Read start and end values for each company. Compute (End − Start)/Start × 100%.",
-        steps: ["Company A: Start = $50M (2019), End = $120M (2023)", "Growth = (120−50)/50 × 100 = 140%", "Company B: Start = $55M (2019), End = $115M (2023)", "Growth = (115−55)/55 × 100 ≈ 109%", "Answer: Company A grew by approximately 140%, Company B by approximately 109%"]
-      }
-    ]
-  },
-  {
-    icon: "⚡",
-    title: "Two-Part Analysis",
-    preview: "Two linked answers · Constraints",
-    desc: "Solving problems requiring two interdependent values",
-    equations: [
-      { label: "Table Format", formula: "$$\\text{Two columns — select one value for each column}$$", detail: "<strong>Structure:</strong> A table with answer options in rows and two columns — select one row per column.<br><strong>Rule:</strong> Both selected values must TOGETHER satisfy ALL conditions.<br><strong>Common mistake:</strong> Finding a value that works for Column 1 without checking if it's compatible with Column 2.<br><strong>Note:</strong> The same row can sometimes be selected for both columns — don't assume they must be different." },
-      { label: "Constraint Satisfaction", formula: "$$\\text{BOTH values must satisfy ALL conditions simultaneously}$$", detail: "<strong>Strategy:</strong> Write out ALL constraints before selecting any values.<br><strong>Process:</strong> (1) List constraints → (2) Eliminate rows that violate any constraint → (3) Check remaining pairs.<br><strong>Rule:</strong> Start with the most restrictive constraint to eliminate the most options quickly.<br><strong>Verify:</strong> Always confirm that BOTH selections satisfy ALL conditions before finalizing." },
-      { label: "Problem Types", formula: "$$\\text{Algebraic, Logical, or Verbal reasoning}$$", detail: "<strong>Algebraic:</strong> Set up equations/inequalities, find valid (x, y) pairs from the table.<br><strong>Logical:</strong> Use process of elimination — find which combinations violate the rules.<br><strong>Verbal:</strong> Two statements that together achieve a stated goal — read conditions carefully.<br><strong>Strategy:</strong> Identify the problem type first — each type has a different solving approach." },
-      { label: "Strategy", formula: "$$\\text{Start with the MOST restrictive constraint first}$$", detail: "<strong>Rule 1:</strong> Start with the most restrictive constraint — it eliminates the most options immediately.<br><strong>Rule 2:</strong> The two answers are often NOT independent — choosing one limits what the other can be.<br><strong>Rule 3:</strong> Verify ALL pairwise combinations of surviving options before selecting.<br><strong>Common mistake:</strong> Stopping at the first valid pair without checking if other pairs also work." }
-    ],
-    details: [
-      { type: "title", text: "Key Insight" },
-      { type: "rule", text: "The two answers are often <strong>NOT independent</strong> — choosing one constrains the other." },
-      { type: "title", text: "Strategy" },
-      { type: "rule", text: "<strong>Step 1:</strong> Identify the most restrictive constraint and start there." },
-      { type: "rule", text: "<strong>Step 2:</strong> Set up the equation or inequality before plugging in values." },
-      { type: "rule", text: "<strong>Step 3:</strong> Verify BOTH parts satisfy ALL conditions." }
-    ],
-    practice: [
-      {
-        q: "Find two integers \\(x\\) and \\(y\\) such that \\(x + y = 10\\) and \\(x > y\\). Values available: 2, 3, 4, 5, 6, 7, 8.",
-        steps: [
-          "Constraint 1: \\(x + y = 10\\). Constraint 2: \\(x > y\\).",
-          "Possible pairs summing to 10: (8,2), (7,3), (6,4).",
-          "All satisfy \\(x > y\\) since the first number is larger.",
-          "Most restrictive: both must be from the given list and sum to 10.",
-          "<strong>Answer: Any of (8,2), (7,3), or (6,4) — but on GMAT, the table would narrow to one valid pair.</strong>"
-        ]
-      },
-      {
-        q: "A team of 5 must include exactly 2 from Department A (Alice, Bob, Carol) and exactly 3 from Department B (Dan, Eve, Frank, Grace). The team must include Alice. Select one person NOT on the team from each department.",
-        steps: [
-          "Department A: Must include Alice + 1 more from {Bob, Carol}. So one of Bob/Carol is excluded.",
-          "Department B: Must include 3 from {Dan, Eve, Frank, Grace}. So one is excluded.",
-          "If Alice + Bob chosen → Carol excluded from A.",
-          "If Alice + Carol chosen → Bob excluded from A.",
-          "The two answers (one from each department) are linked by the total team constraint.",
-          "<strong>Strategy:</strong> Start with Dept A (more restrictive — only 3 people, need 2 including Alice)."
-        ]
-      },
-      {
-        q: "A company allocates $100,000 between marketing (\\(m\\)) and R&D (\\(r\\)). Marketing must be at least $30,000 and R&D at least $40,000. Maximize the difference \\(m - r\\).",
-        steps: [
-          "Constraints: \\(m + r = 100{,}000\\), \\(m \\geq 30{,}000\\), \\(r \\geq 40{,}000\\).",
-          "To maximize \\(m - r\\): maximize \\(m\\) and minimize \\(r\\).",
-          "Minimum \\(r = 40{,}000\\) → \\(m = 60{,}000\\).",
-          "\\(m - r = 60{,}000 - 40{,}000 = 20{,}000\\).",
-          "<strong>Answer: m = $60,000, r = $40,000</strong>"
-        ]
-      }
-    ],
-    methods: [
-      {
-        name: "Constraint Mapping",
-        when: "The start of every Two-Part question",
-        steps: ["List ALL constraints on paper", "Mark which constraints apply to Column 1, Column 2, or both", "Eliminate rows that violate any constraint for each column", "Find rows that satisfy all constraints for each column simultaneously"],
-        tip: "Write C1, C2, C1+C2 next to each constraint."
-      },
-      {
-        name: "Most Restrictive First",
-        when: "Quickly narrowing options",
-        steps: ["Identify which constraint eliminates the most rows", "Apply it first", "With fewer rows remaining, apply next constraint", "Repeat until you have the answer"],
-        tip: "Equality constraints (x=5) are usually more restrictive than inequality constraints (x>0)."
-      },
-      {
-        name: "Verify Both",
-        when: "Final check before confirming answer",
-        steps: ["Take your selected C1 value and C2 value", "Apply EVERY constraint to check", "Make sure the combination satisfies ALL conditions together", "Only then submit"],
-        tip: "Many students lose points by verifying each column independently but not verifying the COMBINATION."
-      }
-    ],
-    typicalQuestions: [
-      {
-        subtype: "Algebraic System: Integer Constraint",
-        q: "Select one value for x and one value for y from the options below such that 3x + 2y = 24, where x < y and both are positive integers.\n\nOptions: 1, 2, 3, 4, 5, 6, 7, 8\n\n(Choose one for x, one for y)",
-        type: "Two-part algebraic selection — find the unique (x, y) pair satisfying equation + inequality constraint from a limited option set",
-        signals: "Linear equation + inequality + integer constraint + limited option set. Systematically test valid integer solutions.",
-        trap: "Picking (6, 3) which satisfies 3(6)+2(3)=24 but violates x < y. Or picking (2, 9) which works algebraically but 9 is not in the option set.",
-        method: "Find all positive integer solutions to 3x + 2y = 24, then filter by x < y and both values in the option set.",
-        steps: ["Rearrange: y = (24 − 3x)/2. For y to be a positive integer, 24 − 3x must be positive and even.", "x=2: y = (24−6)/2 = 9. But 9 is not in the options ✗", "x=4: y = (24−12)/2 = 6. Both in options, and 4 < 6 ✓", "x=6: y = (24−18)/2 = 3. But 6 > 3, violates x < y ✗", "Answer: x = 4, y = 6"]
-      },
-      {
-        subtype: "Logical Constraint: Selection",
-        q: "A 2-person committee is to be selected from: Alice, Bob, Carol, Dana, Eve.\nConstraints:\n• Alice and Dana refuse to serve together.\n• If Bob is selected, Carol must also be selected.\n\nSelect one person for Seat 1 and one for Seat 2 such that all constraints are met. How many valid committees are possible?\n\n(A) 4\n(B) 5\n(C) 6\n(D) 7\n(E) 8",
-        type: "Combinatorial logic with constraints — systematic enumeration with elimination of invalid pairs",
-        signals: "Selection from a small set with conditional and exclusion constraints. Enumerate all C(5,2) = 10 pairs, then eliminate violations.",
-        trap: "(D) 7 — forgetting that Bob-without-Carol pairs are invalid, or (E) 8 — missing the Alice-Dana exclusion.",
-        method: "List all C(5,2) = 10 pairs. Remove pairs violating either constraint.",
-        steps: ["All 10 pairs: AB, AC, AD, AE, BC, BD, BE, CD, CE, DE", "Remove Alice+Dana: AD ✗. Remaining: 9", "Remove Bob-without-Carol pairs: AB ✗, BD ✗, BE ✗. Remaining: 6", "Valid pairs: AC, AE, BC, CD, CE, DE", "Answer: (C) 6 valid committees"]
-      },
-      {
-        subtype: "Optimization: Budget Allocation",
-        q: "A company allocates its $500K budget between R&D and Marketing.\n• R&D must receive at least 40% of total budget.\n• Marketing must receive at least $100K.\n\nTo maximize R&D spending, select the R&D allocation and Marketing allocation.\n\nOptions: $100K, $150K, $200K, $250K, $300K, $350K, $400K",
-        type: "Linear optimization with constraints — identify binding constraints to find the optimal allocation",
-        signals: "'Maximize R&D' subject to constraints. To maximize one, minimize the other. Marketing's minimum is the binding constraint.",
-        trap: "Picking R&D = $300K (thinking 40% minimum somehow caps R&D) or not checking that both constraints are satisfied simultaneously.",
-        method: "To maximize R&D, set Marketing at its minimum ($100K). Then R&D = $500K − $100K = $400K. Verify: $400K ≥ 40% of $500K = $200K ✓.",
-        steps: ["Constraint 1: R&D ≥ 40% × $500K = $200K", "Constraint 2: Marketing ≥ $100K", "To maximize R&D, minimize Marketing → Marketing = $100K", "R&D = $500K − $100K = $400K", "Check: $400K ≥ $200K ✓ and Marketing = $100K ≥ $100K ✓", "Answer: R&D = $400K, Marketing = $100K"]
-      }
-    ]
-  }
-];
-
+// Data now loaded from database via /api/topics
+window.renderTopics = function(topics) {
 const hub = document.getElementById('hub');
+hub.innerHTML = '';
 
 topics.forEach((topic, i) => {
   const card = document.createElement('div');
   card.className = 'topic-card';
   card.id = `topic-${i}`;
 
-  const eqItems = topic.equations.map(eq => {
-    // If formula is purely $$\text{...}$$ (no real math), render as plain text to avoid KaTeX overflow
-    // Only bypass KaTeX for formulas that are PURELY $$\text{plain text}$$ — no math symbols inside
-    const textOnlyMatch = eq.formula.match(/^\$\$\\text\{([^\\{}]+)\}\$\$$/);
+  const eqItems = (topic.equations || []).map(eq => {
+    const textOnlyMatch = eq.formula ? eq.formula.match(/^\$\$\\text\{([^\\{}]+)\}\$\$$/) : null;
     const rendered = textOnlyMatch
       ? `<span class="eq-plain-text">${textOnlyMatch[1]}</span>`
-      : eq.formula;
+      : (eq.formula || '');
     return `
     <div class="eq-item">
       <div class="eq-label">${eq.label}<span class="eq-chevron">▼</span></div>
@@ -1060,41 +419,42 @@ topics.forEach((topic, i) => {
   }).join('');
 
   let detailHTML = '<div class="rule-list">';
-  topic.details.forEach(d => {
-    if (d.type === 'title') {
-      detailHTML += `<div class="section-title">${d.text}</div>`;
+  const details = topic.details || topic.rules || [];
+  details.forEach(d => {
+    if (d.type === 'title' || d.title) {
+      detailHTML += `<div class="section-title">${d.text || d.title || ''}</div>`;
     } else {
-      detailHTML += `<div class="rule-item">${d.text}</div>`;
+      detailHTML += `<div class="rule-item">${d.text || d.content || ''}</div>`;
     }
   });
   detailHTML += '</div>';
 
-  const practiceHTML = topic.practice.map((p, j) => `
+  const practiceHTML = (topic.practice || []).map((p, j) => `
     <div class="practice-item" id="prac-${i}-${j}">
       <div class="practice-q" onclick="toggleAnswer(${i},${j})">
         <div class="q-num">${j+1}</div>
-        <div class="q-text">${p.q}</div>
+        <div class="q-text">${p.q || p.question || ''}</div>
         <div class="q-toggle">▼</div>
       </div>
       <div class="practice-ans">
         <div class="ans-label">Solution</div>
-        ${p.steps.map(s => `<div class="step">${s}</div>`).join('')}
+        ${p.steps ? p.steps.map(s => `<div class="step">${s}</div>`).join('') : (p.a ? `<div class="step">${p.a}</div>` : '')}
       </div>
     </div>
   `).join('');
 
-  const methodsHTML = topic.methods.map(m => `
+  const methodsHTML = (topic.methods || []).map(m => `
     <div class="method-item">
       <div class="method-name">${m.name}</div>
-      <div class="method-when"><em>Use when:</em> ${m.when}</div>
+      <div class="method-when"><em>Use when:</em> ${m.when || m.when_to_use || ''}</div>
       <ol class="method-steps">
-        ${m.steps.map(s => `<li>${s}</li>`).join('')}
+        ${(m.steps || []).map(s => `<li>${s}</li>`).join('')}
       </ol>
       ${m.tip ? `<div class="method-tip">💡 ${m.tip}</div>` : ''}
     </div>
   `).join('');
 
-  const tqHTML = topic.typicalQuestions.map((tq, j) => `
+  const tqHTML = (topic.typicalQuestions || []).map((tq, j) => `
     <div class="tq-item" id="tq-${i}-${j}">
       <div class="tq-header" onclick="toggleTQ1('tq-${i}-${j}')">
         <div class="tq-type-badge">${tq.subtype}</div>
@@ -1111,7 +471,7 @@ topics.forEach((topic, i) => {
         <button class="tq-sol-btn" onclick="toggleTQ2(event,'tq-${i}-${j}')">Show Solution ▼</button>
         <div class="tq-layer2">
           <ol class="tq-steps">
-            ${tq.steps.map(s => `<li>${s}</li>`).join('')}
+            ${(tq.steps || []).map(s => `<li>${s}</li>`).join('')}
           </ol>
         </div>
       </div>
@@ -1120,11 +480,11 @@ topics.forEach((topic, i) => {
 
   card.innerHTML = `
     <div class="card-header" onclick="toggleCard(${i})">
-      <div class="card-icon">${topic.icon}</div>
+      <div class="card-icon">${topic.icon || ''}</div>
       <div class="card-meta">
         <h2>${topic.title}</h2>
-        <div class="preview">${topic.preview}</div>
-        <div class="desc">${topic.desc}</div>
+        <div class="preview">${topic.preview || topic.subtitle || ''}</div>
+        <div class="desc">${topic.desc || ''}</div>
       </div>
       <div class="expand-arrow">▼</div>
     </div>
@@ -1162,7 +522,20 @@ document.querySelectorAll('.eq-item').forEach(function(el) {
   el.addEventListener('click', function() { el.classList.toggle('open'); });
 });
 
-// Ref-term tooltip toggle (tap to show, tap elsewhere to hide)
+if (window.renderMathInElement) {
+  renderMathInElement(hub, {
+    delimiters: [
+      {left:'$$',right:'$$',display:true},
+      {left:'\\(',right:'\\)',display:false}
+    ],
+    throwOnError: false
+  });
+}
+
+buildDesktopSidebar();
+};
+
+// Ref-term tooltip toggle
 document.addEventListener('click', function(e) {
   const term = e.target.closest('.ref-term');
   document.querySelectorAll('.ref-term.tip-active').forEach(function(el) {
@@ -1201,15 +574,28 @@ function toggleTQ2(e, id) {
   const item = document.getElementById(id);
   item.classList.toggle('tq-open2');
   const btn = item.querySelector('.tq-sol-btn');
-  btn.textContent = item.classList.contains('tq-open2') ? 'Hide Solution ▲' : 'Show Solution ▼';
+  btn.textContent = item.classList.contains('tq-open2') ? 'Hide Solution \u25B2' : 'Show Solution \u25BC';
 }
 
 function toggleAnswer(i, j) {
   document.getElementById(`prac-${i}-${j}`).classList.toggle('show-ans');
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  window.initPage('di');
+});
 </script>
 <script>
-(function buildDesktopSidebar() {
+function buildDesktopSidebar() {
+  var existing = document.getElementById('dt-sidebar');
+  if (existing) {
+    var existingWrap = document.querySelector('.dt-main-wrap');
+    if (existingWrap) {
+      while (existingWrap.firstChild) document.body.insertBefore(existingWrap.firstChild, existingWrap);
+      existingWrap.remove();
+    }
+    existing.remove();
+  }
   if (window.innerWidth < 1024) return;
   var path = window.location.pathname;
   var isIndex = path === '/' || path.endsWith('index.html') || path === '';
@@ -1246,7 +632,7 @@ function toggleAnswer(i, j) {
   wrap.className = 'dt-main-wrap';
   while (sidebar.nextSibling) wrap.appendChild(sidebar.nextSibling);
   document.body.appendChild(wrap);
-})();
+}
 function dtScrollToCard(idx) {
   var cards = document.querySelectorAll('.topic-card');
   var card = cards[idx];

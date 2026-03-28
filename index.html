@@ -67,6 +67,7 @@
       cursor: pointer;
       transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
       overflow: hidden;
+      min-width: 0;
     }
     .topic-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 8px 30px rgba(108,99,255,0.15); }
     .topic-card.active { border-color: var(--accent2); }
@@ -112,7 +113,7 @@
     }
     .tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); }
 
-    .tab-content { display: none; padding: 20px; }
+    .tab-content { display: none; padding: 20px; min-width: 0; overflow: hidden; }
     .tab-content.active { display: block; }
 
     /* Equations */
@@ -124,7 +125,8 @@
       padding: 14px 16px;
     }
     .eq-item .eq-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
-    .eq-item .eq-note { font-size: 0.78rem; color: var(--muted); margin-top: 8px; }
+    .eq-item .eq-note { font-size: 0.78rem; color: var(--muted); margin-top: 8px; word-break: break-word; }
+    .eq-formula { overflow-x: auto; overflow-y: hidden; max-width: 100%; -webkit-overflow-scrolling: touch; }
 
     /* Details */
     .rule-list { display: flex; flex-direction: column; gap: 10px; }
@@ -135,6 +137,8 @@
       padding: 12px 14px;
       font-size: 0.84rem;
       line-height: 1.6;
+      overflow-x: auto;
+      min-width: 0;
     }
     .rule-item strong { color: var(--accent2); }
     .rule-item code {
@@ -208,6 +212,27 @@
     .eq-item .katex { font-size: 1.05rem; }
     .practice-q .katex, .practice-ans .katex { font-size: 0.9rem; color: #a78bfa; }
     .rule-item .katex { font-size: 0.88rem; color: #a78bfa; }
+
+    /* Prevent KaTeX display math from overflowing */
+    .katex-display {
+      overflow-x: auto;
+      overflow-y: hidden;
+      max-width: 100%;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .katex-display > .katex { max-width: none; }
+
+    /* Global overflow safety */
+    .eq-item, .rule-item, .practice-q, .practice-ans, .hint-body {
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .result-badges { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+    @media (max-width: 480px) {
+      .result-badges { flex-wrap: wrap; }
+      .eq-item .katex { font-size: 0.95rem; }
+    }
 
     /* Analyzer FAB */
     .fab {

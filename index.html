@@ -126,7 +126,8 @@
     }
     .eq-item .eq-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
     .eq-item .eq-note { font-size: 0.78rem; color: var(--muted); margin-top: 8px; word-break: break-word; }
-    .eq-formula { overflow-x: auto; overflow-y: hidden; max-width: 100%; -webkit-overflow-scrolling: touch; }
+    .eq-formula { overflow-x: hidden; max-width: 100%; }
+    .eq-formula .katex, .eq-formula .katex-html { white-space: normal !important; }
 
     /* Details */
     .rule-list { display: flex; flex-direction: column; gap: 10px; }

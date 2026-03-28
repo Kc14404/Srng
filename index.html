@@ -249,25 +249,58 @@ const topics = [
     ],
     practice: [
       {
-        q: "Simplify: \\(\\frac{2}{5} + \\frac{3}{4}\\)",
+        q: "[Computation] Simplify: \\(\\frac{2}{5} + \\frac{3}{4}\\)",
         steps: [
           "Different denominators → use \\(\\frac{ad+bc}{bd}\\)",
           "\\(= \\frac{2 \\times 4 + 3 \\times 5}{5 \\times 4} = \\frac{8+15}{20} = \\frac{23}{20}\\)",
-          "<strong>Answer: \\(\\frac{23}{20}\\) or \\(1\\frac{3}{20}\\)</strong>"
+          "<strong>Answer: \\(\\frac{23}{20}\\)</strong>"
         ]
       },
       {
-        q: "Which is larger: \\(\\frac{5}{8}\\) or \\(\\frac{7}{11}\\)?",
+        q: "[Comparison] Which is larger: \\(\\frac{5}{8}\\) or \\(\\frac{7}{11}\\)?",
         steps: [
           "Bow Tie: \\(5 \\times 11 = 55\\) vs \\(7 \\times 8 = 56\\)",
           "\\(56 > 55\\) → <strong>\\(\\frac{7}{11} > \\frac{5}{8}\\)</strong>"
         ]
       },
       {
-        q: "If \\(0 < x < 1\\), which is greatest: \\(x\\), \\(x^2\\), or \\(\\sqrt{x}\\)?",
+        q: "[Conceptual] If \\(0 < x < 1\\), which is greatest: \\(x\\), \\(x^2\\), or \\(\\sqrt{x}\\)?",
         steps: [
           "Try \\(x = \\frac{1}{4}\\): \\(x^2 = \\frac{1}{16}\\), \\(\\sqrt{x} = \\frac{1}{2}\\)",
           "\\(\\frac{1}{16} < \\frac{1}{4} < \\frac{1}{2}\\) → <strong>\\(\\sqrt{x}\\) is greatest</strong>"
+        ]
+      },
+      {
+        q: "[Computation] Simplify: \\(\\dfrac{\\frac{3}{4}}{\\frac{9}{16}}\\)",
+        steps: [
+          "Dividing fractions → multiply by reciprocal",
+          "\\(= \\frac{3}{4} \\times \\frac{16}{9} = \\frac{48}{36} = \\frac{4}{3}\\)",
+          "<strong>Answer: \\(\\frac{4}{3}\\)</strong>"
+        ]
+      },
+      {
+        q: "[Word Problem] A tank is \\(\\frac{3}{5}\\) full. After adding 12 litres it is \\(\\frac{4}{5}\\) full. What is the tank's total capacity?",
+        steps: [
+          "\\(\\frac{4}{5} - \\frac{3}{5} = \\frac{1}{5}\\) of the tank = 12 litres",
+          "Total capacity \\(= 12 \\times 5 = 60\\) litres",
+          "<strong>Answer: 60 litres</strong>"
+        ]
+      },
+      {
+        q: "[DS-style] Is \\(\\frac{x}{y} > 1\\)? Given: (1) \\(x > y\\); (2) \\(y > 0\\).",
+        steps: [
+          "Statement (1) alone: \\(x > y\\), but if both negative (e.g. \\(x=-1, y=-2\\)), \\(\\frac{-1}{-2} = 0.5 < 1\\). Not sufficient.",
+          "Statement (2) alone: only tells us \\(y > 0\\), says nothing about \\(x\\). Not sufficient.",
+          "Both together: \\(x > y > 0\\) → dividing both sides by positive \\(y\\) → \\(\\frac{x}{y} > 1\\). <strong>Sufficient.</strong>",
+          "<strong>Answer: Both statements together are needed (C)</strong>"
+        ]
+      },
+      {
+        q: "[Conversion] Express \\(\\frac{7}{8}\\) as a percentage.",
+        steps: [
+          "\\(\\frac{7}{8} = 0.875\\)",
+          "\\(0.875 \\times 100 = 87.5\\%\\)",
+          "<strong>Answer: 87.5%</strong>"
         ]
       }
     ]
@@ -294,7 +327,7 @@ const topics = [
     ],
     practice: [
       {
-        q: "Solve: \\(x^2 - 5x + 6 = 0\\)",
+        q: "[Factoring] Solve: \\(x^2 - 5x + 6 = 0\\)",
         steps: [
           "Find \\(p, q\\) where \\(p \\cdot q = 6\\) and \\(p + q = -5\\)",
           "\\(p = -2,\\ q = -3\\) → \\((x-2)(x-3) = 0\\)",
@@ -302,7 +335,7 @@ const topics = [
         ]
       },
       {
-        q: "If \\((x+3)(x-3) = 7\\), what is \\(x^2\\)?",
+        q: "[Identity] If \\((x+3)(x-3) = 7\\), what is \\(x^2\\)?",
         steps: [
           "Recognize difference of squares: \\(x^2 - 9 = 7\\)",
           "\\(x^2 = 16\\)",
@@ -310,11 +343,44 @@ const topics = [
         ]
       },
       {
-        q: "Expand: \\((2x + 3)^2\\)",
+        q: "[Expansion] Expand: \\((2x + 3)^2\\)",
         steps: [
           "Use identity \\((a+b)^2 = a^2 + 2ab + b^2\\)",
-          "\\(= (2x)^2 + 2(2x)(3) + 3^2 = 4x^2 + 12x + 9\\)",
+          "\\(= 4x^2 + 12x + 9\\)",
           "<strong>Answer: \\(4x^2 + 12x + 9\\)</strong>"
+        ]
+      },
+      {
+        q: "[Word Problem] The product of two consecutive positive integers is 56. What are the integers?",
+        steps: [
+          "Let integers be \\(n\\) and \\(n+1\\): \\(n(n+1) = 56\\)",
+          "\\(n^2 + n - 56 = 0\\) → \\((n+8)(n-7) = 0\\)",
+          "Since positive: \\(n = 7\\)",
+          "<strong>Answer: 7 and 8</strong>"
+        ]
+      },
+      {
+        q: "[Roots] If \\(x^2 - 7x + k = 0\\) has roots 3 and 4, what is \\(k\\)?",
+        steps: [
+          "Sum of roots \\(= 3 + 4 = 7\\) ✓ (matches \\(-b/a = 7\\))",
+          "Product of roots \\(= 3 \\times 4 = 12 = k/a = k\\)",
+          "<strong>Answer: \\(k = 12\\)</strong>"
+        ]
+      },
+      {
+        q: "[Conceptual] If \\(x^2 = x\\), what are the possible values of \\(x\\)?",
+        steps: [
+          "\\(x^2 - x = 0\\) → \\(x(x-1) = 0\\)",
+          "Zero product property: \\(x = 0\\) or \\(x = 1\\)",
+          "<strong>Answer: \\(x = 0\\) or \\(x = 1\\)</strong>"
+        ]
+      },
+      {
+        q: "[Difference of Squares] Simplify: \\(\\frac{x^2 - 25}{x - 5}\\)",
+        steps: [
+          "Factor numerator: \\(x^2 - 25 = (x+5)(x-5)\\)",
+          "Cancel \\((x-5)\\): \\(= x + 5\\) (where \\(x \\neq 5\\))",
+          "<strong>Answer: \\(x + 5\\)</strong>"
         ]
       }
     ]
@@ -348,28 +414,54 @@ const topics = [
     ],
     practice: [
       {
-        q: "If \\(n\\) is odd, which of the following must be even: \\(n^2\\), \\(n^2 + n\\), or \\(n^2 + 1\\)?",
+        q: "[Conceptual] If \\(n\\) is odd, which must be even: \\(n^2\\), \\(n^2 + n\\), or \\(n+1\\)?",
         steps: [
-          "\\(n\\) odd → \\(n^2\\) = odd×odd = <strong>odd</strong>",
+          "\\(n^2\\) = odd×odd = odd ✗",
           "\\(n^2 + n\\) = odd + odd = <strong>even ✓</strong>",
-          "\\(n^2 + 1\\) = odd + odd = even (also works, but \\(n^2+n\\) is the classic GMAT trap)",
-          "<strong>Answer: \\(n^2 + n\\) must be even</strong>"
+          "\\(n+1\\) = odd + odd = even ✓ (but both \\(n^2+n\\) and \\(n+1\\) work here — on GMAT pick the one asked)",
+          "<strong>Answer: Both \\(n^2+n\\) and \\(n+1\\) are always even when \\(n\\) is odd</strong>"
         ]
       },
       {
-        q: "Is the product of three consecutive integers always divisible by 6?",
+        q: "[Divisibility] Is the product of three consecutive integers always divisible by 6?",
         steps: [
-          "Any 3 consecutive integers include at least one even (div by 2) and one multiple of 3.",
-          "Example: \\(4 \\times 5 \\times 6 = 120 = 6 \\times 20\\) ✓",
+          "Any 3 consecutive integers always include one multiple of 2 and one multiple of 3.",
+          "Example: \\(4 \\times 5 \\times 6 = 120\\), \\(7 \\times 8 \\times 9 = 504\\) — both divisible by 6.",
           "<strong>Answer: Yes — always divisible by 6</strong>"
         ]
       },
       {
-        q: "What is \\(\\gcd(51, 52)\\)?",
+        q: "[Consecutive Integers] What is \\(\\gcd(51, 52)\\)?",
         steps: [
-          "51 and 52 are consecutive integers.",
-          "Consecutive integers never share prime factors.",
+          "51 and 52 are consecutive integers → never share prime factors.",
           "<strong>Answer: \\(\\gcd = 1\\)</strong>"
+        ]
+      },
+      {
+        q: "[Must Be True] If \\(a\\) is even and \\(b\\) is odd, which of the following must be odd: \\(a+b\\), \\(ab\\), \\(a^2+b\\)?",
+        steps: [
+          "\\(a + b\\) = even + odd = <strong>odd ✓</strong>",
+          "\\(ab\\) = even × odd = even ✗",
+          "\\(a^2 + b\\) = even + odd = odd ✓",
+          "<strong>Answer: \\(a+b\\) and \\(a^2+b\\) must be odd; \\(ab\\) must be even</strong>"
+        ]
+      },
+      {
+        q: "[Prime] If \\(p\\) is prime and \\(p > 2\\), which must be true: \\(p\\) is odd, \\(p+1\\) is prime, or \\(p-1\\) is divisible by 2?",
+        steps: [
+          "All primes > 2 are odd (2 is the only even prime).",
+          "\\(p\\) odd → \\(p - 1\\) is even → divisible by 2 ✓",
+          "\\(p+1\\) is NOT necessarily prime (e.g. \\(p=5\\), \\(p+1=6\\) not prime).",
+          "<strong>Answer: Both '\\(p\\) is odd' and '\\(p-1\\) divisible by 2' must be true</strong>"
+        ]
+      },
+      {
+        q: "[Sign Rules] If \\(xy < 0\\) and \\(yz > 0\\), what is the sign of \\(xz\\)?",
+        steps: [
+          "\\(xy < 0\\) → \\(x\\) and \\(y\\) have <em>opposite</em> signs.",
+          "\\(yz > 0\\) → \\(y\\) and \\(z\\) have the <em>same</em> sign.",
+          "So \\(x\\) and \\(z\\) have opposite signs → \\(xz < 0\\)",
+          "<strong>Answer: \\(xz < 0\\)</strong>"
         ]
       }
     ]
@@ -406,33 +498,51 @@ const topics = [
     ],
     practice: [
       {
-        q: "Is 3,456 divisible by 9?",
+        q: "[Divisibility Test] Is 3,456 divisible by 9?",
         steps: [
           "Sum digits: \\(3+4+5+6 = 18\\)",
-          "\\(18 \\div 9 = 2\\) → yes, no remainder",
-          "<strong>Answer: Yes, 3,456 is divisible by 9</strong>"
+          "\\(18 \\div 9 = 2\\) → no remainder",
+          "<strong>Answer: Yes</strong>"
         ]
       },
       {
-        q: "What is the remainder when 100 is divided by 7?",
+        q: "[Remainder] What is the remainder when 100 is divided by 7?",
         steps: [
-          "\\(7 \\times 14 = 98\\), so \\(100 = 7 \\times 14 + 2\\)",
+          "\\(7 \\times 14 = 98\\) → \\(100 = 7 \\times 14 + 2\\)",
           "<strong>Answer: remainder = 2</strong>"
         ]
       },
       {
-        q: "Does \\(\\frac{7}{40}\\) terminate as a decimal?",
+        q: "[Terminating Decimal] Which terminates: \\(\\frac{7}{40}\\) or \\(\\frac{7}{42}\\)?",
         steps: [
-          "Factor denominator: \\(40 = 2^3 \\times 5\\) → only 2s and 5s",
-          "<strong>Answer: Yes, it terminates</strong> \\(= 0.175\\)"
+          "\\(\\frac{7}{40}\\): \\(40 = 2^3 \\times 5\\) → only 2s and 5s → <strong>terminates</strong>",
+          "\\(\\frac{7}{42} = \\frac{1}{6}\\): \\(6 = 2 \\times 3\\) → has factor 3 → <strong>does not terminate</strong>",
+          "<strong>Answer: only \\(\\frac{7}{40}\\) terminates</strong>"
         ]
       },
       {
-        q: "How many trailing zeros does \\(25!\\) have?",
+        q: "[Trailing Zeros] How many trailing zeros does \\(25!\\) have?",
         steps: [
-          "Count factors of 5 in 1–25: \\(5, 10, 15, 20\\) give one 5 each; \\(25 = 5^2\\) gives two.",
-          "Total factors of 5: \\(4 + 2 = 6\\) → 6 pairs of (5×2)",
+          "Count factors of 5: \\(\\lfloor 25/5 \\rfloor + \\lfloor 25/25 \\rfloor = 5 + 1 = 6\\)",
+          "Each 5 pairs with a 2 (there are plenty of 2s).",
           "<strong>Answer: 6 trailing zeros</strong>"
+        ]
+      },
+      {
+        q: "[DS-style] Is integer \\(n\\) divisible by 12? Given: (1) \\(n\\) is divisible by 4; (2) \\(n\\) is divisible by 6.",
+        steps: [
+          "Statement (1): divisible by 4 only → e.g. \\(n=4\\), not divisible by 12. Not sufficient.",
+          "Statement (2): divisible by 6 only → e.g. \\(n=6\\), not divisible by 12. Not sufficient.",
+          "Both: \\(4=2^2\\) and \\(6=2\\times3\\) → LCM\\((4,6)=12\\) → \\(n\\) must be divisible by 12. <strong>Sufficient.</strong>",
+          "<strong>Answer: Both together are sufficient (C)</strong>"
+        ]
+      },
+      {
+        q: "[Remainder Pattern] When a number \\(n\\) is divided by 5, the remainder is 3. What is the remainder when \\(2n\\) is divided by 5?",
+        steps: [
+          "\\(n = 5q + 3\\) for some integer \\(q\\)",
+          "\\(2n = 10q + 6 = 10q + 5 + 1 = 5(2q+1) + 1\\)",
+          "<strong>Answer: remainder = 1</strong>"
         ]
       }
     ]
@@ -463,28 +573,51 @@ const topics = [
     ],
     practice: [
       {
-        q: "How many factors does 72 have?",
+        q: "[Factor Counting] How many factors does 72 have?",
         steps: [
           "\\(72 = 2^3 \\times 3^2\\)",
-          "Factors \\(= (3+1)(2+1) = 4 \\times 3 = 12\\)",
+          "Factors \\(= (3+1)(2+1) = 12\\)",
           "<strong>Answer: 12 factors</strong>"
         ]
       },
       {
-        q: "The LCM of two numbers is 60 and the GCF is 4. If one number is 12, what is the other?",
+        q: "[LCM×GCF] The LCM of two numbers is 60 and the GCF is 4. If one number is 12, what is the other?",
         steps: [
-          "Use \\(x \\times y = \\text{LCM} \\times \\text{GCF}\\)",
-          "\\(12 \\times y = 60 \\times 4 = 240\\)",
-          "\\(y = 20\\)",
+          "\\(x \\times y = \\text{LCM} \\times \\text{GCF}\\)",
+          "\\(12 \\times y = 60 \\times 4 = 240\\) → \\(y = 20\\)",
           "<strong>Answer: 20</strong>"
         ]
       },
       {
-        q: "Is 360 a perfect square? A perfect cube?",
+        q: "[Perfect Square/Cube] Is 360 a perfect square? A perfect cube?",
         steps: [
           "\\(360 = 2^3 \\times 3^2 \\times 5^1\\)",
-          "Perfect square? Exponents must all be even → 3 and 1 are odd → <strong>No</strong>",
-          "Perfect cube? Exponents must all be divisible by 3 → 2 and 1 are not → <strong>No</strong>"
+          "Perfect square? All exponents must be even → 3 and 1 are odd → <strong>No</strong>",
+          "Perfect cube? All exponents divisible by 3 → 2 and 1 are not → <strong>No</strong>"
+        ]
+      },
+      {
+        q: "[Word Problem] Bus A departs every 12 minutes; Bus B every 18 minutes. They depart together at 8:00 AM. When is the next time they depart together?",
+        steps: [
+          "Find LCM(12, 18): \\(12=2^2 \\times 3,\\ 18=2 \\times 3^2\\) → LCM \\(= 2^2 \\times 3^2 = 36\\) minutes",
+          "\\(8{:}00 + 36\\) minutes \\(= 8{:}36\\) AM",
+          "<strong>Answer: 8:36 AM</strong>"
+        ]
+      },
+      {
+        q: "[Smallest Multiple] What is the smallest perfect square that is a multiple of 12?",
+        steps: [
+          "\\(12 = 2^2 \\times 3\\) — the exponent of 3 is odd (1), so not a perfect square.",
+          "Multiply by 3 to make all exponents even: \\(12 \\times 3 = 36 = 2^2 \\times 3^2\\) ✓",
+          "<strong>Answer: 36</strong>"
+        ]
+      },
+      {
+        q: "[DS-style] How many positive factors does \\(n\\) have? Given: (1) \\(n = p^3\\) where \\(p\\) is prime; (2) \\(n = 8\\).",
+        steps: [
+          "Statement (1): \\(n=p^3\\) → factors \\(=(3+1)=4\\). Could be \\(2^3=8\\) or \\(3^3=27\\) — answer is always 4. <strong>Sufficient.</strong>",
+          "Statement (2): \\(n=8=2^3\\) → factors \\(= 1,2,4,8\\) → 4. <strong>Sufficient.</strong>",
+          "<strong>Answer: Either statement alone is sufficient (D)</strong>"
         ]
       }
     ]
@@ -513,26 +646,57 @@ const topics = [
     ],
     practice: [
       {
-        q: "Simplify \\(\\sqrt{72}\\)",
+        q: "[Simplify] Simplify \\(\\sqrt{72}\\)",
         steps: [
-          "Factor: \\(72 = 36 \\times 2\\)",
+          "\\(72 = 36 \\times 2\\)",
           "\\(\\sqrt{72} = \\sqrt{36} \\cdot \\sqrt{2} = 6\\sqrt{2}\\)",
           "<strong>Answer: \\(6\\sqrt{2}\\)</strong>"
         ]
       },
       {
-        q: "Is \\(\\sqrt{25} + \\sqrt{16} = \\sqrt{41}\\)?",
+        q: "[Conceptual] Is \\(\\sqrt{25} + \\sqrt{16} = \\sqrt{41}\\)?",
         steps: [
-          "Left side: \\(5 + 4 = 9\\)",
-          "Right side: \\(\\sqrt{41} \\approx 6.4\\)",
-          "<strong>Answer: No! \\(\\sqrt{a} + \\sqrt{b} \\neq \\sqrt{a+b}\\)</strong>"
+          "Left: \\(5 + 4 = 9\\); Right: \\(\\sqrt{41} \\approx 6.4\\)",
+          "<strong>Answer: No — \\(\\sqrt{a} + \\sqrt{b} \\neq \\sqrt{a+b}\\)</strong>"
         ]
       },
       {
-        q: "Simplify \\(\\frac{\\sqrt{50}}{\\sqrt{2}}\\)",
+        q: "[Division] Simplify \\(\\dfrac{\\sqrt{50}}{\\sqrt{2}}\\)",
         steps: [
           "\\(= \\sqrt{\\frac{50}{2}} = \\sqrt{25} = 5\\)",
           "<strong>Answer: 5</strong>"
+        ]
+      },
+      {
+        q: "[Rationalize] Simplify \\(\\dfrac{6}{\\sqrt{3}}\\)",
+        steps: [
+          "Multiply numerator and denominator by \\(\\sqrt{3}\\)",
+          "\\(= \\frac{6\\sqrt{3}}{3} = 2\\sqrt{3}\\)",
+          "<strong>Answer: \\(2\\sqrt{3}\\)</strong>"
+        ]
+      },
+      {
+        q: "[Comparison] Which is greater: \\(\\sqrt{50}\\) or \\(7\\)?",
+        steps: [
+          "Compare squares: \\((\\sqrt{50})^2 = 50\\) vs \\(7^2 = 49\\)",
+          "\\(50 > 49\\) → \\(\\sqrt{50} > 7\\)",
+          "<strong>Answer: \\(\\sqrt{50} > 7\\)</strong>"
+        ]
+      },
+      {
+        q: "[Equation] Solve: \\(\\sqrt{x+5} = 4\\)",
+        steps: [
+          "Square both sides: \\(x + 5 = 16\\)",
+          "\\(x = 11\\)",
+          "Check: \\(\\sqrt{11+5} = \\sqrt{16} = 4\\) ✓",
+          "<strong>Answer: \\(x = 11\\)</strong>"
+        ]
+      },
+      {
+        q: "[Exponent Form] Simplify: \\(x^{1/2} \\cdot x^{1/3}\\)",
+        steps: [
+          "Same base → add exponents: \\(x^{\\frac{1}{2} + \\frac{1}{3}} = x^{\\frac{3+2}{6}} = x^{5/6}\\)",
+          "<strong>Answer: \\(x^{5/6}\\)</strong>"
         ]
       }
     ]
@@ -564,26 +728,57 @@ const topics = [
     ],
     practice: [
       {
-        q: "What is the units digit of \\(7^{23}\\)?",
+        q: "[Units Digit] What is the units digit of \\(7^{23}\\)?",
         steps: [
-          "Cycle for 7: 7→9→3→1 (repeats every 4)",
-          "\\(23 \\div 4 = 5\\) remainder \\(3\\) → 3rd in cycle",
-          "<strong>Answer: units digit = 3</strong>"
+          "Cycle for 7: 7→9→3→1 (every 4)",
+          "\\(23 \\div 4\\) = rem 3 → 3rd in cycle = 3",
+          "<strong>Answer: 3</strong>"
         ]
       },
       {
-        q: "Simplify: \\(\\frac{4^6 \\cdot 4^2}{4^5}\\)",
+        q: "[Like Bases] Simplify: \\(\\dfrac{4^6 \\cdot 4^2}{4^5}\\)",
         steps: [
           "Numerator: \\(4^{6+2} = 4^8\\)",
-          "\\(\\frac{4^8}{4^5} = 4^{8-5} = 4^3 = 64\\)",
+          "\\(\\frac{4^8}{4^5} = 4^3 = 64\\)",
           "<strong>Answer: 64</strong>"
         ]
       },
       {
-        q: "If \\(2^x = 64\\), what is \\(x\\)?",
+        q: "[Solve for Exponent] If \\(2^x = 64\\), what is \\(x\\)?",
         steps: [
           "\\(64 = 2^6\\)",
           "<strong>Answer: \\(x = 6\\)</strong>"
+        ]
+      },
+      {
+        q: "[Negative Exponent] Simplify: \\(\\dfrac{3^5}{3^8}\\)",
+        steps: [
+          "\\(= 3^{5-8} = 3^{-3} = \\frac{1}{3^3} = \\frac{1}{27}\\)",
+          "<strong>Answer: \\(\\frac{1}{27}\\)</strong>"
+        ]
+      },
+      {
+        q: "[Comparison] Which is greater: \\(2^{30}\\) or \\(3^{20}\\)?",
+        steps: [
+          "Rewrite with same exponent base: \\(2^{30} = (2^3)^{10} = 8^{10}\\); \\(3^{20} = (3^2)^{10} = 9^{10}\\)",
+          "\\(9^{10} > 8^{10}\\)",
+          "<strong>Answer: \\(3^{20} > 2^{30}\\)</strong>"
+        ]
+      },
+      {
+        q: "[Power to a Power] Simplify: \\((2^3)^4 \\cdot 2^{-5}\\)",
+        steps: [
+          "\\((2^3)^4 = 2^{12}\\)",
+          "\\(2^{12} \\cdot 2^{-5} = 2^{12-5} = 2^7 = 128\\)",
+          "<strong>Answer: 128</strong>"
+        ]
+      },
+      {
+        q: "[Units Digit — Large Power] What is the units digit of \\(3^{100}\\)?",
+        steps: [
+          "Cycle for 3: 3→9→7→1 (every 4)",
+          "\\(100 \\div 4 = 25\\) rem 0 → remainder 0 means last in cycle = 1",
+          "<strong>Answer: 1</strong>"
         ]
       }
     ]
@@ -607,20 +802,44 @@ const topics = [
     ],
     practice: [
       {
-        q: "Evaluate: \\(3 + 4 \\times 2^2 - (5-3)\\)",
+        q: "[Order of Operations] Evaluate: \\(3 + 4 \\times 2^2 - (5-3)\\)",
         steps: [
-          "Parentheses: \\((5-3) = 2\\) → \\(3 + 4 \\times 2^2 - 2\\)",
-          "Exponents: \\(2^2 = 4\\) → \\(3 + 4 \\times 4 - 2\\)",
-          "Multiply: \\(4 \\times 4 = 16\\) → \\(3 + 16 - 2\\)",
-          "<strong>Answer: \\(17\\)</strong>"
+          "P: \\((5-3)=2\\) → E: \\(2^2=4\\) → M: \\(4 \\times 4=16\\) → A/S: \\(3+16-2=17\\)",
+          "<strong>Answer: 17</strong>"
         ]
       },
       {
-        q: "Simplify: \\(\\frac{4(x+3) - 4 \\cdot 3}{4}\\)",
+        q: "[Distributive] Simplify: \\(\\dfrac{4(x+3) - 12}{4}\\)",
         steps: [
           "Distribute: \\(4x + 12 - 12 = 4x\\)",
           "\\(\\frac{4x}{4} = x\\)",
           "<strong>Answer: \\(x\\)</strong>"
+        ]
+      },
+      {
+        q: "[Common Error] A student says \\(2 + 3 \\times 4 = 20\\). What's the correct answer?",
+        steps: [
+          "Multiplication before addition: \\(3 \\times 4 = 12\\) first",
+          "Then: \\(2 + 12 = 14\\)",
+          "<strong>Answer: 14 (not 20 — the student forgot PEMDAS)</strong>"
+        ]
+      },
+      {
+        q: "[Nested Expression] Evaluate: \\(2 \\times (3 + 4^2) - 10 \\div 2\\)",
+        steps: [
+          "P + E inside: \\(3 + 16 = 19\\)",
+          "Multiply: \\(2 \\times 19 = 38\\)",
+          "Divide: \\(10 \\div 2 = 5\\)",
+          "Subtract: \\(38 - 5 = 33\\)",
+          "<strong>Answer: 33</strong>"
+        ]
+      },
+      {
+        q: "[Factoring via Distributive] Factor: \\(6x^2 + 9x\\)",
+        steps: [
+          "GCF of \\(6x^2\\) and \\(9x\\) is \\(3x\\)",
+          "\\(= 3x(2x + 3)\\)",
+          "<strong>Answer: \\(3x(2x+3)\\)</strong>"
         ]
       }
     ]

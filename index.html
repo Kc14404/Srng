@@ -1290,7 +1290,8 @@ function handleImageUpload(e) {
     const result = ev.target.result;
     const base64 = result.split(',')[1];
     uploadedImageData = base64;
-    uploadedMimeType = file.type;
+    // Use MIME type from data URL (accurate) — file.type can lie if extension mismatches content
+    uploadedMimeType = result.split(';')[0].split(':')[1] || file.type;
     const preview = document.getElementById('imgPreview');
     preview.src = result;
     preview.style.display = 'block';

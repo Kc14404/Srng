@@ -73,10 +73,22 @@ RESPONSE FORMAT — respond ONLY with valid JSON, no other text:
 
   let messageContent;
   if (image) {
+    // Detect actual image type from base64 magic bytes (overrides any mismatched mimeType)
+    function detectMimeType(b64) {
+      try {
+        const bytes = atob(b64.slice(0, 16));
+        if (bytes.charCodeAt(0) === 0x89 && bytes[1] === 'P') return 'image/png';
+        if (bytes.charCodeAt(0) === 0xFF && bytes.charCodeAt(1) === 0xD8) return 'image/jpeg';
+        if (bytes.startsWith('GIF')) return 'image/gif';
+        if (bytes.startsWith('RIFF')) return 'image/webp';
+      } catch(e) {}
+      return image.mimeType || 'image/png';
+    }
+    const detectedMime = detectMimeType(image.data);
     messageContent = [
       {
         type: 'image',
-        source: { type: 'base64', media_type: image.mimeType || 'image/png', data: image.data }
+        source: { type: 'base64', media_type: detectedMime, data: image.data }
       },
       { type: 'text', text: 'Analyze this GMAT question and return JSON only.' }
     ];

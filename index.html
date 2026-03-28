@@ -518,18 +518,58 @@
 
     .tq-list { display: flex; flex-direction: column; gap: 14px; }
     .tq-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-    .tq-header { padding: 16px; cursor: pointer; }
-    .tq-header:hover { background: rgba(108,99,255,0.06); }
-    .tq-type-badge { display: inline-block; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; background: rgba(108,99,255,0.18); color: #a78bfa; border-radius: 4px; padding: 2px 8px; margin-bottom: 8px; }
-    .tq-question { font-size: 0.88rem; color: #e0e4f0; line-height: 1.6; margin-bottom: 8px; }
-    .tq-cta { font-size: 0.75rem; color: var(--muted); }
-    .tq-item.open .tq-cta { display: none; }
-    .tq-solution { display: none; border-top: 1px solid var(--border); padding: 16px; background: rgba(0,0,0,0.2); }
-    .tq-item.open .tq-solution { display: block; }
-    .tq-sol-section { margin-bottom: 12px; font-size: 0.84rem; line-height: 1.65; color: #b8c0d4; }
-    .tq-sol-section strong { color: #e0e4f0; }
-    .tq-steps { margin: 6px 0 0 16px; }
-    .tq-steps li { margin-bottom: 5px; }
+    .tq-header { padding: 16px; cursor: pointer; transition: background 0.15s; }
+    .tq-header:hover { background: rgba(108,99,255,0.07); }
+    .tq-type-badge { display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; background: rgba(108,99,255,0.18); color: #a78bfa; border-radius: 4px; padding: 2px 8px; margin-bottom: 10px; }
+    .tq-question { font-size: 0.86rem; color: #dde2f0; line-height: 1.7; white-space: pre-line; }
+    .tq-cta-1 { font-size: 0.74rem; color: var(--muted); margin-top: 10px; transition: color 0.15s; }
+    .tq-item.tq-open1 .tq-cta-1 { color: var(--accent2); }
+    .tq-layer1 { display: none; border-top: 1px solid var(--border); padding: 14px 16px; background: rgba(0,0,0,0.18); }
+    .tq-item.tq-open1 .tq-layer1 { display: block; }
+    .tq-analysis { margin-bottom: 14px; }
+    .tq-a-row { font-size: 0.83rem; line-height: 1.6; color: #b8c0d4; margin-bottom: 6px; }
+    .tq-a-label { font-weight: 600; color: #e0e4f0; margin-right: 4px; }
+    .tq-sol-btn { background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.35); color: #a78bfa; border-radius: 6px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; width: 100%; text-align: center; transition: background 0.15s; margin-bottom: 0; }
+    .tq-sol-btn:hover { background: rgba(108,99,255,0.25); }
+    .tq-layer2 { display: none; padding-top: 14px; border-top: 1px solid var(--border); margin-top: 12px; }
+    .tq-item.tq-open2 .tq-layer2 { display: block; }
+    .tq-steps { margin: 0 0 0 16px; font-size: 0.84rem; line-height: 1.75; color: #c0c8dc; }
+    .tq-steps li { margin-bottom: 6px; }
+    .tq-steps li:last-child { color: #7dd3a8; font-weight: 600; }
+
+    /* ── Desktop Layout (≥1024px) ── */
+    @media (min-width: 1024px) {
+      body { display: flex; flex-direction: row; min-height: 100vh; overflow-x: hidden; }
+      .dt-sidebar {
+        width: 240px; min-width: 240px; height: 100vh; position: sticky; top: 0;
+        background: #0e0f1a; border-right: 1px solid rgba(255,255,255,0.07);
+        display: flex; flex-direction: column; padding: 0; overflow-y: auto; z-index: 100;
+        scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+      }
+      .dt-logo { display: flex; align-items: center; gap: 10px; padding: 22px 20px 18px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+      .dt-logo-icon { font-size: 1.3rem; }
+      .dt-logo-text { font-size: 1rem; font-weight: 700; color: #e0e4f0; letter-spacing: 0.02em; }
+      .dt-nav { padding: 14px 12px 10px; }
+      .dt-nav-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); padding: 0 8px; margin-bottom: 6px; }
+      .dt-nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 7px; font-size: 0.84rem; color: rgba(255,255,255,0.55); text-decoration: none; transition: all 0.15s; margin-bottom: 2px; }
+      .dt-nav-item:hover { background: rgba(255,255,255,0.06); color: #e0e4f0; }
+      .dt-nav-item.dt-active { background: rgba(108,99,255,0.18); color: #a78bfa; font-weight: 600; }
+      .dt-nav-icon { font-size: 0.95rem; width: 20px; text-align: center; }
+      .dt-topics { padding: 10px 12px; border-top: 1px solid rgba(255,255,255,0.07); flex: 1; overflow-y: auto; }
+      .dt-topics-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); padding: 0 8px; margin-bottom: 6px; }
+      .dt-topic-link { display: block; padding: 7px 10px; border-radius: 6px; font-size: 0.8rem; color: rgba(255,255,255,0.45); text-decoration: none; cursor: pointer; transition: all 0.15s; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: none; background: none; width: 100%; text-align: left; }
+      .dt-topic-link:hover { background: rgba(255,255,255,0.05); color: #c0c8dc; }
+      .dt-topic-link.dt-topic-active { color: var(--accent2, #7dd3a8); font-weight: 500; }
+      .dt-sidebar-footer { padding: 14px 12px; border-top: 1px solid rgba(255,255,255,0.07); }
+      .dt-footer-btn { width: 100%; padding: 9px; background: rgba(108,99,255,0.12); border: 1px solid rgba(108,99,255,0.3); border-radius: 8px; color: #a78bfa; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+      .dt-footer-btn:hover { background: rgba(108,99,255,0.22); }
+      .site-nav { display: none; }
+      .dt-main-wrap { flex: 1; min-width: 0; overflow-x: hidden; }
+      .hub { max-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 32px 36px; }
+      .topic-card.active { grid-column: 1 / -1; }
+      header { text-align: left; padding: 32px 36px 28px; }
+      .fab { right: 32px; bottom: 32px; }
+    }
   </style>
 </head>
 <body>
@@ -690,25 +730,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Computation",
-        q: "What is \\(\\frac{3}{4} \\div \\frac{9}{16}\\)?",
-        identify: "Division of fractions — use KCF",
-        method: "Keep-Change-Flip then multiply",
-        steps: ["Keep 3/4", "Change ÷ to ×", "Flip 9/16 to 16/9", "(3/4)×(16/9) — cross cancel: 3 and 9 → 1/3, 16 and 4 → 4/1, so (1×4)/(1×3) = 4/3", "Answer: 4/3"]
+        subtype: "Part-Whole with Absolute Difference",
+        q: "A jar contains red and blue marbles. If 2/5 of the marbles are red and there are 12 more blue marbles than red marbles, how many marbles are in the jar?\n\n(A) 24\n(B) 36\n(C) 48\n(D) 60\n(E) 72",
+        type: "Part-whole fraction setup — tests modeling the gap between complementary fractions and an absolute difference",
+        signals: "Fraction for one part (2/5) plus absolute difference (12 more blue). Connect fraction gap to the count.",
+        trap: "(B) 36 — setting up blue = 12 instead of blue − red = 12",
+        method: "Let total = T. Red = 2T/5, Blue = 3T/5. Blue − Red = T/5 = 12.",
+        steps: ["Red = (2/5)T, Blue = (3/5)T", "Blue − Red = (3/5)T − (2/5)T = (1/5)T = 12", "T = 60. Verify: Red = 24, Blue = 36, difference = 12 ✓", "Answer: (D) 60"]
       },
       {
-        type: "Comparison",
-        q: "Which is larger: \\(\\frac{7}{15}\\) or \\(\\frac{8}{17}\\)?",
-        identify: "Comparison of two fractions without common denominator — use Bowtie",
-        method: "Cross-multiply to compare",
-        steps: ["7×17 = 119 vs 8×15 = 120", "120 > 119, so 8/17 > 7/15", "Answer: 8/17"]
+        subtype: "Fraction Comparison with Variable",
+        q: "If x/y = 3/4 where x and y are positive, which of the following must be true?\n\n(A) (x+1)/(y+1) < 3/4\n(B) (x+1)/(y+1) = 3/4\n(C) (x+1)/(y+1) > 3/4\n(D) (x+1)/(y+1) could be greater or less than 3/4\n(E) (x+1)/(y+1) = 4/5",
+        type: "Fraction behavior under equal addition — tests understanding of how adding the same number to numerator and denominator changes a fraction",
+        signals: "A ratio is given, then both parts increase by the same amount. Adding a positive constant to both parts of a proper fraction (< 1) moves it toward 1.",
+        trap: "(B) — assuming equal addition preserves the ratio, or (E) — mechanically adding 1 to num and denom of 3/4",
+        method: "Algebraic proof: (x+1)/(y+1) − x/y = (y−x)/[y(y+1)]. Since x/y = 3/4 < 1, we have y > x, so y − x > 0, meaning the difference is positive.",
+        steps: ["Cross-multiply to compare: (x+1)·y vs (y+1)·x → xy + y vs xy + x → y vs x", "Since x/y = 3/4 and both positive, y > x, so y > x is always true", "Therefore (x+1)/(y+1) > x/y = 3/4 always", "Verify: x=3, y=4 → 4/5 = 0.80 > 0.75 ✓; x=6, y=8 → 7/9 ≈ 0.778 > 0.75 ✓", "Answer: (C) (x+1)/(y+1) > 3/4"]
       },
       {
-        type: "Word Problem",
-        q: "A recipe calls for 2/3 cup of sugar. If you make 1.5 batches, how much sugar is needed?",
-        identify: "Fraction × mixed number",
-        method: "Convert 1.5 to 3/2, then multiply",
-        steps: ["2/3 × 3/2", "Cross cancel: 3/3=1 and 2/2=1 → (1×1)/(1×1) = 1", "Answer: 1 cup"]
+        subtype: "Successive Fraction Operations",
+        q: "A store buys a jacket at cost and marks it up by 1/2 of its cost. During a sale, the store discounts the jacket by 1/5 of its marked-up price. The final selling price is what fraction of the original cost?\n\n(A) 3/10\n(B) 7/10\n(C) 6/5\n(D) 13/10\n(E) 3/2",
+        type: "Sequential fraction changes — tests whether you apply each change to the correct base (previous result, not original)",
+        signals: "'Marks up by 1/2 of cost' then 'discounts 1/5 of marked-up price' — two operations on different bases",
+        trap: "(B) 7/10 — subtracting 1/5 from the original cost instead of from the marked-up price",
+        method: "Apply sequentially: Cost = C → Marked = C + C/2 = 3C/2 → Discount = (1/5)(3C/2) → Final = 3C/2 − 3C/10.",
+        steps: ["Cost = C. Marked-up price = C + (1/2)C = 3C/2", "Discount amount = (1/5)(3C/2) = 3C/10", "Final selling price = 3C/2 − 3C/10 = 15C/10 − 3C/10 = 12C/10 = 6C/5", "Answer: (C) 6/5 — the final price is 6/5 of the original cost"]
       }
     ]
   },
@@ -813,25 +859,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Algebra",
-        q: "If 3x + 7 = 22, what is x?",
-        identify: "Simple linear equation — isolate variable",
-        method: "Inverse operations",
-        steps: ["3x = 22−7 = 15", "x = 15/3 = 5", "Answer: 5"]
+        subtype: "Rate-Time-Distance: Opposite Directions",
+        q: "Two trains leave the same station at the same time, traveling in opposite directions. Train A travels at 60 mph and Train B at 90 mph. After how many hours will they be 450 miles apart?\n\n(A) 2\n(B) 3\n(C) 4\n(D) 5\n(E) 7.5",
+        type: "Combined rate for objects moving apart — tests whether you add or use only one rate",
+        signals: "'Opposite directions' and 'apart' — combined rate = sum of individual rates",
+        trap: "(D) 5 — using only one train's speed (450/90 = 5) instead of combined rate",
+        method: "Combined rate = 60 + 90 = 150 mph. Time = Distance / Rate = 450/150.",
+        steps: ["Objects moving in opposite directions: combined rate = 60 + 90 = 150 mph", "Time = Distance ÷ Combined Rate = 450 ÷ 150 = 3 hours", "Verify: Train A covers 180 mi, Train B covers 270 mi, total gap = 450 ✓", "Answer: (B) 3"]
       },
       {
-        type: "Quadratic",
-        q: "What are the solutions to \\(x^2 - 5x + 6 = 0\\)?",
-        identify: "Quadratic set to zero — factor",
-        method: "Find p,q where p×q=6 and p+q=−5",
-        steps: ["p=−2, q=−3", "(x−2)(x−3)=0", "x=2 or x=3", "Answer: x=2 or x=3"]
+        subtype: "Quadratic in Disguised Form",
+        q: "If x⁴ − 13x² + 36 = 0, how many distinct real values of x satisfy the equation?\n\n(A) 1\n(B) 2\n(C) 3\n(D) 4\n(E) 6",
+        type: "Higher-degree equation reducible to quadratic — tests recognition of substitution u = x²",
+        signals: "x⁴ and x² terms with no x³ or x term — classic quadratic-in-disguise pattern",
+        trap: "(B) 2 — finding only the positive square roots and missing the negative ones",
+        method: "Let u = x². Equation becomes u² − 13u + 36 = 0. Solve for u, then back-substitute.",
+        steps: ["Substitute u = x²: u² − 13u + 36 = 0", "Factor: (u − 4)(u − 9) = 0, so u = 4 or u = 9", "Back-substitute: x² = 4 → x = ±2; x² = 9 → x = ±3", "Four distinct real values: −3, −2, 2, 3", "Answer: (D) 4"]
       },
       {
-        type: "System",
-        q: "If 2x+y=10 and x−y=2, what is x?",
-        identify: "System of 2 equations — add to eliminate y",
-        method: "Addition/elimination",
-        steps: ["Add equations: 3x=12", "x=4", "Answer: x=4"]
+        subtype: "System with Hidden Constraint (DS)",
+        q: "What is the value of a + b?\n\n(1) 3a + 2b = 19\n(2) a − b = 2\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
+        type: "System of equations DS — tests whether you can extract a + b without solving for a and b individually",
+        signals: "Two linear equations in two unknowns — together they yield unique a and b (and hence a + b), but neither alone pins down a + b",
+        trap: "(E) — students who try to solve for a and b individually and get confused, or who think two equations aren't enough because the question asks for a sum",
+        method: "Two independent linear equations in two unknowns → unique solution → a + b is determined. Or solve directly.",
+        steps: ["Statement (1) alone: 3a + 2b = 19 — infinitely many (a,b) pairs, so a + b varies. NOT sufficient.", "Statement (2) alone: a − b = 2 — infinitely many pairs. NOT sufficient.", "Together: From (2), a = b + 2. Substitute into (1): 3(b+2) + 2b = 19 → 5b + 6 = 19 → b = 13/5, a = 23/5, a+b = 36/5.", "Two equations, two unknowns → unique solution → sufficient.", "Answer: (C) BOTH statements TOGETHER are sufficient"]
       }
     ]
   },
@@ -937,25 +989,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Conceptual",
-        q: "If n is an odd integer, which of the following must be even? (A) n+1 (B) n² (C) n+n",
-        identify: "Must-be-even with odd variable — apply parity rules",
-        method: "Test each with n=1 and n=3",
-        steps: ["n+1: 1+1=2 ✓ even", "n²: 1²=1 ✗ odd", "n+n=2n: 2×1=2 ✓ always even", "Answer: A (n+1) and C (n+n=2n) are always even"]
+        subtype: "Must-Be-True Parity",
+        q: "If n is an odd integer, which of the following must be even?\n\n(A) n²\n(B) n² + 1\n(C) n(n + 2)\n(D) 3n + 1\n(E) n² + n + 1",
+        type: "Odd/even properties — tests systematic parity analysis rather than testing a single value",
+        signals: "'Must be even' and 'n is odd' — need to prove for ALL odd n, not just test n = 1",
+        trap: "(C) n(n+2) — since n is odd and n+2 is odd, the product is odd × odd = odd. Students pick this thinking one factor is even.",
+        method: "Test each choice with n = odd. odd² = odd, odd²+1 = even, odd(odd+2) = odd·odd = odd, 3·odd+1 = odd+1 = even, odd²+odd+1 = odd+odd+1 = odd.",
+        steps: ["(A) n² = odd² = odd ✗", "(B) n² + 1 = odd + 1 = even ✓ — candidate", "(C) n(n+2) = odd × odd = odd ✗", "(D) 3n + 1 = 3(odd) + 1 = odd + 1 = even ✓ — also works", "Both (B) and (D) are even, but GMAT would only list one. Check (D): 3(1)+1=4 ✓, 3(3)+1=10 ✓, 3(5)+1=16 ✓", "Answer: (B) n² + 1 — always even when n is odd"]
       },
       {
-        type: "DS-style",
-        q: "Is integer k divisible by 6? (1) k is divisible by 2 (2) k is divisible by 3",
-        identify: "DS yes/no — divisibility by 6 requires both 2 and 3",
-        method: "AD/BCE split",
-        steps: ["S1 alone: divisible by 2 but not necessarily 3 → Not sufficient", "S2 alone: divisible by 3 but not necessarily 2 → Not sufficient", "Together: divisible by both 2 and 3 → divisible by 6 → Sufficient", "Answer: C"]
+        subtype: "Consecutive Integer Sum",
+        q: "The sum of 5 consecutive integers is 235. What is the largest of these integers?\n\n(A) 45\n(B) 47\n(C) 48\n(D) 49\n(E) 51",
+        type: "Consecutive integer properties — tests the shortcut that the sum of consecutive integers equals the middle value × count",
+        signals: "'5 consecutive integers' and a sum — for an odd count, the middle integer equals sum ÷ count",
+        trap: "(A) 45 — dividing 235 ÷ 5 = 47 but forgetting that 47 is the MIDDLE number, not the largest, or (E) 51 — adding 5 to the middle instead of 2",
+        method: "Middle of 5 consecutive integers = sum ÷ 5. Largest = middle + 2.",
+        steps: ["Let the 5 consecutive integers be n, n+1, n+2, n+3, n+4", "Sum = 5n + 10 = 235 → 5n = 225 → n = 45", "The integers are 45, 46, 47, 48, 49", "Largest = 49. Or: middle = 235/5 = 47, largest = 47 + 2 = 49", "Answer: (D) 49"]
       },
       {
-        type: "Word Problem",
-        q: "The product of three consecutive even integers is 480. What is the middle integer?",
-        identify: "Consecutive integers product — set up algebraic expression",
-        method: "Let integers = n−2, n, n+2",
-        steps: ["(n−2)(n)(n+2)=480", "Try n=8: 6×8×10=480 ✓", "Answer: 8"]
+        subtype: "Sign of Product (DS)",
+        q: "Is the product xyz positive?\n\n(1) xy > 0\n(2) xz > 0\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
+        type: "Sign analysis DS — tests systematic consideration of positive/negative cases for multiple variables",
+        signals: "Product sign question with pair-product clues — need to determine the sign of all three variables",
+        trap: "(C) — students think both together determine the sign, but they actually do: if xy > 0 and xz > 0, then x,y same sign AND x,z same sign → all three same sign → xyz = positive (all positive) or negative (all negative). Need to check: if all positive, xyz > 0; if all negative, xyz < 0. So answer is E!",
+        method: "Analyze sign combinations. xy > 0 means same sign. xz > 0 means same sign. Together: all three have the same sign. But xyz: if all positive → positive; if all negative → negative.",
+        steps: ["Statement (1): xy > 0 → x,y same sign. Nothing about z. NOT sufficient.", "Statement (2): xz > 0 → x,z same sign. Nothing about y. NOT sufficient.", "Together: x,y same sign AND x,z same sign → all three same sign", "All positive: xyz > 0 ✓. All negative: xyz = (−)(−)(−) < 0 ✗", "Cannot determine — xyz could be positive or negative", "Answer: (E) Statements (1) and (2) TOGETHER are NOT sufficient"]
       }
     ]
   },
@@ -1061,25 +1119,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Computation",
-        q: "How many trailing zeros does 25! have?",
-        identify: "Trailing zeros in factorial — count factor pairs of (2×5)",
-        method: "Count 5s in prime factorization",
-        steps: ["⌊25/5⌋=5, ⌊25/25⌋=1", "Total 5s = 5+1 = 6", "Answer: 6 trailing zeros"]
+        subtype: "Trailing Zeros in Factorial",
+        q: "How many trailing zeros does 75! have?\n\n(A) 15\n(B) 16\n(C) 18\n(D) 19\n(E) 25",
+        type: "Trailing zeros = pairs of 2×5 in prime factorization. Since factors of 2 are abundant, count factors of 5.",
+        signals: "Trailing zeros + factorial — always count factors of 5 using floor division",
+        trap: "(A) 15 — counting only multiples of 5 (75/5 = 15) and missing that 25, 50, 75 contribute an extra factor of 5 each",
+        method: "Count factors of 5: ⌊75/5⌋ + ⌊75/25⌋ + ⌊75/125⌋ = 15 + 3 + 0",
+        steps: ["Multiples of 5 up to 75: ⌊75/5⌋ = 15", "Multiples of 25 (extra factor of 5): ⌊75/25⌋ = 3", "Multiples of 125: ⌊75/125⌋ = 0", "Total factors of 5 = 15 + 3 = 18", "Answer: (C) 18"]
       },
       {
-        type: "Conceptual",
-        q: "Is 3,456 divisible by 9?",
-        identify: "Divisibility test — sum of digits",
-        method: "Add all digits, check if divisible by 9",
-        steps: ["3+4+5+6=18", "18÷9=2", "Answer: Yes, divisible by 9"]
+        subtype: "Divisibility Sufficiency (DS)",
+        q: "Is positive integer n divisible by 12?\n\n(1) n is divisible by 8\n(2) n is divisible by 6\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
+        type: "LCM-based divisibility reasoning — tests whether students correctly use LCM rather than multiplying",
+        signals: "Two divisibility conditions and asking about a third. Key: if n divisible by 8 and 6, is it divisible by 12?",
+        trap: "(E) — students who think 8 and 6 don't guarantee 12, or those who multiply 8 × 6 = 48. The key is LCM(8,6) = 24, and 12 divides 24.",
+        method: "S1: n div by 8 → n could be 8,16,24,32... not all div by 12. S2: n div by 6 → n could be 6,12,18... not all div by 12. Together: n div by LCM(8,6) = 24. Is 24 div by 12? Yes.",
+        steps: ["Statement (1): n divisible by 8. Try n=8: 8/12 = no. NOT sufficient.", "Statement (2): n divisible by 6. Try n=6: 6/12 = no. NOT sufficient.", "Together: n must be divisible by LCM(8,6) = 24", "24 is divisible by 12, so any multiple of 24 is divisible by 12 ✓", "Answer: (C) BOTH statements TOGETHER are sufficient"]
       },
       {
-        type: "DS-style",
-        q: "Is n divisible by 12? (1) n is divisible by 4 (2) n is divisible by 6",
-        identify: "DS — 12=4×3=2²×3; need all prime factors",
-        method: "Check if both statements together give 2²×3",
-        steps: ["S1: divisible by 4=2²", "S2: divisible by 6=2×3", "Together: 2² and 3 both present → divisible by 12", "Answer: C"]
+        subtype: "Factorial Expression: Largest Prime Factor",
+        q: "What is the largest prime factor of 15! − 13! ?\n\n(A) 11\n(B) 13\n(C) 17\n(D) 19\n(E) 29",
+        type: "Factorial simplification — tests ability to factor out common terms rather than computing huge numbers",
+        signals: "Subtraction of factorials — factor out the smaller factorial: 15! − 13! = 13!(15·14 − 1)",
+        trap: "(B) 13 — students who assume the largest prime factor of a factorial expression is the largest prime in the factorial itself",
+        method: "Factor out 13!: 15! − 13! = 13!(15 × 14 − 1) = 13! × 209. Then find largest prime factor of 209.",
+        steps: ["Factor: 15! = 15 × 14 × 13!, so 15! − 13! = 13!(15 × 14 − 1) = 13! × 209", "Factor 209: 209 = 11 × 19", "13! contains primes up to 13. The expression = 13! × 11 × 19", "All prime factors: 2, 3, 5, 7, 11, 13, 19. Largest = 19", "Answer: (D) 19"]
       }
     ]
   },
@@ -1613,15 +1677,20 @@ topics.forEach((topic, i) => {
 
   const tqHTML = topic.typicalQuestions.map((tq, j) => `
     <div class="tq-item" id="tq-${i}-${j}">
-      <div class="tq-header" onclick="toggleTQ('tq-${i}-${j}')">
-        <div class="tq-type-badge">${tq.type}</div>
+      <div class="tq-header" onclick="toggleTQ1('tq-${i}-${j}')">
+        <div class="tq-type-badge">${tq.subtype}</div>
         <div class="tq-question">${tq.q}</div>
-        <div class="tq-cta">Tap to see how to solve ▼</div>
+        <div class="tq-cta-1">▼ Analyze this question</div>
       </div>
-      <div class="tq-solution">
-        <div class="tq-sol-section"><strong>🔍 Identify:</strong> ${tq.identify}</div>
-        <div class="tq-sol-section"><strong>📐 Method:</strong> ${tq.method}</div>
-        <div class="tq-sol-section"><strong>📋 Steps:</strong>
+      <div class="tq-layer1">
+        <div class="tq-analysis">
+          <div class="tq-a-row"><span class="tq-a-label">Type:</span> ${tq.type}</div>
+          <div class="tq-a-row"><span class="tq-a-label">Signals:</span> ${tq.signals}</div>
+          <div class="tq-a-row"><span class="tq-a-label">Trap:</span> ${tq.trap}</div>
+          <div class="tq-a-row"><span class="tq-a-label">Method:</span> ${tq.method}</div>
+        </div>
+        <button class="tq-sol-btn" onclick="toggleTQ2(event,'tq-${i}-${j}')">Show Solution ▼</button>
+        <div class="tq-layer2">
           <ol class="tq-steps">
             ${tq.steps.map(s => `<li>${s}</li>`).join('')}
           </ol>
@@ -1702,9 +1771,17 @@ function switchTab(e, i, tab) {
   document.getElementById(`tab-${tab}-${i}`).classList.add('active');
 }
 
-function toggleTQ(id) {
+function toggleTQ1(id) {
   const item = document.getElementById(id);
-  item.classList.toggle('open');
+  item.classList.toggle('tq-open1');
+  if (!item.classList.contains('tq-open1')) item.classList.remove('tq-open2');
+}
+function toggleTQ2(e, id) {
+  e.stopPropagation();
+  const item = document.getElementById(id);
+  item.classList.toggle('tq-open2');
+  const btn = item.querySelector('.tq-sol-btn');
+  btn.textContent = item.classList.contains('tq-open2') ? 'Hide Solution ▲' : 'Show Solution ▼';
 }
 
 function toggleAnswer(i, j) {
@@ -1885,6 +1962,59 @@ async function analyzeQuestion() {
 
 function revealHint(i) {
   document.getElementById(`hint-${i}`).classList.toggle('revealed');
+}
+</script>
+<script>
+(function buildDesktopSidebar() {
+  if (window.innerWidth < 1024) return;
+  var path = window.location.pathname;
+  var isIndex = path === '/' || path.endsWith('index.html') || path === '';
+  var isVerbal = path.endsWith('verbal.html');
+  var isDI = path.endsWith('di.html');
+  var isLog = path.endsWith('log.html');
+  function navItem(href, icon, label, active) {
+    return '<a href="'+href+'" class="dt-nav-item'+(active?' dt-active':'')+'"><span class="dt-nav-icon">'+icon+'</span>'+label+'</a>';
+  }
+  var cards = document.querySelectorAll('.topic-card');
+  var topicHTML = '';
+  if (cards.length) {
+    topicHTML = '<div class="dt-topics-label">Topics</div>';
+    cards.forEach(function(card, i) {
+      var title = (card.querySelector('h2') || card.querySelector('h3') || card.querySelector('.card-title') || {}).textContent || 'Topic '+(i+1);
+      topicHTML += '<button class="dt-topic-link" data-card-idx="'+i+'" onclick="dtScrollToCard('+i+')">'+title+'</button>';
+    });
+  }
+  var sidebar = document.createElement('aside');
+  sidebar.className = 'dt-sidebar';
+  sidebar.id = 'dt-sidebar';
+  sidebar.innerHTML =
+    '<div class="dt-logo"><span class="dt-logo-icon">\uD83C\uDF93</span><span class="dt-logo-text">GMAT Hub</span></div>' +
+    '<nav class="dt-nav"><div class="dt-nav-label">Sections</div>' +
+    navItem('index.html','\uD83D\uDCD0','Math',isIndex) +
+    navItem('verbal.html','\uD83D\uDCAC','Verbal',isVerbal) +
+    navItem('di.html','\uD83D\uDCCA','Data Insights',isDI) +
+    navItem('log.html','\uD83D\uDCCB','Question Log',isLog) +
+    '</nav>' +
+    '<div class="dt-topics" id="dt-topics">'+topicHTML+'</div>' +
+    '<div class="dt-sidebar-footer"><button class="dt-footer-btn" onclick="if(document.querySelector(\'.fab\'))document.querySelector(\'.fab\').click()">\uD83D\uDD0D Analyzer</button></div>';
+  document.body.insertBefore(sidebar, document.body.firstChild);
+  var wrap = document.createElement('div');
+  wrap.className = 'dt-main-wrap';
+  while (sidebar.nextSibling) wrap.appendChild(sidebar.nextSibling);
+  document.body.appendChild(wrap);
+})();
+function dtScrollToCard(idx) {
+  var cards = document.querySelectorAll('.topic-card');
+  var card = cards[idx];
+  if (!card) return;
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (!card.classList.contains('active')) {
+    var header = card.querySelector('.card-header');
+    if (header) header.click();
+  }
+  document.querySelectorAll('.dt-topic-link').forEach(function(el, i) {
+    el.classList.toggle('dt-topic-active', i === idx);
+  });
 }
 </script>
 </body>

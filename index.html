@@ -1162,7 +1162,8 @@ topics.forEach((topic, i) => {
   card.id = `topic-${i}`;
 
   const eqItems = topic.equations.map(eq => {
-    const textOnlyMatch = eq.formula.match(/^\$\$\\text\{([\s\S]*)\}\$\$$/);
+    // Only bypass KaTeX for formulas that are PURELY $$\text{plain text}$$ — no math symbols inside
+    const textOnlyMatch = eq.formula.match(/^\$\$\\text\{([^\\{}]+)\}\$\$$/);
     const rendered = textOnlyMatch
       ? `<span class="eq-plain-text">${textOnlyMatch[1]}</span>`
       : eq.formula;

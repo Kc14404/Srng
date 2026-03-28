@@ -646,7 +646,8 @@ topics.forEach((topic, i) => {
 
   const eqItems = topic.equations.map(eq => {
     // If formula is purely $$\text{...}$$ (no real math), render as plain text to avoid KaTeX overflow
-    const textOnlyMatch = eq.formula.match(/^\$\$\\text\{([\s\S]*)\}\$\$$/);
+    // Only bypass KaTeX for formulas that are PURELY $$\text{plain text}$$ — no math symbols inside
+    const textOnlyMatch = eq.formula.match(/^\$\$\\text\{([^\\{}]+)\}\$\$$/);
     const rendered = textOnlyMatch
       ? `<span class="eq-plain-text">${textOnlyMatch[1]}</span>`
       : eq.formula;

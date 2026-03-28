@@ -1243,25 +1243,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Computation",
-        q: "What is the GCF of 48 and 180?",
-        identify: "GCF — prime factorize both",
-        method: "Take lower exponents of common primes",
-        steps: ["48=2⁴×3, 180=2²×3²×5", "Common: 2² and 3¹", "GCF=4×3=12", "Answer: 12"]
+        subtype: "GCF Word Problem",
+        q: "A carpenter has two boards, one 72 inches long and one 90 inches long. He wants to cut them into equal-length pieces with no wood left over. What is the greatest possible length of each piece, in inches?\n\n(A) 6\n(B) 9\n(C) 12\n(D) 18\n(E) 36",
+        type: "GCF application — tests recognizing when 'greatest equal piece with no remainder' means GCF",
+        signals: "'Equal-length pieces,' 'no wood left over,' 'greatest possible' — all signal GCF",
+        trap: "(E) 36 — picking the smaller board length's factor without checking it divides both, or (A) 6 — picking any common factor instead of the greatest",
+        method: "GCF(72, 90). Use prime factorization: 72 = 2³ × 3², 90 = 2 × 3² × 5. GCF = 2 × 3² = 18.",
+        steps: ["72 = 2³ × 3² and 90 = 2 × 3² × 5", "GCF = product of lowest powers of shared primes = 2¹ × 3² = 18", "Check: 72 ÷ 18 = 4 pieces, 90 ÷ 18 = 5 pieces, no remainder ✓", "Answer: (D) 18"]
       },
       {
-        type: "Computation",
-        q: "What is the LCM of 12 and 18?",
-        identify: "LCM — prime factorize",
-        method: "Take higher exponents of all primes",
-        steps: ["12=2²×3, 18=2×3²", "Take 2² and 3²", "LCM=4×9=36", "Answer: 36"]
+        subtype: "LCM Scheduling Problem",
+        q: "Bus A departs every 12 minutes and Bus B departs every 18 minutes. If both buses depart together at 9:00 AM, at what time will they next depart together?\n\n(A) 9:18 AM\n(B) 9:30 AM\n(C) 9:36 AM\n(D) 10:00 AM\n(E) 12:36 PM",
+        type: "LCM application — tests recognizing 'next coincidence' of two repeating events means LCM of their periods",
+        signals: "'Every 12 minutes,' 'every 18 minutes,' 'next depart together' — LCM finds the next sync point",
+        trap: "(B) 9:30 — adding the two periods (12 + 18 = 30) instead of finding LCM",
+        method: "LCM(12, 18). 12 = 2² × 3, 18 = 2 × 3². LCM = 2² × 3² = 36. Next together = 36 min after 9:00.",
+        steps: ["12 = 2² × 3, 18 = 2 × 3²", "LCM = 2² × 3² = 36 minutes", "36 minutes after 9:00 AM = 9:36 AM", "Verify: 36/12 = 3 departures of A, 36/18 = 2 departures of B ✓", "Answer: (C) 9:36 AM"]
       },
       {
-        type: "Conceptual",
-        q: "How many factors does 360 have?",
-        identify: "Factor counting — use formula",
-        method: "Prime factorize then apply (a+1)(b+1)(c+1)",
-        steps: ["360=2³×3²×5¹", "(3+1)(2+1)(1+1)=4×3×2=24", "Answer: 24 factors"]
+        subtype: "Number of Factors: Perfect Square Trap",
+        q: "How many positive integers less than 100 have exactly 3 positive divisors?\n\n(A) 2\n(B) 3\n(C) 4\n(D) 5\n(E) 10",
+        type: "Number-of-divisors theory — tests the insight that exactly 3 divisors means the number is the square of a prime",
+        signals: "'Exactly 3 positive divisors' — only numbers of the form p² (prime squared) have exactly 3 divisors: 1, p, p²",
+        trap: "(E) 10 — counting all perfect squares under 100, not realizing only PRIME squares have exactly 3 divisors",
+        method: "A number has exactly 3 divisors iff it is p² for some prime p. Find all primes p with p² < 100.",
+        steps: ["If n = p² (p prime), divisors are 1, p, p² — exactly 3", "Primes p where p² < 100: p < 10", "Primes less than 10: 2, 3, 5, 7", "Their squares: 4, 9, 25, 49 — all less than 100", "Answer: (C) 4"]
       }
     ]
   },
@@ -1365,25 +1371,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Computation",
-        q: "Simplify: \\(\\sqrt{72}\\)",
-        identify: "Simplify radical — find largest perfect square factor",
-        method: "√(36×2)=√36×√2",
-        steps: ["72=36×2", "√72=√36×√2=6√2", "Answer: 6√2"]
+        subtype: "Nested Radical Simplification",
+        q: "What is the value of √75 + √27 − √12 ?\n\n(A) √90\n(B) 6√3\n(C) 4√3\n(D) 5√3\n(E) 8√3",
+        type: "Radical simplification by extracting perfect squares — tests combining like radical terms",
+        signals: "Sum/difference of radicals with different radicands — simplify each to k√n form, then combine like terms",
+        trap: "(A) √90 — adding numbers under the radical directly: √(75+27−12) = √90",
+        method: "Simplify each: √75 = 5√3, √27 = 3√3, √12 = 2√3. Combine like terms.",
+        steps: ["√75 = √(25×3) = 5√3", "√27 = √(9×3) = 3√3", "√12 = √(4×3) = 2√3", "5√3 + 3√3 − 2√3 = 6√3", "Answer: (B) 6√3"]
       },
       {
-        type: "Algebra",
-        q: "If \\(\\sqrt{x+5}=4\\), what is x?",
-        identify: "Radical equation — square both sides",
-        method: "Isolate radical, then square",
-        steps: ["Square both sides: x+5=16", "x=11. Check: √16=4 ✓", "Answer: x=11"]
+        subtype: "Radical Equation: Extraneous Solution",
+        q: "If √(2x + 3) = x, how many real solutions does the equation have?\n\n(A) 0\n(B) 1\n(C) 2\n(D) 3\n(E) Infinitely many",
+        type: "Radical equations requiring squaring — tests whether students check for extraneous solutions",
+        signals: "Square root equals a variable expression — squaring may introduce extraneous solutions. Must verify.",
+        trap: "(C) 2 — squaring gives x² = 2x + 3 → x² − 2x − 3 = 0 → (x−3)(x+1) = 0 → x = 3 or x = −1, but failing to check that √(2x+3) ≥ 0 means x ≥ 0",
+        method: "Square both sides, solve quadratic, then CHECK each solution in the original equation.",
+        steps: ["Square both sides: 2x + 3 = x²", "Rearrange: x² − 2x − 3 = 0 → (x − 3)(x + 1) = 0", "x = 3 or x = −1", "Check x = 3: √(6+3) = √9 = 3 = x ✓", "Check x = −1: √(−2+3) = √1 = 1 ≠ −1 ✗ (extraneous)", "Answer: (B) 1 — only x = 3 is valid"]
       },
       {
-        type: "Comparison",
-        q: "Which is greater: \\(\\sqrt{50}\\) or 7?",
-        identify: "Compare radical to integer",
-        method: "Square both sides (both positive)",
-        steps: ["√50 vs 7 → 50 vs 49", "50>49, so √50>7", "Answer: √50 is greater"]
+        subtype: "Comparing Expressions with Roots",
+        q: "Which of the following is greatest?\n\n(A) √5 + √3\n(B) √15\n(C) 2√2\n(D) 4\n(E) √7 + 1",
+        type: "Radical comparison — tests systematic comparison by squaring rather than estimating",
+        signals: "Multiple radical expressions to compare — squaring eliminates radicals for cleaner comparison",
+        trap: "(B) √15 ≈ 3.87 looks large, but (A) √5 + √3 ≈ 2.24 + 1.73 = 3.97 is larger. Picking √15 by eyeballing.",
+        method: "Approximate or square each value. Compare systematically.",
+        steps: ["(A) √5 + √3 ≈ 2.236 + 1.732 = 3.968", "(B) √15 ≈ 3.873", "(C) 2√2 ≈ 2.828", "(D) 4.000", "(E) √7 + 1 ≈ 2.646 + 1 = 3.646", "Answer: (D) 4 — it is the greatest value"]
       }
     ]
   },
@@ -1490,25 +1502,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Computation",
-        q: "What is the units digit of \\(7^{53}\\)?",
-        identify: "Units digit of power — find cycle",
-        method: "7 cycles: 7,9,3,1,7,9,3,1 (length 4)",
-        steps: ["53 mod 4 = 1", "Position 1 in cycle = 7", "Answer: units digit is 7"]
+        subtype: "Units Digit of Large Power",
+        q: "What is the units digit of 7⁴³ + 3¹⁷?\n\n(A) 0\n(B) 3\n(C) 6\n(D) 8\n(E) 10",
+        type: "Units digit cycling — tests knowledge of the repeating units-digit pattern for bases",
+        signals: "Large exponents + units digit — find cycle length for each base, use modular arithmetic",
+        trap: "(E) 10 — adding 7 + 3 = 10, or (A) 0 — computing units digits separately but adding wrong",
+        method: "7's cycle: 7,9,3,1 (period 4). 3's cycle: 3,9,7,1 (period 4). Find position in cycle.",
+        steps: ["7's units digits cycle: 7¹=7, 7²=9, 7³=3, 7⁴=1, repeats every 4", "43 mod 4 = 3, so 7⁴³ has units digit = 7³'s units digit = 3", "3's units digits cycle: 3¹=3, 3²=9, 3³=7, 3⁴=1, repeats every 4", "17 mod 4 = 1, so 3¹⁷ has units digit = 3¹'s units digit = 3", "Units digit of sum: 3 + 3 = 6", "Answer: (C) 6"]
       },
       {
-        type: "Simplification",
-        q: "Simplify: \\(\\frac{2^3 \\times 2^5}{2^4}\\)",
-        identify: "Exponential expression with same base",
-        method: "Multiply-Add then Divide-Subtract",
-        steps: ["Numerator: 2³×2⁵=2⁸", "2⁸÷2⁴=2⁴=16", "Answer: 16"]
+        subtype: "Exponential Equation: Unequal Bases",
+        q: "If 4ˣ = 8ˣ⁻¹, what is the value of x?\n\n(A) 1\n(B) 2\n(C) 3\n(D) 4\n(E) 6",
+        type: "Exponential equation with different bases — tests converting to a common base",
+        signals: "4 and 8 are both powers of 2 — rewrite as 2²ˣ = 2³⁽ˣ⁻¹⁾ and equate exponents",
+        trap: "(A) 1 — guessing, or arithmetic errors when equating exponents",
+        method: "Convert: 4 = 2², 8 = 2³. So 2²ˣ = 2³⁽ˣ⁻¹⁾. Equate exponents: 2x = 3(x−1).",
+        steps: ["Rewrite: 4ˣ = (2²)ˣ = 2²ˣ and 8ˣ⁻¹ = (2³)ˣ⁻¹ = 2³ˣ⁻³", "Equate exponents: 2x = 3x − 3", "Solve: −x = −3, so x = 3", "Verify: 4³ = 64, 8² = 64 ✓", "Answer: (C) 3"]
       },
       {
-        type: "Algebra",
-        q: "If \\(3^x = 81\\), what is x?",
-        identify: "Exponential equation — express both sides as same base",
-        method: "Rewrite 81 as power of 3",
-        steps: ["81=3⁴", "3^x=3⁴ → x=4", "Answer: x=4"]
+        subtype: "Variable Exponent (DS)",
+        q: "Is 2ⁿ > n² ?\n\n(1) n > 4\n(2) n is a positive integer\n\n(A) Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.\n(B) Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.\n(C) BOTH statements TOGETHER are sufficient, but NEITHER alone is sufficient.\n(D) EACH statement ALONE is sufficient.\n(E) Statements (1) and (2) TOGETHER are NOT sufficient.",
+        type: "Exponential vs polynomial growth DS — tests understanding that 2ⁿ eventually dominates n²",
+        signals: "Comparing exponential to polynomial — for n > 4, 2ⁿ > n² always. But need n > 4 to be definitive.",
+        trap: "(C) — thinking both statements are needed, but actually Statement (1) alone is sufficient since for ALL n > 4 (including non-integers), 2ⁿ > n²",
+        method: "Check: at n=4, 2⁴=16 = 4²=16 (equal). For n > 4, 2ⁿ grows faster. S1 gives n > 4, sufficient. S2 alone: n could be 1,2,3,... not always true.",
+        steps: ["Statement (1): n > 4. Check n=5: 2⁵=32 > 25=5². For all n > 4, 2ⁿ > n². SUFFICIENT.", "Statement (2): n is a positive integer. n=1: 2>1 yes. n=2: 4=4 no. NOT sufficient.", "Statement (1) alone is sufficient.", "Answer: (A) Statement (1) ALONE is sufficient"]
       }
     ]
   },
@@ -1594,25 +1612,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Computation",
-        q: "Evaluate: 3 + 4 × 2 − (6÷3)²",
-        identify: "Multi-operation — strict PEMDAS order",
-        method: "P→E→MD→AS",
-        steps: ["P: (6÷3)=2", "E: 2²=4", "MD: 4×2=8", "AS: 3+8−4=7", "Answer: 7"]
+        subtype: "Left-to-Right Division Trap",
+        q: "What is the value of 48 ÷ 4 × 3 + 2² − (10 − 3)?\n\n(A) 4\n(B) 26\n(C) 33\n(D) 36\n(E) 40",
+        type: "Order of operations with left-to-right rule for × and ÷ — tests PEMDAS precision",
+        signals: "Mixed ÷ and × at same level — must go left to right, not multiplication first",
+        trap: "(A) 4 — doing 4 × 3 = 12 first, then 48 ÷ 12 = 4, instead of left-to-right: 48 ÷ 4 = 12, then 12 × 3 = 36",
+        method: "PEMDAS: Parentheses first, then Exponents, then Multiply/Divide left-to-right, then Add/Subtract left-to-right.",
+        steps: ["Parentheses: (10 − 3) = 7", "Exponents: 2² = 4", "Multiply/Divide left-to-right: 48 ÷ 4 = 12, then 12 × 3 = 36", "Add/Subtract left-to-right: 36 + 4 − 7 = 33", "Answer: (C) 33"]
       },
       {
-        type: "Common Error",
-        q: "What is 12 ÷ 3 × 4?",
-        identify: "Division and multiplication at same level — left to right",
-        method: "L-to-R, don't multiply first",
-        steps: ["12÷3=4", "4×4=16", "Answer: 16 (NOT 1 — common mistake: doing × before ÷)"]
+        subtype: "Negative Sign Distribution",
+        q: "What is the value of −(3 − 8x) + 2(x − 5) when x = 3?\n\n(A) −7\n(B) 7\n(C) 11\n(D) 17\n(E) 23",
+        type: "Distributing negative signs and substitution — tests careful sign handling",
+        signals: "Leading negative sign before parentheses — must distribute to ALL terms inside before substituting",
+        trap: "(A) −7 — not distributing the negative to the −8x term (getting −3 − 8x instead of −3 + 8x)",
+        method: "Distribute first, combine like terms, then substitute.",
+        steps: ["Distribute: −(3 − 8x) = −3 + 8x", "Distribute: 2(x − 5) = 2x − 10", "Combine: −3 + 8x + 2x − 10 = 10x − 13", "Substitute x = 3: 10(3) − 13 = 30 − 13 = 17", "Answer: (D) 17"]
       },
       {
-        type: "Algebra",
-        q: "If a=2 and b=3, evaluate: a(b+a)² − b",
-        identify: "Expression evaluation — follow PEMDAS with substitution",
-        method: "Substitute then apply PEMDAS",
-        steps: ["b+a=5", "5²=25", "a×25=2×25=50", "50−b=50−3=47", "Answer: 47"]
+        subtype: "Absolute Value + PEMDAS",
+        q: "What is the value of |3² − 4 × 5| + |3 − 7|² ?\n\n(A) 5\n(B) 11\n(C) 21\n(D) 27\n(E) 33",
+        type: "Absolute value within order-of-operations — tests when to apply absolute value in the PEMDAS sequence",
+        signals: "Absolute value bars act like parentheses — evaluate inside first, then apply absolute value, then continue with operations outside",
+        trap: "(B) 11 — applying absolute value to individual terms inside (|9| − |20| = 9 − 20 = −11 → 11) instead of evaluating 9 − 20 = −11 → |−11| = 11, then forgetting to square the second absolute value",
+        method: "Treat | | as grouping symbols. Evaluate inside → take absolute value → then apply outside exponents/operations.",
+        steps: ["First absolute value: 3² − 4×5 = 9 − 20 = −11, so |−11| = 11", "Second absolute value: 3 − 7 = −4, so |−4| = 4", "Apply exponent to second: 4² = 16", "Add: 11 + 16 = 27", "Answer: (D) 27"]
       }
     ]
   }

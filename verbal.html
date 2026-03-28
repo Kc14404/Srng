@@ -289,18 +289,24 @@
 
     .tq-list { display: flex; flex-direction: column; gap: 14px; }
     .tq-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-    .tq-header { padding: 16px; cursor: pointer; }
-    .tq-header:hover { background: rgba(108,99,255,0.06); }
-    .tq-type-badge { display: inline-block; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; background: rgba(108,99,255,0.18); color: #a78bfa; border-radius: 4px; padding: 2px 8px; margin-bottom: 8px; }
-    .tq-question { font-size: 0.88rem; color: #e0e4f0; line-height: 1.6; margin-bottom: 8px; }
-    .tq-cta { font-size: 0.75rem; color: var(--muted); }
-    .tq-item.open .tq-cta { display: none; }
-    .tq-solution { display: none; border-top: 1px solid var(--border); padding: 16px; background: rgba(0,0,0,0.2); }
-    .tq-item.open .tq-solution { display: block; }
-    .tq-sol-section { margin-bottom: 12px; font-size: 0.84rem; line-height: 1.65; color: #b8c0d4; }
-    .tq-sol-section strong { color: #e0e4f0; }
-    .tq-steps { margin: 6px 0 0 16px; }
-    .tq-steps li { margin-bottom: 5px; }
+    .tq-header { padding: 16px; cursor: pointer; transition: background 0.15s; }
+    .tq-header:hover { background: rgba(108,99,255,0.07); }
+    .tq-type-badge { display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; background: rgba(108,99,255,0.18); color: #a78bfa; border-radius: 4px; padding: 2px 8px; margin-bottom: 10px; }
+    .tq-question { font-size: 0.86rem; color: #dde2f0; line-height: 1.7; white-space: pre-line; }
+    .tq-cta-1 { font-size: 0.74rem; color: var(--muted); margin-top: 10px; transition: color 0.15s; }
+    .tq-item.tq-open1 .tq-cta-1 { color: var(--accent2); }
+    .tq-layer1 { display: none; border-top: 1px solid var(--border); padding: 14px 16px; background: rgba(0,0,0,0.18); }
+    .tq-item.tq-open1 .tq-layer1 { display: block; }
+    .tq-analysis { margin-bottom: 14px; }
+    .tq-a-row { font-size: 0.83rem; line-height: 1.6; color: #b8c0d4; margin-bottom: 6px; }
+    .tq-a-label { font-weight: 600; color: #e0e4f0; margin-right: 4px; }
+    .tq-sol-btn { background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.35); color: #a78bfa; border-radius: 6px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; width: 100%; text-align: center; transition: background 0.15s; margin-bottom: 0; }
+    .tq-sol-btn:hover { background: rgba(108,99,255,0.25); }
+    .tq-layer2 { display: none; padding-top: 14px; border-top: 1px solid var(--border); margin-top: 12px; }
+    .tq-item.tq-open2 .tq-layer2 { display: block; }
+    .tq-steps { margin: 0 0 0 16px; font-size: 0.84rem; line-height: 1.75; color: #c0c8dc; }
+    .tq-steps li { margin-bottom: 6px; }
+    .tq-steps li:last-child { color: #7dd3a8; font-weight: 600; }
 
     /* ── Desktop Layout (≥1024px) ── */
     @media (min-width: 1024px) {
@@ -439,25 +445,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Identify Conclusion",
-        q: "\"City Y increased its police budget by 20%. Crime fell 15% the following year. Therefore, increased police funding reduces crime.\" — What is the conclusion?",
-        identify: "'Therefore' signals the conclusion",
-        method: "Conclusion-First",
-        steps: ["Spot 'therefore'", "Everything after = conclusion: 'increased police funding reduces crime'", "Everything before = premises", "Answer: 'Increased police funding reduces crime.'"]
+        subtype: "Circular Reasoning Detection",
+        q: "\"Employees at Devlin Corp are the most productive in the industry because no other company's workforce achieves as much output per hour.\"\n\nWhich of the following best describes a flaw in the reasoning above?\n\n(A) It draws a conclusion about a whole group based on a small sample.\n(B) It confuses a cause with an effect.\n(C) It restates the conclusion as evidence rather than providing independent support.\n(D) It fails to consider alternative explanations for the observed productivity.\n(E) It relies on an inappropriate comparison between dissimilar industries.",
+        type: "Circular reasoning / tautology — the premise is just a restatement of the conclusion in different words",
+        signals: "'Most productive' in the conclusion = 'achieves the most output per hour' in the premise. Same claim, reworded.",
+        trap: "(D) — students pick 'alternative explanations' because it sounds like a standard CR flaw, but the core issue is the argument doesn't provide any NEW evidence at all",
+        method: "Check whether the premise provides information independent of the conclusion. If premise = conclusion rephrased, it's circular reasoning.",
+        steps: ["Conclusion: Devlin employees are the most productive in the industry", "Premise: no other company's workforce achieves as much output per hour", "'Most productive' and 'most output per hour' mean the same thing — no independent evidence", "This is circular reasoning — the premise restates the conclusion", "Answer: (C) It restates the conclusion as evidence"]
       },
       {
-        type: "Identify Assumption",
-        q: "Same argument — what is the key assumption?",
-        identify: "Assumption = unstated bridge between premises and conclusion",
-        method: "Ask 'what must be true for this to work?'",
-        steps: ["Premises: budget +20%, crime −15%", "Conclusion: funding causes crime reduction", "Assumption: no other factor (new officers, season, demographics) caused the drop", "Answer: No other concurrent factor caused the crime reduction."]
+        subtype: "Unstated Assumption: Causal Claim",
+        q: "After Greyfield City installed 50 new streetlights along Park Avenue, nighttime pedestrian accidents on that street decreased by 40% over the following year. Clearly, the new streetlights were responsible for the reduction in accidents.\n\nThe argument above assumes which of the following?\n\n(A) The streetlights were more expensive than the ones they replaced.\n(B) No other changes occurred on Park Avenue that could have affected the nighttime accident rate.\n(C) Pedestrian traffic on Park Avenue increased during the year in question.\n(D) Nighttime accidents are more dangerous than daytime accidents.\n(E) Other streets in Greyfield City did not experience a similar decrease in accidents.",
+        type: "Necessary assumption for a causal claim — the argument assumes no alternative cause explains the correlation",
+        signals: "'After X, Y happened. Clearly X caused Y.' Classic post hoc argument. The assumption must eliminate rival causes.",
+        trap: "(E) — tempting because it seems to isolate the cause, but the key assumption is about Park Avenue specifically. Other streets' trends don't directly affect whether something else changed on Park Avenue.",
+        method: "For causal claims, the key assumption is 'nothing else changed.' Apply the Negation Test: if other changes DID occur, the conclusion is destroyed.",
+        steps: ["Conclusion: streetlights caused the decrease in accidents", "This is a causal claim based on temporal sequence (after → therefore because)", "The assumption must bridge 'streetlights installed and accidents fell' to 'streetlights CAUSED the decrease'", "Negation test on (B): 'Other changes DID occur that could affect accidents' — this destroys the conclusion", "Negation test on (E): 'Other streets DID see similar decreases' — weakens but doesn't destroy (could still be streetlights on Park Ave)", "Answer: (B) No other changes occurred that could have affected the rate"]
       },
       {
-        type: "Identify Premise",
-        q: "\"All successful startups have strong leadership. TechCo has strong leadership. Therefore, TechCo will succeed.\" — How many premises?",
-        identify: "Count statements that support the conclusion",
-        method: "Find signal words (all, has)",
-        steps: ["'All successful startups have strong leadership' = premise 1", "'TechCo has strong leadership' = premise 2", "Answer: 2 premises"]
+        subtype: "Counter-Premise Role Identification",
+        q: "Some analysts argue that remote work decreases team cohesion. **However, studies show that remote teams use digital collaboration tools more frequently than in-office teams.** Nevertheless, companies that have shifted to fully remote models report a 25% increase in employee turnover compared to hybrid companies, suggesting that fully remote arrangements do weaken organizational bonds.\n\nThe bolded statement plays which of the following roles in the argument?\n\n(A) It is the main conclusion of the argument.\n(B) It provides direct evidence for the argument's conclusion.\n(C) It introduces a consideration that the argument ultimately overrides.\n(D) It contradicts the claim made by some analysts.\n(E) It provides background information unrelated to the conclusion.",
+        type: "Boldface / argument structure — tests identifying whether a statement supports, opposes, or concedes within the argument",
+        signals: "'However' introduces the bolded statement (a counter-point), then 'Nevertheless' pivots back to the main conclusion. The bolded statement is a concession that gets overridden.",
+        trap: "(D) — students think the bolded statement 'contradicts' the analysts, but it actually introduces a competing consideration that the argument acknowledges and then dismisses. (B) is also tempting but the evidence AGAINST the bolded claim comes after.",
+        method: "Map the argument structure: Claim A → 'However' (counter-consideration) → 'Nevertheless' (override + main conclusion). The 'However' piece is a concession.",
+        steps: ["Main conclusion: fully remote arrangements weaken organizational bonds (last clause)", "Some analysts' claim: remote work decreases cohesion (opening)", "Bolded statement: remote teams use collaboration tools more (introduced by 'However' — a counter-point)", "'Nevertheless' signals the argument overrides this counter-point with turnover data", "The bolded statement is a concession the argument acknowledges but ultimately dismisses", "Answer: (C) It introduces a consideration that the argument ultimately overrides"]
       }
     ]
   },
@@ -537,25 +549,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Causal Weaken",
-        q: "\"A study found that people who drink 2+ cups of coffee daily have 30% lower rates of depression. Therefore, drinking coffee reduces depression.\" — Weaken this.",
-        identify: "Causal claim + correlation data → look for alternative explanation",
-        method: "Alternative Cause Attack",
-        steps: ["Conclusion: coffee reduces depression", "Assumption: no other cause explains lower depression rates", "Best weakener: people who drink coffee are more socially active, and social activity reduces depression", "Answer: People who regularly drink coffee tend to drink it in social settings, which independently reduces depression."]
+        subtype: "Weaken: Alternative Explanation",
+        q: "A pharmaceutical company found that patients who took its new drug Zyntera for six months had 35% fewer migraines than they had in the six months prior to taking the drug. The company concluded that Zyntera is effective at reducing migraines.\n\nWhich of the following, if true, most seriously weakens the company's conclusion?\n\n(A) Some patients reported mild side effects such as drowsiness while taking Zyntera.\n(B) Migraine frequency tends to decrease naturally over time for most chronic sufferers.\n(C) Zyntera is more expensive than other migraine medications currently on the market.\n(D) The study tracked patients across multiple hospitals in different regions.\n(E) Patients who took a placebo during the same period reported no change in migraine frequency.",
+        type: "Weaken a causal claim by providing an alternative explanation for the observed result",
+        signals: "Before/after comparison with no control group explicitly mentioned. The conclusion attributes improvement to the drug. An alternative cause would weaken this.",
+        trap: "(E) — this actually STRENGTHENS the argument (placebo group got no benefit, so the drug's effect seems real). Students pick it because it mentions a comparison group.",
+        method: "Find the answer that offers a plausible alternative reason for the improvement that has nothing to do with the drug.",
+        steps: ["Conclusion: Zyntera reduces migraines (based on before/after comparison)", "To weaken: show that something OTHER than Zyntera could explain the improvement", "(A) Side effects — irrelevant to efficacy. Doesn't weaken.", "(B) Natural decrease over time — if migraines decrease on their own, the drug may not deserve credit. WEAKENS.", "(C) Cost — irrelevant to whether the drug works.", "(D) Multiple hospitals — if anything, strengthens by showing broader applicability.", "(E) Placebo showed no change — this STRENGTHENS (the drug did better than placebo).", "Answer: (B) Migraine frequency tends to decrease naturally over time"]
       },
       {
-        type: "Data Flaw Weaken",
-        q: "\"Our customer survey shows 94% satisfaction. Clearly, our product is excellent.\" — Weaken this.",
-        identify: "Survey as evidence → question the data quality",
-        method: "Survey Flaw Attack",
-        steps: ["Who took the survey?", "When/how was it administered?", "Best flaw: survey only sent to customers who made repeat purchases — already satisfied customers", "Answer: The survey was only distributed to customers who made a second purchase."]
+        subtype: "Weaken: Unrepresentative Sample",
+        q: "A survey of 500 subscribers to Gourmet Kitchen magazine found that 78% prefer organic ingredients when cooking at home. The magazine concluded that a large majority of home cooks prefer organic ingredients.\n\nWhich of the following, if true, most seriously weakens the conclusion?\n\n(A) The survey was conducted online rather than by phone.\n(B) Gourmet Kitchen subscribers are more health-conscious and affluent than the average home cook.\n(C) Some respondents may not have answered the survey honestly.\n(D) Organic ingredients have become less expensive over the past decade.\n(E) The survey had a response rate of 65%, which is considered high for mail surveys.",
+        type: "Weaken by showing the sample is unrepresentative of the broader population the conclusion targets",
+        signals: "Conclusion about 'home cooks' (general) based on 'Gourmet Kitchen subscribers' (specific). The gap is representativeness.",
+        trap: "(C) — generic 'dishonest responses' weakens ANY survey and doesn't specifically target this argument's flaw. Students pick it because it sounds safe.",
+        method: "The conclusion generalizes from subscribers to all home cooks. Show why subscribers ≠ typical home cooks.",
+        steps: ["Conclusion: most HOME COOKS prefer organic", "Evidence: survey of GOURMET KITCHEN SUBSCRIBERS", "The logical gap: are subscribers representative of all home cooks?", "(B) directly attacks this: subscribers are more health-conscious and affluent — they're systematically different from average home cooks", "Their preference for organic likely overestimates the general population's preference", "Answer: (B) Subscribers are more health-conscious and affluent than the average home cook"]
       },
       {
-        type: "Generalization Weaken",
-        q: "\"In our city, switching to LED streetlights reduced crime by 15%. All cities should switch to LED lighting.\" — Weaken.",
-        identify: "Generalizing from one city → attack the scope",
-        method: "Scope Shift",
-        steps: ["Evidence: one city, one result", "Conclusion: all cities", "Weakener: other cities may not have same conditions", "Answer: Cities with different crime patterns or existing lighting infrastructure may not see the same reduction."]
+        subtype: "Weaken: Flawed Analogy",
+        q: "The city of Millbrook reduced traffic congestion by 30% after implementing congestion pricing on its downtown roads. The similarly sized city of Ashford should therefore implement congestion pricing to reduce its own traffic problems.\n\nWhich of the following, if true, most seriously weakens the argument?\n\n(A) Congestion pricing generates significant revenue for the implementing city.\n(B) Ashford's traffic congestion is primarily caused by highway bottlenecks outside the downtown area.\n(C) Millbrook implemented congestion pricing three years ago.\n(D) Some Millbrook residents opposed congestion pricing before it was implemented.\n(E) Ashford has a slightly larger population than Millbrook.",
+        type: "Weaken an argument by analogy — show a key difference that makes the comparison invalid",
+        signals: "One city's success → another city should do the same. The conclusion relies on the two situations being comparable.",
+        trap: "(E) — a slight population difference seems relevant but 'similarly sized' is already acknowledged. This is too weak to seriously undermine the analogy.",
+        method: "Find the answer that identifies a structural difference between the two cities that would make the same solution ineffective in Ashford.",
+        steps: ["Conclusion: Ashford should use congestion pricing (because it worked in Millbrook)", "The analogy assumes: what works in Millbrook will work in Ashford", "(A) Revenue is irrelevant to whether it reduces congestion", "(B) Ashford's congestion comes from highway bottlenecks, not downtown — congestion pricing on downtown roads wouldn't address the actual problem. WEAKENS.", "(C) Timing — irrelevant to whether it would work in Ashford", "(D) Opposition — doesn't affect whether it would be effective", "(E) Slight size difference — too minor", "Answer: (B) Ashford's congestion is caused by highway bottlenecks outside downtown"]
       }
     ]
   },
@@ -633,25 +651,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Assumption",
-        q: "\"Our new medication reduced symptoms in rats. It will therefore be effective in humans.\" — What assumption does this rely on?",
-        identify: "Causal generalization from animals to humans",
-        method: "Negation Test",
-        steps: ["Candidate: 'The biological mechanisms causing symptoms are similar in rats and humans'", "Negate: 'The mechanisms are NOT similar'", "If mechanisms differ, rat results tell us nothing about humans → argument collapses", "Answer: The biological mechanisms are similar between rats and humans."]
+        subtype: "Assumption: Negation Test",
+        q: "A company plans to boost employee satisfaction by allowing all employees to work from home on Fridays. Management reasons that employees who have more flexibility in where they work are more satisfied with their jobs.\n\nThe argument above assumes which of the following?\n\n(A) Employees currently work five days a week in the office.\n(B) Working from home on Fridays will not create problems that offset the benefit of increased flexibility.\n(C) Other companies have successfully implemented work-from-home policies.\n(D) Employee satisfaction is the company's top priority.\n(E) Employees prefer working from home to working in the office.",
+        type: "Necessary assumption — apply the Negation Test to find the answer whose negation destroys the conclusion",
+        signals: "Plan-type argument: action → desired outcome. The assumption bridges 'more flexibility' to 'more satisfaction' without introducing NEW problems.",
+        trap: "(E) — seems obvious but isn't necessary. The argument only needs flexibility to increase satisfaction, not that employees prefer home to office overall.",
+        method: "Negate each answer choice. The one whose negation destroys the conclusion is the necessary assumption.",
+        steps: ["Conclusion: allowing WFH Fridays will boost satisfaction", "Negate (A): employees don't currently work 5 days in office — doesn't necessarily destroy the argument", "Negate (B): WFH Fridays WILL create problems that offset the flexibility benefit — if the problems outweigh the benefit, satisfaction won't increase. DESTROYS the conclusion.", "Negate (C): no other company has done this — doesn't mean it won't work here", "Negate (D): satisfaction isn't top priority — irrelevant to whether it works", "Negate (E): employees don't prefer WFH — they could still be more satisfied with flexibility even if they don't prefer WFH overall", "Answer: (B) Working from home on Fridays will not create offsetting problems"]
       },
       {
-        type: "Strengthen",
-        q: "Same argument. Strengthen it.",
-        identify: "Find what closes the rat-to-human gap",
-        method: "Gap-Fill",
-        steps: ["Gap: rat results may not apply to humans", "Strengthener: evidence that rat biology IS similar to human biology for this type of medication", "Best answer: Prior medications that reduced symptoms in rats using the same mechanism also reduced symptoms in humans", "Answer: Other medications using the same mechanism that were effective in rats were also found effective in humans."]
+        subtype: "Strengthen: Bridge the Gap",
+        q: "Researchers found that children who eat breakfast daily score an average of 15% higher on standardized math tests than children who skip breakfast. Based on this finding, a school district decided to provide free breakfast to all students in order to improve math test scores.\n\nWhich of the following, if true, most strengthens the school district's reasoning?\n\n(A) The children in the study came from diverse socioeconomic backgrounds.\n(B) Math test scores are an important measure of academic achievement.\n(C) Children who currently skip breakfast do so primarily because they lack access to morning meals, not because they choose to skip.\n(D) The school district's budget can accommodate the cost of a free breakfast program.\n(E) Teachers in the district support the free breakfast initiative.",
+        type: "Strengthen by bridging the gap between evidence and conclusion — the plan assumes providing breakfast will cause skippers to eat it",
+        signals: "Correlation evidence (eat breakfast → higher scores) used to justify an intervention (provide breakfast). Gap: will providing breakfast actually get skippers to eat?",
+        trap: "(A) — diverse backgrounds seems to strengthen the study's validity, but doesn't address whether providing free breakfast will change behavior",
+        method: "Identify the gap: the study shows breakfast-eaters score higher, but the plan requires that currently-skipping children will eat breakfast if it's provided. The correct answer bridges this gap.",
+        steps: ["Evidence: kids who eat breakfast score higher on math", "Plan: provide free breakfast → improve scores", "Gap: will providing breakfast make non-eaters start eating?", "(C) says skippers lack access (not that they choose to skip) — so providing access should change their behavior", "This bridges the gap: remove the barrier → they'll eat → scores should improve", "Answer: (C) Children who skip breakfast do so because they lack access, not by choice"]
       },
       {
-        type: "Sufficient Assumption",
-        q: "\"Only GMAT-certified instructors should teach GMAT prep. Jamie is GMAT-certified. Therefore, Jamie should teach GMAT prep.\" — What assumption makes this valid?",
-        identify: "Missing link in categorical syllogism",
-        method: "Sufficient Assumption Check",
-        steps: ["Conclusion: Jamie should teach GMAT prep", "Need: being GMAT-certified = should teach", "Answer: Any GMAT-certified instructor who wants to teach should do so."]
+        subtype: "Sufficient Assumption: Categorical Logic",
+        q: "All Zenton cars have turbocharged engines. Some vehicles with turbocharged engines have fuel efficiency ratings above 35 mpg. Therefore, some Zenton cars have fuel efficiency ratings above 35 mpg.\n\nThe conclusion follows logically if which of the following is assumed?\n\n(A) All vehicles with fuel efficiency above 35 mpg are Zenton cars.\n(B) All turbocharged engines provide fuel efficiency above 35 mpg.\n(C) Some Zenton cars have turbocharged engines that provide fuel efficiency above 35 mpg.\n(D) No non-turbocharged engine provides fuel efficiency above 35 mpg.\n(E) At least one vehicle with a turbocharged engine and fuel efficiency above 35 mpg is a Zenton car.",
+        type: "Sufficient assumption with categorical logic — needs to guarantee the conclusion is valid, not just make it more likely",
+        signals: "'All A are B. Some B are C. Therefore some A are C.' This is INVALID without knowing the B's that are C overlap with the A's.",
+        trap: "(B) — makes ALL Zenton cars fuel-efficient (too strong but works). (C) — this IS the conclusion restated, not an assumption. Students often pick (C) confusing assumption with conclusion.",
+        method: "The gap: 'some turbocharged vehicles > 35mpg' doesn't guarantee those are Zenton cars. Need: at least one turbo vehicle with >35mpg IS a Zenton. Or: all turbo engines give >35mpg.",
+        steps: ["Premise 1: All Zenton → turbocharged", "Premise 2: Some turbocharged → above 35 mpg", "Conclusion: Some Zenton → above 35 mpg", "The 'some turbocharged' with good fuel efficiency might not include any Zenton cars", "(E) At least one turbo vehicle with >35mpg IS a Zenton car — this directly fills the gap and guarantees the conclusion", "(B) also works but is stronger than needed. (E) is the more precise sufficient assumption.", "Answer: (E) At least one vehicle with a turbocharged engine and above 35 mpg is a Zenton car"]
       }
     ]
   },
@@ -728,25 +752,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Inference",
-        q: "\"All GMAT test-takers study for the exam. Some test-takers score above 700. No score above 700 is achieved without preparation.\" — What can be inferred?",
-        identify: "Logical inference from 3 statements",
-        method: "Inference Ladder",
-        steps: ["Fact: all test-takers study", "Fact: some score >700", "Fact: >700 requires preparation", "Conservative inference: Some test-takers who study score above 700", "Answer: Some test-takers who study score above 700."]
+        subtype: "Inference: Most Strongly Supported",
+        q: "Greendale County has three times as many acres of farmland as Riverdale County. However, Riverdale County produces 20% more corn per acre than Greendale County. The total annual rainfall in Greendale County is roughly equal to that in Riverdale County.\n\nWhich of the following can be most properly inferred from the statements above?\n\n(A) Greendale County produces more total corn than Riverdale County.\n(B) Rainfall is the primary factor determining corn yield per acre.\n(C) Riverdale County's farming techniques are superior to Greendale's.\n(D) Greendale County's total corn production is more than twice Riverdale County's.\n(E) If both counties devoted all their farmland to corn, Greendale would produce more corn.",
+        type: "Inference — the correct answer must be directly and conservatively supported by the stated facts",
+        signals: "'Can be most properly inferred' — stick to what the facts guarantee. Avoid choices that require assumptions beyond the given info.",
+        trap: "(A) — sounds reasonable (3× land with only 20% less yield/acre) but we don't know how much of each county's farmland is used for corn",
+        method: "Test each choice against ONLY the given facts. Reject anything that requires an assumption not stated.",
+        steps: ["Facts: Greendale has 3× farmland, Riverdale yields 20% more corn per acre, similar rainfall", "(A) More total corn — we don't know what fraction of farmland grows corn. Can't infer.", "(B) Rainfall determines yield — rainfall is similar but yields differ, so rainfall ISN'T the primary factor. Actually weakened.", "(C) Superior techniques — not stated, too strong an inference.", "(D) More than twice — requires knowing crop allocation. Can't infer.", "(E) IF all farmland were corn: Greendale = 3A × Y, Riverdale = A × 1.2Y = 1.2AY. Greendale/Riverdale = 3/1.2 = 2.5. Yes, Greendale would produce more.", "Answer: (E) If both devoted all farmland to corn, Greendale would produce more"]
       },
       {
-        type: "Paradox",
-        q: "\"Despite a record wheat harvest last year, bread prices rose by 12%.\" — Which explains this?",
-        identify: "Two contradictory facts — find what reconciles them",
-        method: "Both-facts-remain-true check",
-        steps: ["Large harvest should lower prices", "But prices rose", "Look for: something that disrupted the harvest-to-price relationship", "Answer: A transportation strike prevented the harvest from reaching processing facilities."]
+        subtype: "Paradox: Resolve the Discrepancy",
+        q: "A city installed energy-efficient LED streetlights to replace its older sodium-vapor lights, expecting to reduce electricity costs. However, after one year, the city's total streetlight electricity consumption actually increased by 8%.\n\nWhich of the following, if true, most helps to resolve the apparent discrepancy?\n\n(A) LED streetlights have a longer lifespan than sodium-vapor lights.\n(B) Some residents complained that the LED lights were too bright.\n(C) The city expanded its road network by 25% during the same year, requiring additional streetlights.\n(D) Electricity rates increased by 5% during the year.\n(E) LED streetlights require less maintenance than sodium-vapor lights.",
+        type: "Paradox resolution — both facts must be simultaneously true. The correct answer explains HOW they coexist.",
+        signals: "More efficient lights BUT higher total consumption. Something must explain why efficiency gains were more than offset.",
+        trap: "(D) — electricity RATES increased, but the paradox is about consumption (kWh), not cost. Higher rates explain higher bills, not higher consumption.",
+        method: "The correct answer must make BOTH true: LEDs ARE more efficient per light AND total consumption went up. This means more lights were added.",
+        steps: ["Paradox: LEDs are more efficient (less energy per light) BUT total energy use went up", "(A) Longer lifespan — irrelevant to energy consumption", "(B) Too bright — doesn't explain increased consumption unless they added more lights", "(C) 25% more roads = more streetlights installed. Even though each light uses less energy, the total number of lights increased enough to raise overall consumption. RESOLVES.", "(D) Rate increase affects cost, not consumption in kWh", "(E) Less maintenance — irrelevant to energy consumption", "Answer: (C) The city expanded its road network by 25%, requiring additional streetlights"]
       },
       {
-        type: "Boldface",
-        q: "\"<strong>Raising the minimum wage always hurts employment.</strong> Studies show job losses in three cities that raised minimum wage. <strong>Therefore, city X should not raise its minimum wage.</strong>\" — Classify the bold statements.",
-        identify: "Map the argument structure",
-        method: "Boldface Role Mapping",
-        steps: ["Map: first bold = general claim stated as fact → premise", "'Studies show...' = supporting evidence", "Second bold = conclusion", "Answer: First bold = premise/general claim; Second bold = main conclusion."]
+        subtype: "Boldface: Two Opposing Claims",
+        q: "Critics of vertical farming argue that the high energy costs of artificial lighting make it economically unviable for staple crops. **Some proponents counter that advances in LED technology have reduced lighting costs by 60% over the past decade.** **However, even with these cost reductions, energy remains the single largest operating expense for vertical farms, typically accounting for 40% of total costs.** Vertical farming therefore remains most practical for high-value specialty crops where premium pricing can offset energy expenses.\n\nIn the argument above, the two bolded statements play which of the following roles?\n\n(A) The first supports the argument's conclusion; the second provides evidence against the conclusion.\n(B) The first presents a counterargument to the critics; the second qualifies that counterargument to support the main conclusion.\n(C) The first and second both support the critics' position.\n(D) The first is the argument's main conclusion; the second is a premise supporting it.\n(E) The first challenges the conclusion; the second restates the conclusion.",
+        type: "Boldface structure analysis — tests ability to identify how each bolded portion functions in the overall argument",
+        signals: "First bold: 'proponents counter' (opposing view). Second bold: 'However, even with...' (concedes the counter but reasserts the limitation). Conclusion: practical only for specialty crops.",
+        trap: "(A) — students confuse which statement supports and which opposes. The first statement opposes the conclusion (LED costs dropped), the second SUPPORTS it (energy still dominant cost).",
+        method: "Map the argument: Critics → Proponents respond → Author re-qualifies → Conclusion. Identify each bold's role in this flow.",
+        steps: ["Main conclusion: vertical farming is most practical for high-value specialty crops only", "First bold: 'LED costs dropped 60%' — this is the PROPONENTS' counter to critics. It opposes the final conclusion.", "Second bold: 'energy still 40% of costs' — this acknowledges the counter but says the problem persists. Supports the conclusion.", "'However' signals the second bold is qualifying/limiting the first bold's optimism", "Answer: (B) The first presents a counterargument to critics; the second qualifies that counterargument to support the main conclusion"]
       }
     ]
   },
@@ -832,25 +862,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Main Idea",
-        q: "A passage discusses how bees use the sun's position to navigate, describes waggle dance communication, and concludes that bee navigation is more sophisticated than previously thought. What is the main idea?",
-        identify: "Main idea = topic + scope + author's stance",
-        method: "SCOPE mapping",
-        steps: ["Topic: bee navigation", "Claim: more sophisticated than thought", "Correct: 'The article argues that bees employ complex navigational methods that demonstrate higher sophistication than earlier research suggested.'", "Wrong: 'Bees use the sun to navigate' (too narrow) or 'All insects have sophisticated navigation' (too broad)", "Answer: Bee navigation is more sophisticated than previously believed."]
+        subtype: "Main Idea vs. Too Narrow",
+        q: "Passage: The decline of coral reefs has traditionally been attributed primarily to rising ocean temperatures. Recent research, however, suggests that ocean acidification—the decrease in pH caused by increased CO₂ absorption—may play an equally significant role. While warming causes coral bleaching, acidification weakens the calcium carbonate structures that form the reef itself. Scientists now advocate for a dual-focus approach to reef conservation that addresses both temperature and pH levels.\n\nWhich of the following best expresses the main idea of the passage?\n\n(A) Rising ocean temperatures are the primary cause of coral reef decline.\n(B) Ocean acidification damages calcium carbonate structures in coral reefs.\n(C) Coral reef decline results from both warming and acidification, requiring a conservation approach that addresses both factors.\n(D) Scientists have recently shifted their focus entirely from temperature to ocean pH.\n(E) Coral bleaching is more harmful to reefs than structural weakening from acidification.",
+        type: "Main idea — the correct answer must capture ALL key points of the passage, not just one paragraph or detail",
+        signals: "'Best expresses the main idea' — the answer must cover the full scope: old view (temperature), new view (acidification too), and the conclusion (dual approach).",
+        trap: "(B) — perfectly accurate but only describes one detail about acidification. It's too narrow — it covers one sentence, not the whole passage.",
+        method: "Eliminate answers that only describe part of the passage. The main idea must account for the passage's overall argument and conclusion.",
+        steps: ["(A) 'primarily temperature' — this is the OLD view the passage is challenging. Too narrow and outdated.", "(B) 'acidification damages structures' — accurate detail but only covers one aspect. Too narrow.", "(C) Both factors + dual approach — covers the full argument: old view, new research, and the recommended approach.", "(D) 'shifted entirely' — too extreme. Passage says 'equally significant,' not that temperature is irrelevant.", "(E) Compares harm levels — the passage doesn't rank which is worse.", "Answer: (C) Both warming and acidification, requiring a dual-focus approach"]
       },
       {
-        type: "Inference",
-        q: "The passage states: 'While solar panels have become 40% cheaper since 2015, adoption rates in rural areas remain below 10%.' — What can be inferred?",
-        identify: "Inference from one passage statement",
-        method: "Inference Ladder — stay conservative",
-        steps: ["Facts: prices fell 40%, adoption <10% in rural areas", "Conservative inference: lower price alone hasn't driven rural adoption", "Does NOT infer: solar is failing, rural people dislike solar, etc.", "Answer: Price reduction alone has not been sufficient to drive widespread rural adoption."]
+        subtype: "Inference: 100% Rule",
+        q: "Passage: A 2024 study of 200 urban cyclists found that those who used dedicated bike lanes had a 45% lower injury rate than those who rode in mixed traffic. The study also noted that 80% of the surveyed cyclists reported feeling safer in bike lanes, regardless of their actual injury history.\n\nBased on the passage, which of the following must be true?\n\n(A) Dedicated bike lanes reduce cycling injuries by nearly half.\n(B) Most urban cyclists prefer dedicated bike lanes to mixed traffic.\n(C) Some cyclists who reported feeling safer in bike lanes had still been injured while using them.\n(D) The 20% who did not feel safer in bike lanes had higher injury rates.\n(E) Cities should invest in more dedicated bike lanes.",
+        type: "Inference with the 100% rule — the answer must be definitively supported by the passage text, no assumptions",
+        signals: "'Must be true' — the answer cannot go beyond what is explicitly stated or mathematically certain from the given data.",
+        trap: "(A) — close paraphrase but changes '45% lower injury rate' to 'reduces injuries by nearly half.' The study shows correlation (used lanes → lower rate), not that lanes CAUSED the reduction. It's tempting but assumes causation.",
+        method: "Apply the 100% rule: the correct answer must be true in every possible interpretation of the passage. No leaps.",
+        steps: ["(A) 'Reduce injuries' implies causation; passage shows correlation only. Not necessarily true.", "(B) 'Prefer' — passage says 'felt safer,' not 'preferred.' Different concepts. Not stated.", "(C) 80% felt safer 'regardless of actual injury history' — this means some of that 80% HAD been injured. If no injured cyclists felt safer, the passage wouldn't need 'regardless of injury history.' Must be true.", "(D) No data given about the 20% group's injury rates. Not stated.", "(E) A recommendation — goes far beyond what's stated.", "Answer: (C) Some cyclists who felt safer in bike lanes had still been injured while using them"]
       },
       {
-        type: "Tone",
-        q: "Author uses: 'so-called experts claim,' 'the allegedly groundbreaking study,' 'proponents insist without evidence' — What is the author's tone?",
-        identify: "Tone markers in language",
-        method: "Identify modifier words",
-        steps: ["'So-called' = dismissive", "'Allegedly' = skeptical", "'Without evidence' = critical", "Overall: skeptical/critical toward the experts", "Answer: Skeptical and critical."]
+        subtype: "Author's Purpose: Verb Matters",
+        q: "Passage: Two competing theories attempt to explain the extinction of the woolly mammoth. The overkill hypothesis attributes their disappearance to human hunting, citing the correlation between human arrival and mammoth decline across continents. The climate hypothesis points to habitat loss from warming temperatures at the end of the Ice Age, noting that mammoth populations had survived previous human contact in some regions. Each theory accounts for certain evidence while struggling to explain other data points.\n\nThe primary purpose of the passage is to:\n\n(A) argue that human hunting caused the extinction of woolly mammoths\n(B) refute the climate hypothesis of mammoth extinction\n(C) present and compare two explanations for mammoth extinction without endorsing either\n(D) describe the evidence that supports the overkill hypothesis\n(E) persuade the reader that both theories are equally valid",
+        type: "Author's purpose — the key is matching the VERB (argue, analyze, describe, present) to the passage's actual stance",
+        signals: "The passage neutrally presents two theories and notes each has strengths and weaknesses. No advocacy, no preference.",
+        trap: "(E) 'persuade that both are equally valid' — the passage is neutral but doesn't argue they're EQUAL. It says each has strengths and weaknesses, which could mean one is stronger. 'Persuade' is also too active.",
+        method: "Match the author's tone and structure to the verb. Neutral comparison = 'present and compare.' Advocacy = 'argue.' One-sided = 'refute.'",
+        steps: ["The passage presents Theory 1 (overkill) with its evidence", "Then presents Theory 2 (climate) with its evidence", "Concludes neutrally: 'each accounts for certain evidence while struggling with other data'", "No preference expressed — this is neutral comparison", "(A) 'argue' for one side — no, passage is balanced", "(B) 'refute' — no, passage doesn't attack either theory", "(C) 'present and compare without endorsing' — matches perfectly", "(D) 'describe evidence for overkill' — too narrow, covers both theories", "(E) 'persuade equally valid' — 'persuade' is wrong tone; 'equally' is not stated", "Answer: (C) Present and compare two explanations without endorsing either"]
       }
     ]
   },
@@ -930,25 +966,31 @@ const topics = [
     ],
     typicalQuestions: [
       {
-        type: "Main Idea",
-        q: "A passage has 3 paragraphs: (1) introduces a problem with plastic pollution (2) describes current recycling limitations (3) proposes biodegradable alternatives. Which main idea is correct: (A) 'Plastic pollution is a serious problem' (B) 'Current recycling is inadequate and biodegradable alternatives are needed' (C) 'All plastics should be replaced'",
-        identify: "Main idea must cover ALL paragraphs",
-        method: "Scope Bracket",
-        steps: ["A: too narrow — only paragraph 1", "B: covers all 3 paragraphs ✓", "C: too extreme — 'all plastics' goes beyond what's stated", "Answer: B"]
+        subtype: "Function: Paragraph Role",
+        q: "Passage:\n[Paragraph 1] The prevailing theory in nutritional science held that dietary fat was the primary driver of heart disease, leading to decades of low-fat dietary guidelines.\n[Paragraph 2] However, a landmark 2013 meta-analysis of 72 studies involving over 600,000 participants found no significant association between saturated fat intake and coronary heart disease. The study was criticized for methodological issues but was broadly replicated.\n[Paragraph 3] Current guidelines now emphasize overall dietary patterns rather than targeting individual nutrients.\n\nThe primary function of the second paragraph is to:\n\n(A) summarize the current state of nutritional guidelines\n(B) present evidence that challenged the theory described in the first paragraph\n(C) argue that saturated fat is beneficial to health\n(D) explain why the 2013 study was flawed\n(E) introduce a new theory of heart disease",
+        type: "Function/purpose question — asks WHY the author included this paragraph, not WHAT it says",
+        signals: "'Primary function' asks about structural role. Paragraph 2 provides counter-evidence to Paragraph 1's claim. Look for the structural relationship.",
+        trap: "(D) — the study's criticism is mentioned but the paragraph's FUNCTION is not to explain flaws; it's to present the challenge to the old theory. Students confuse a detail with the paragraph's role.",
+        method: "Ask: what would be lost if this paragraph were removed? That reveals its structural function.",
+        steps: ["Paragraph 1: states the old theory (fat = heart disease)", "Paragraph 2: introduces a major study that contradicts the old theory", "Paragraph 3: describes the resulting shift in guidelines", "Paragraph 2's ROLE: it provides the pivotal evidence that disrupted the old paradigm", "(A) That's Paragraph 3's role, not Paragraph 2's", "(B) Exactly — it presents evidence challenging the Paragraph 1 theory", "(C) The study found no association, not that fat is beneficial — too strong", "(D) Criticism is mentioned but isn't the paragraph's purpose", "(E) No new theory is introduced in Paragraph 2", "Answer: (B) Present evidence that challenged the theory described in the first paragraph"]
       },
       {
-        type: "Function",
-        q: "In a passage about electric vehicles, paragraph 2 details a study where EV drivers had higher satisfaction than gas-car drivers. Why is this paragraph included?",
-        identify: "Function = what JOB does this paragraph do?",
-        method: "Zoom out — what does it support?",
-        steps: ["Main argument: EVs are superior/gaining popularity", "Para 2 provides supporting evidence", "Function: to provide concrete data supporting the passage's main argument", "Answer: To provide empirical support for the claim that EVs offer a superior driving experience."]
+        subtype: "Tone: Detect Subtle Shift",
+        q: "Passage: When first proposed in the 1990s, the idea of using gene drives to eradicate disease-carrying mosquitoes was met with genuine excitement in the scientific community. Early laboratory results were promising, and funding poured in. Over the past decade, however, field trials have revealed troubling ecological complications: gene drives may spread to non-target species, and mosquito populations show unexpected resistance. Most researchers now urge extreme caution before any large-scale deployment.\n\nThe author's tone in the passage shifts from:\n\n(A) dismissive to supportive\n(B) enthusiastic to alarmed\n(C) optimistic to cautiously skeptical\n(D) neutral to strongly opposed\n(E) critical to resigned",
+        type: "Tone shift detection — tests ability to identify the author's evolving attitude across the passage",
+        signals: "Opening: 'genuine excitement,' 'promising,' 'funding poured in' (positive). Shift: 'however,' 'troubling complications,' 'extreme caution' (concerned but measured).",
+        trap: "(B) 'alarmed' — too extreme. The passage ends with 'urge caution,' not panic. (D) 'strongly opposed' — the author reports researchers' caution but doesn't express strong personal opposition.",
+        method: "Identify the emotional register of the opening vs. closing. Match to answer choices precisely — verb/adjective intensity matters.",
+        steps: ["Opening tone: 'genuine excitement,' 'promising,' 'funding poured in' → optimistic/positive", "Closing tone: 'troubling complications,' 'unexpected resistance,' 'extreme caution' → concerned but measured", "The shift is from positive to cautious concern, not from positive to alarmed or opposed", "(A) Starts positive, not dismissive", "(B) 'Alarmed' is too strong — the passage is measured, not panicked", "(C) 'Optimistic to cautiously skeptical' — matches: hopeful start, tempered concern at end", "(D) 'Strongly opposed' is too extreme", "(E) Author isn't critical at the start and isn't resigned at the end", "Answer: (C) Optimistic to cautiously skeptical"]
       },
       {
-        type: "Tone Shift",
-        q: "The author begins by describing early enthusiasm for nuclear energy, then pivots to discussing unforeseen safety challenges. What is the author's overall tone?",
-        identify: "Tone can shift — identify the NET tone",
-        method: "Note the pivot",
-        steps: ["Early: positive/enthusiastic tone about nuclear", "Pivot: 'however, unforeseen challenges'", "Net tone: balanced/cautionary — acknowledging both promise and problems", "Answer: Balanced and cautionary, acknowledging both early promise and subsequent challenges."]
+        subtype: "Detail: NOT Stated (Process of Elimination)",
+        q: "Passage: The Great Pacific Garbage Patch is not, as commonly imagined, a solid island of trash. It is a diffuse zone of microplastics suspended in the upper water column, covering an area roughly twice the size of Texas. Ocean currents concentrate debris from coastal regions worldwide into this gyre. Cleanup efforts have focused on surface-skimming vessels, though researchers estimate that 70% of ocean plastic eventually sinks to the seafloor.\n\nAccording to the passage, all of the following are stated EXCEPT:\n\n(A) The Garbage Patch is composed primarily of microplastics.\n(B) The patch covers an area approximately twice the size of Texas.\n(C) Ocean currents bring debris from coastal areas into the gyre.\n(D) Most ocean plastic eventually sinks to the seafloor.\n(E) Microplastics in the Garbage Patch originate mainly from Asian countries.",
+        type: "EXCEPT/NOT stated question — four answers ARE in the passage, one is NOT. Requires careful elimination.",
+        signals: "'All of the following are stated EXCEPT' — process of elimination. Find each answer's basis in the passage.",
+        trap: "(D) — students might think '70% sinks' wasn't stated because it seems surprising, but it IS directly stated. The real answer is the one with information completely absent from the passage.",
+        method: "Check each answer against the passage. Mark each as 'stated' or 'not stated.' The only 'not stated' answer is correct.",
+        steps: ["(A) 'microplastics suspended in upper water column' — stated in sentence 2", "(B) 'area roughly twice the size of Texas' — stated in sentence 2", "(C) 'ocean currents concentrate debris from coastal regions' — stated in sentence 3", "(D) '70% of ocean plastic eventually sinks to the seafloor' — stated in sentence 4", "(E) 'originate mainly from Asian countries' — NEVER mentioned in the passage", "Answer: (E) Microplastics originate mainly from Asian countries — this is not stated in the passage"]
       }
     ]
   }
@@ -1007,15 +1049,20 @@ topics.forEach((topic, i) => {
 
   const tqHTML = topic.typicalQuestions.map((tq, j) => `
     <div class="tq-item" id="tq-${i}-${j}">
-      <div class="tq-header" onclick="toggleTQ('tq-${i}-${j}')">
-        <div class="tq-type-badge">${tq.type}</div>
+      <div class="tq-header" onclick="toggleTQ1('tq-${i}-${j}')">
+        <div class="tq-type-badge">${tq.subtype}</div>
         <div class="tq-question">${tq.q}</div>
-        <div class="tq-cta">Tap to see how to solve ▼</div>
+        <div class="tq-cta-1">▼ Analyze this question</div>
       </div>
-      <div class="tq-solution">
-        <div class="tq-sol-section"><strong>🔍 Identify:</strong> ${tq.identify}</div>
-        <div class="tq-sol-section"><strong>📐 Method:</strong> ${tq.method}</div>
-        <div class="tq-sol-section"><strong>📋 Steps:</strong>
+      <div class="tq-layer1">
+        <div class="tq-analysis">
+          <div class="tq-a-row"><span class="tq-a-label">Type:</span> ${tq.type}</div>
+          <div class="tq-a-row"><span class="tq-a-label">Signals:</span> ${tq.signals}</div>
+          <div class="tq-a-row"><span class="tq-a-label">Trap:</span> ${tq.trap}</div>
+          <div class="tq-a-row"><span class="tq-a-label">Method:</span> ${tq.method}</div>
+        </div>
+        <button class="tq-sol-btn" onclick="toggleTQ2(event,'tq-${i}-${j}')">Show Solution ▼</button>
+        <div class="tq-layer2">
           <ol class="tq-steps">
             ${tq.steps.map(s => `<li>${s}</li>`).join('')}
           </ol>
@@ -1096,9 +1143,17 @@ function switchTab(e, i, tab) {
   document.getElementById(`tab-${tab}-${i}`).classList.add('active');
 }
 
-function toggleTQ(id) {
+function toggleTQ1(id) {
   const item = document.getElementById(id);
-  item.classList.toggle('open');
+  item.classList.toggle('tq-open1');
+  if (!item.classList.contains('tq-open1')) item.classList.remove('tq-open2');
+}
+function toggleTQ2(e, id) {
+  e.stopPropagation();
+  const item = document.getElementById(id);
+  item.classList.toggle('tq-open2');
+  const btn = item.querySelector('.tq-sol-btn');
+  btn.textContent = item.classList.contains('tq-open2') ? 'Hide Solution ▲' : 'Show Solution ▼';
 }
 
 function toggleAnswer(i, j) {

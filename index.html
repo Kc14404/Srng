@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GMAT Focus — Equation Guide</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --card: #22263a;
+      --accent: #6c63ff;
+      --accent2: #00d4aa;
+      --text: #e8eaf0;
+      --muted: #8b90a7;
+      --border: #2e3248;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 24px 28px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p {
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+
+    /* HUB GRID */
+    .hub {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .topic-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      overflow: hidden;
+    }
+    .topic-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 8px 30px rgba(108,99,255,0.15);
+    }
+    .topic-card.active {
+      border-color: var(--accent2);
+    }
+
+    .card-header {
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .card-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border-radius: 10px;
+    }
+    .card-meta h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .card-meta .preview {
+      font-size: 0.78rem;
+      color: var(--accent2);
+      font-family: 'Courier New', monospace;
+      margin-top: 4px;
+    }
+    .card-meta .desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .expand-arrow {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: var(--muted);
+      transition: transform 0.3s;
+      align-self: center;
+      flex-shrink: 0;
+    }
+    .topic-card.active .expand-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* DETAIL PANEL */
+    .detail-panel {
+      display: none;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+    .topic-card.active .detail-panel {
+      display: block;
+    }
+
+    .detail-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      padding: 10px 18px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tab-btn.active {
+      color: var(--accent2);
+      border-bottom-color: var(--accent2);
+    }
+
+    .tab-content { display: none; padding: 20px; }
+    .tab-content.active { display: block; }
+
+    /* Equations */
+    .eq-list { display: flex; flex-direction: column; gap: 12px; }
+    .eq-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .eq-item .eq-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    .eq-item .eq-formula {
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      color: var(--accent2);
+    }
+    .eq-item .eq-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* Rules/examples */
+    .rule-list { display: flex; flex-direction: column; gap: 10px; }
+    .rule-item {
+      background: var(--card);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 12px 14px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    .rule-item strong { color: var(--accent2); }
+    .rule-item code {
+      font-family: 'Courier New', monospace;
+      background: rgba(108,99,255,0.12);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: #a78bfa;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin: 16px 0 8px;
+      font-weight: 700;
+    }
+    .section-title:first-child { margin-top: 0; }
+
+    /* Tags */
+    .tag-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tag {
+      background: rgba(108,99,255,0.15);
+      border: 1px solid rgba(108,99,255,0.3);
+      color: #a78bfa;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5rem; }
+      .hub { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>GMAT Focus — Equation Guide</h1>
+  <p>Click any topic to see key equations, then expand for full details &amp; examples.</p>
+</header>
+
+<div class="hub" id="hub"></div>
+
+<script>
+const topics = [
+  {
+    icon: "➗",
+    title: "Fractions & Operations",
+    preview: "a/b ± c/d = (ad ± bc) / bd",
+    desc: "Adding, subtracting, multiplying, dividing fractions",
+    equations: [
+      { label: "Add (same denominator)", formula: "a/b + c/b = (a+c)/b" },
+      { label: "Add (different denominators)", formula: "a/b + c/d = (ad + bc) / bd" },
+      { label: "Subtract (different denominators)", formula: "a/b - c/d = (ad - bc) / bd" },
+      { label: "Multiply fractions", formula: "(a/b) × (c/d) = ac / bd" },
+      { label: "Divide fractions", formula: "(a/b) ÷ (c/d) = (a/b) × (d/c) = ad / bc" },
+      { label: "Compare size (Bow Tie)", formula: "a/b > c/d  if  ad > bc" },
+      { label: "Square of fraction", formula: "(a/b)² = a²/b²" },
+      { label: "Square root of fraction", formula: "√(a/b) = √a / √b" },
+    ],
+    details: [
+      { type: "rule", text: "<strong>Reciprocal:</strong> The reciprocal of <code>x</code> is <code>1/x</code>. Reciprocal of <code>3/4</code> is <code>4/3</code>." },
+      { type: "rule", text: "<strong>Bow Tie example:</strong> Compare 3/5 vs 4/7 → 3×7=21, 4×5=20 → 21 > 20 → 3/5 > 4/7" },
+      { type: "rule", text: "<strong>Convert to %:</strong> Fraction → decimal (divide) → multiply by 100 → add %." },
+      { type: "rule", text: "<strong>Properties between 0 and 1:</strong> If 0 < x < 1, then x² < x < √x." },
+    ]
+  },
+  {
+    icon: "📐",
+    title: "Linear & Quadratic Equations",
+    preview: "ax² + bx + c = 0",
+    desc: "Factoring, FOILing, quadratic identities",
+    equations: [
+      { label: "Factor common terms", formula: "ab + ac = a(b + c)" },
+      { label: "General quadratic form", formula: "ax² + bx + c = 0" },
+      { label: "Factored quadratic", formula: "(x + p)(x + q) = 0  where p·q = c, p+q = b" },
+      { label: "Identity 1 — Perfect square sum", formula: "(x + y)² = x² + 2xy + y²" },
+      { label: "Identity 2 — Perfect square diff", formula: "(x - y)² = x² - 2xy + y²" },
+      { label: "Identity 3 — Difference of squares", formula: "(x + y)(x - y) = x² - y²" },
+      { label: "Zero product property", formula: "If a × b = 0, then a=0 or b=0 (or both)" },
+    ],
+    details: [
+      { type: "rule", text: "<strong>FOIL method:</strong> (x+a)(x+b) = x² (First) + bx (Outside) + ax (Inside) + ab (Last)" },
+      { type: "rule", text: "<strong>Factoring example:</strong> x² - 3x - 28 = 0 → (x - 7)(x + 4) = 0 → x = 7 or x = -4" },
+      { type: "rule", text: "<strong>Diff of squares example:</strong> 4x² - 100 = (2x-10)(2x+10)" },
+      { type: "rule", text: "<strong>Before factoring</strong> a quadratic, always rewrite it in general form ax² + bx + c = 0 first." },
+    ]
+  },
+  {
+    icon: "🔢",
+    title: "Number Properties",
+    preview: "odd × odd = odd",
+    desc: "Even/odd rules, sign rules, prime numbers",
+    equations: [
+      { label: "Even ± Even", formula: "even ± even = even" },
+      { label: "Odd ± Odd", formula: "odd ± odd = even" },
+      { label: "Even ± Odd", formula: "even ± odd = odd" },
+      { label: "Even × anything", formula: "even × any = even" },
+      { label: "Odd × Odd", formula: "odd × odd = odd" },
+      { label: "Same sign product", formula: "(+)(+) = (+)  and  (−)(−) = (+)" },
+      { label: "Different sign product", formula: "(+)(−) = (−)" },
+    ],
+    details: [
+      { type: "title", text: "Prime Numbers < 100" },
+      { type: "rule", text: "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97<br><em>(Note: 2 is the only even prime)</em>" },
+      { type: "title", text: "Division even/odd" },
+      { type: "rule", text: "<strong>even ÷ even</strong> = even or odd (e.g. 4÷2=2, 8÷4=2)<br><strong>even ÷ odd</strong> = even or odd<br><strong>odd ÷ odd</strong> = odd (if divisible)" },
+      { type: "title", text: "Formula for Division" },
+      { type: "rule", text: "x = (Quotient × y) + remainder &nbsp;→&nbsp; e.g. 23 ÷ 5 = 4 remainder 3" },
+    ]
+  },
+  {
+    icon: "🧮",
+    title: "Divisibility Rules",
+    preview: "Div by 3 if digit sum ÷ 3",
+    desc: "Divisibility shortcuts for 2–11",
+    equations: [
+      { label: "Divisible by 2", formula: "Last digit is 0, 2, 4, 6, or 8" },
+      { label: "Divisible by 3", formula: "Sum of all digits is divisible by 3" },
+      { label: "Divisible by 4", formula: "Last two digits form a number divisible by 4" },
+      { label: "Divisible by 5", formula: "Last digit is 0 or 5" },
+      { label: "Divisible by 6", formula: "Divisible by both 2 AND 3" },
+      { label: "Divisible by 8", formula: "Last three digits form a number divisible by 8" },
+      { label: "Divisible by 9", formula: "Sum of all digits is divisible by 9" },
+      { label: "Divisible by 11", formula: "Sum of odd-position digits − sum of even-position digits is divisible by 11" },
+    ],
+    details: [
+      { type: "rule", text: "<strong>Remainder range:</strong> A remainder must be a non-negative integer less than the divisor. e.g. dividing by 7 → remainder ∈ {0,1,2,3,4,5,6}" },
+      { type: "rule", text: "<strong>Two consecutive integers</strong> never share any prime factors → GCF = 1." },
+      { type: "rule", text: "<strong>Any factorial ≥ 5!</strong> always has 0 as its units digit." },
+      { type: "rule", text: "<strong>Trailing zeros:</strong> Count pairs of (5 × 2) in prime factorization. e.g. 5200 = 52 × 10² → 2 trailing zeros." },
+      { type: "rule", text: "<strong>Terminating decimal:</strong> A fraction terminates if and only if its reduced denominator has only 2s and/or 5s as prime factors." },
+    ]
+  },
+  {
+    icon: "🔬",
+    title: "Factors, Multiples, LCM & GCF",
+    preview: "LCM × GCF = x × y",
+    desc: "Factor counting, LCM, GCF methods",
+    equations: [
+      { label: "Number of factors formula", formula: "If n = p₁^a × p₂^b × p₃^c → factors = (a+1)(b+1)(c+1)" },
+      { label: "LCM × GCF relationship", formula: "LCM(x,y) × GCF(x,y) = x × y" },
+      { label: "Perfect square condition", formula: "All prime factors have even exponents" },
+      { label: "Perfect cube condition", formula: "All prime factors have exponents divisible by 3" },
+    ],
+    details: [
+      { type: "title", text: "Counting Factors — Example" },
+      { type: "rule", text: "240 = 2⁴ × 3¹ × 5¹ → (4+1)(1+1)(1+1) = <strong>20 factors</strong>" },
+      { type: "title", text: "Finding LCM — Steps" },
+      { type: "rule", text: "1. Prime factorize each number.<br>2. Take repeated primes with the <em>largest</em> exponent.<br>3. Take all non-repeated primes.<br>4. Multiply them together.<br><em>Example: LCM(24, 60) → 24=2³×3, 60=2²×3×5 → take 2³, 3, 5 → 8×3×5 = 120</em>" },
+      { type: "title", text: "Finding GCF — Steps" },
+      { type: "rule", text: "1. Prime factorize each number.<br>2. Take repeated primes with the <em>smallest</em> exponent.<br>3. Multiply them together.<br><em>Example: GCF(24, 60) → take 2², 3 → 4×3 = 12</em>" },
+      { type: "title", text: "Leading Zeros in Decimals" },
+      { type: "rule", text: "If x is a k-digit integer, then 1/x has k−1 leading zeros (or k−2 if x is a perfect power of 10)." },
+    ]
+  },
+  {
+    icon: "√",
+    title: "Roots & Radicals",
+    preview: "√(ab) = √a × √b",
+    desc: "Simplifying, multiplying, dividing radicals",
+    equations: [
+      { label: "Multiply radicals", formula: "√a × √b = √(ab)" },
+      { label: "Divide radicals", formula: "√a / √b = √(a/b)" },
+      { label: "Radical in exponent form", formula: "√x = x^(1/2)  |  ∛x = x^(1/3)" },
+      { label: "General radical form", formula: "ⁿ√x = x^(1/n)" },
+      { label: "Square root identity", formula: "√(x²) = |x|  (not just x)" },
+      { label: "Square root of binomial", formula: "√(x+y)² = x + y  (but √(x+y) ≠ √x + √y)" },
+      { label: "Multiple square roots", formula: "x^(1/a × 1/b) = x^(1/ab)" },
+    ],
+    details: [
+      { type: "title", text: "Non-perfect roots to memorize" },
+      { type: "rule", text: "<code>√2 ≈ 1.4</code>&nbsp;&nbsp;&nbsp;<code>√3 ≈ 1.7</code>&nbsp;&nbsp;&nbsp;<code>√5 ≈ 2.2</code>" },
+      { type: "title", text: "Perfect squares to memorize" },
+      { type: "rule", text: "0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225" },
+      { type: "title", text: "Perfect cubes to memorize" },
+      { type: "rule", text: "0, 1, 8, 27, 64, 125, 216, 343, 512, 729, 1000" },
+      { type: "rule", text: "<strong>Addition of radicals:</strong> √25 + √16 ≠ √41. They must be simplified separately: = 5 + 4 = 9. (But √25 + √16 ≈ 6.40 ≠ 9 — be careful!)" },
+    ]
+  },
+  {
+    icon: "⬆️",
+    title: "Exponents",
+    preview: "xᵃ × xᵇ = x^(a+b)",
+    desc: "Multiplication, division, power rules",
+    equations: [
+      { label: "Multiply like bases", formula: "xᵃ × xᵇ = x^(a+b)" },
+      { label: "Divide like bases", formula: "xᵃ / xᵇ = x^(a−b)" },
+      { label: "Power to a power", formula: "(xᵃ)ᵇ = x^(ab)" },
+      { label: "Multiply different bases, same exponent", formula: "(xᵃ)(yᵃ) = (xy)ᵃ" },
+      { label: "Divide different bases, same exponent", formula: "(x/y)ᵃ = xᵃ/yᵃ" },
+      { label: "Zero exponent", formula: "x⁰ = 1  (x ≠ 0)" },
+    ],
+    details: [
+      { type: "title", text: "Powers of 2 to memorize" },
+      { type: "rule", text: "2⁰=1, 2¹=2, 2²=4, 2³=8, 2⁴=16, 2⁵=32, 2⁶=64, 2⁷=128, 2⁸=256, 2⁹=512, 2¹⁰=1024" },
+      { type: "title", text: "Powers of 3" },
+      { type: "rule", text: "3¹=3, 3²=9, 3³=27, 3⁴=81, 3⁵=243" },
+      { type: "title", text: "Powers of 4 & 5" },
+      { type: "rule", text: "4¹=4, 4²=16, 4³=64, 4⁴=256 &nbsp;|&nbsp; 5¹=5, 5²=25, 5³=125, 5⁴=625" },
+      { type: "title", text: "Units Digit Patterns" },
+      { type: "rule", text: "<strong>2:</strong> 2→4→8→6 (repeats every 4)<br><strong>3:</strong> 3→9→7→1 (repeats every 4)<br><strong>4:</strong> 4→6 (odd powers=4, even powers=6)<br><strong>5:</strong> always 5&nbsp;&nbsp;<strong>6:</strong> always 6<br><strong>7:</strong> 7→9→3→1 (repeats every 4)<br><strong>8:</strong> 8→4→2→6 (repeats every 4)<br><strong>9:</strong> 9→1 (odd=9, even=1)" },
+    ]
+  },
+  {
+    icon: "📋",
+    title: "PEMDAS & Order of Operations",
+    preview: "P → E → M/D → A/S",
+    desc: "The correct order to evaluate expressions",
+    equations: [
+      { label: "Order", formula: "Parentheses → Exponents → Mult/Div → Add/Sub" },
+      { label: "Distributive property", formula: "a(b + c) = ab + ac" },
+    ],
+    details: [
+      { type: "rule", text: "<strong>P</strong>arentheses first — always resolve what's inside <code>()</code> before anything else." },
+      { type: "rule", text: "<strong>E</strong>xponents — evaluate all powers and roots next." },
+      { type: "rule", text: "<strong>M/D</strong> — Multiplication and Division from left to right (same priority)." },
+      { type: "rule", text: "<strong>A/S</strong> — Addition and Subtraction from left to right (same priority)." },
+      { type: "rule", text: "<strong>Distributive example:</strong> 4(x + y) = 4x + 4y" },
+    ]
+  }
+];
+
+const hub = document.getElementById('hub');
+
+topics.forEach((topic, i) => {
+  const card = document.createElement('div');
+  card.className = 'topic-card';
+  card.id = `topic-${i}`;
+
+  // Build equations tab
+  const eqItems = topic.equations.map(eq => `
+    <div class="eq-item">
+      <div class="eq-label">${eq.label}</div>
+      <div class="eq-formula">${eq.formula}</div>
+    </div>
+  `).join('');
+
+  // Build details tab
+  let detailHTML = '<div class="rule-list">';
+  topic.details.forEach(d => {
+    if (d.type === 'title') {
+      detailHTML += `<div class="section-title">${d.text}</div>`;
+    } else {
+      detailHTML += `<div class="rule-item">${d.text}</div>`;
+    }
+  });
+  detailHTML += '</div>';
+
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${i})">
+      <div class="card-icon">${topic.icon}</div>
+      <div class="card-meta">
+        <h2>${topic.title}</h2>
+        <div class="preview">${topic.preview}</div>
+        <div class="desc">${topic.desc}</div>
+      </div>
+      <div class="expand-arrow">▼</div>
+    </div>
+    <div class="detail-panel">
+      <div class="detail-tabs">
+        <button class="tab-btn active" onclick="switchTab(event, ${i}, 'eq')">📐 Equations</button>
+        <button class="tab-btn" onclick="switchTab(event, ${i}, 'detail')">📖 Details & Examples</button>
+      </div>
+      <div class="tab-content active" id="tab-eq-${i}">
+        <div class="eq-list">${eqItems}</div>
+      </div>
+      <div class="tab-content" id="tab-detail-${i}">
+        ${detailHTML}
+      </div>
+    </div>
+  `;
+
+  hub.appendChild(card);
+});
+
+function toggleCard(i) {
+  const card = document.getElementById(`topic-${i}`);
+  card.classList.toggle('active');
+  if (card.classList.contains('active')) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function switchTab(e, i, tab) {
+  e.stopPropagation();
+  const card = document.getElementById(`topic-${i}`);
+  card.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  card.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById(`tab-${tab}-${i}`).classList.add('active');
+}
+</script>
+
+</body>
+</html>

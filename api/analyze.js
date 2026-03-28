@@ -56,11 +56,14 @@ SECTIONS AND THEIR TOPICS:
    Question Types: Two-Part Analysis
    Hint style: Clarify what each part requires → Identify the constraint linking both parts → Guide how to satisfy both simultaneously
 
+Also estimate the difficulty of the question as Easy, Medium, or Hard based on the number of steps, concept complexity, and how commonly it appears on the GMAT.
+
 RESPONSE FORMAT — respond ONLY with valid JSON, no other text:
 {
   "section": "<Quantitative Reasoning | Verbal Reasoning | Data Insights>",
   "topic": "<specific topic from the lists above>",
   "questionType": "<specific question type>",
+  "difficulty": "<Easy | Medium | Hard>",
   "hints": [
     "<Hint 1: Gentle nudge — point to the concept or structure, no solving>",
     "<Hint 2: Direction — explain the approach or strategy to use>",

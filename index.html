@@ -128,6 +128,7 @@
     .eq-item .eq-note { font-size: 0.78rem; color: var(--muted); margin-top: 8px; word-break: break-word; }
     .eq-formula { overflow-x: hidden; max-width: 100%; }
     .eq-formula .katex, .eq-formula .katex-html { white-space: normal !important; }
+    .eq-plain-text { color: var(--accent2); font-size: 0.95rem; line-height: 1.6; display: block; word-break: break-word; }
 
     /* Details */
     .rule-list { display: flex; flex-direction: column; gap: 10px; }
@@ -1160,13 +1161,18 @@ topics.forEach((topic, i) => {
   card.className = 'topic-card';
   card.id = `topic-${i}`;
 
-  const eqItems = topic.equations.map(eq => `
+  const eqItems = topic.equations.map(eq => {
+    const textOnlyMatch = eq.formula.match(/^\$\$\\text\{([\s\S]*)\}\$\$$/);
+    const rendered = textOnlyMatch
+      ? `<span class="eq-plain-text">${textOnlyMatch[1]}</span>`
+      : eq.formula;
+    return `
     <div class="eq-item">
       <div class="eq-label">${eq.label}</div>
-      <div class="eq-formula">${eq.formula}</div>
+      <div class="eq-formula">${rendered}</div>
       ${eq.note ? `<div class="eq-note">${eq.note}</div>` : ''}
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 
   let detailHTML = '<div class="rule-list">';
   topic.details.forEach(d => {

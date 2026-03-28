@@ -123,12 +123,19 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 14px 16px;
+      cursor: pointer;
+      user-select: none;
     }
     .eq-item .eq-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
     .eq-item .eq-note { font-size: 0.78rem; color: var(--muted); margin-top: 8px; word-break: break-word; }
     .eq-formula { overflow-x: hidden; max-width: 100%; }
     .eq-formula .katex, .eq-formula .katex-html { white-space: normal !important; }
     .eq-plain-text { color: var(--accent2); font-size: 0.95rem; line-height: 1.6; display: block; word-break: break-word; }
+    .eq-chevron { float: right; font-size: 0.7rem; color: var(--muted); transition: transform 0.25s; line-height: 1.8; }
+    .eq-item.open .eq-chevron { transform: rotate(180deg); }
+    .eq-item .eq-detail { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .eq-item.open .eq-detail { max-height: 500px; }
+    .eq-detail-inner { padding-top: 10px; margin-top: 8px; border-top: 1px solid var(--border); font-size: 0.82rem; color: #9aa3b8; line-height: 1.65; }
 
     /* Details */
     .rule-list { display: flex; flex-direction: column; gap: 10px; }
@@ -298,13 +305,13 @@ const topics = [
     preview: "A · B · C · D · E",
     desc: "Data Sufficiency answer choices and evaluation method",
     equations: [
-      { label: "Answer A", formula: "$$\\text{Statement 1 ALONE is sufficient; Statement 2 alone is NOT}$$" },
-      { label: "Answer B", formula: "$$\\text{Statement 2 ALONE is sufficient; Statement 1 alone is NOT}$$" },
-      { label: "Answer C", formula: "$$\\text{BOTH statements TOGETHER are sufficient, but NEITHER alone}$$" },
-      { label: "Answer D", formula: "$$\\text{EACH statement ALONE is sufficient}$$" },
-      { label: "Answer E", formula: "$$\\text{Statements 1 and 2 TOGETHER are NOT sufficient}$$" },
-      { label: "Value Question", formula: "$$\\text{Need exactly ONE numerical answer}$$" },
-      { label: "Yes/No Question", formula: "$$\\text{Need a DEFINITE yes OR a DEFINITE no}$$" }
+      { label: "Answer A", formula: "$$\\text{Statement 1 ALONE is sufficient; Statement 2 alone is NOT}$$", detail: "Choose A when Statement 1 alone gives exactly one definite answer, but Statement 2 alone does not. Evaluate Statement 1 completely in isolation — pretend Statement 2 does not exist. For yes/no questions, a definite NO counts as sufficient." },
+      { label: "Answer B", formula: "$$\\text{Statement 2 ALONE is sufficient; Statement 1 alone is NOT}$$", detail: "Choose B when Statement 2 alone is sufficient but Statement 1 alone is not. Students often rush through Statement 2 after finding Statement 1 insufficient — give Statement 2 a full, fresh evaluation." },
+      { label: "Answer C", formula: "$$\\text{BOTH statements TOGETHER are sufficient, but NEITHER alone}$$", detail: "Choose C when neither statement alone works, but combining them gives one definite answer. The most common trap: students pick C without fully testing each statement alone first. Always complete the AD/BCE split." },
+      { label: "Answer D", formula: "$$\\text{EACH statement ALONE is sufficient}$$", detail: "Choose D when EACH statement alone is sufficient. This means you get a definite answer from Statement 1 independently AND from Statement 2 independently. The two answers don't need to be the same value." },
+      { label: "Answer E", formula: "$$\\text{Statements 1 and 2 TOGETHER are NOT sufficient}$$", detail: "Choose E when even combining both statements leaves multiple possible answers or both yes and no scenarios. Before picking E, make sure you've truly combined all information — students often miss combining constraints." },
+      { label: "Value Question", formula: "$$\\text{Need exactly ONE numerical answer}$$", detail: "For value questions, 'sufficient' means exactly ONE numerical answer. If a statement gives two possible values (like x=3 or x=-3), it is NOT sufficient. The trap: students forget to check for multiple solutions." },
+      { label: "Yes/No Question", formula: "$$\\text{Need a DEFINITE yes OR a DEFINITE no}$$", detail: "For yes/no questions, sufficient means a DEFINITE yes or a DEFINITE no — both count. 'Sometimes yes, sometimes no' means NOT sufficient. The biggest trap: students think a definite 'no' means insufficient." }
     ],
     details: [
       { type: "title", text: "Evaluation Process" },
@@ -370,11 +377,11 @@ const topics = [
     preview: "Zero · Negative · Fraction traps",
     desc: "Common traps and edge cases in Data Sufficiency",
     equations: [
-      { label: "Zero Trap", formula: "$$\\text{Always test } x = 0 \\text{ — it breaks many assumptions}$$" },
-      { label: "Negative Trap", formula: "$$\\text{Test negative numbers — signs flip with multiplication}$$" },
-      { label: "Fraction Trap", formula: "$$0 < x < 1: \\quad x^2 < x < \\sqrt{x}$$", note: "Squaring makes fractions SMALLER" },
-      { label: "Integer Constraint", formula: "$$\\text{Integer constraints are very restrictive — few values to test}$$" },
-      { label: "Absolute Value", formula: "$$|x| = 3 \\Rightarrow x = 3 \\text{ OR } x = -3$$" }
+      { label: "Zero Trap", formula: "$$\\text{Always test } x = 0 \\text{ — it breaks many assumptions}$$", detail: "Always test x=0 unless the problem explicitly excludes it. Zero is neither positive nor negative, it's even, and multiplying by zero gives zero. Many 'obvious' statements fail when x=0." },
+      { label: "Negative Trap", formula: "$$\\text{Test negative numbers — signs flip with multiplication}$$", detail: "Test negative numbers when the problem doesn't say 'positive.' Signs flip with multiplication/division by negatives. Key: squaring a negative makes it positive, but cubing preserves the negative sign." },
+      { label: "Fraction Trap", formula: "$$0 < x < 1: \\quad x^2 < x < \\sqrt{x}$$", note: "Squaring makes fractions SMALLER", detail: "For 0<x<1, squaring makes numbers SMALLER and square-rooting makes them LARGER. This reverses the intuition built from whole numbers. Example: (1/2)²=1/4, which is less than 1/2." },
+      { label: "Integer Constraint", formula: "$$\\text{Integer constraints are very restrictive — few values to test}$$", detail: "When a problem says 'integer,' the solution set shrinks dramatically. Use this to your advantage — list all possible integer values and test each one. Constraints like 'positive integer less than 10' mean only 9 values to check." },
+      { label: "Absolute Value", formula: "$$|x| = 3 \\Rightarrow x = 3 \\text{ OR } x = -3$$", detail: "Absolute value equations always produce TWO cases: the positive and negative version. |x|=3 means x=3 OR x=-3. Common mistake: forgetting the negative case, which leads to picking A or B when the answer should be C." }
     ],
     details: [
       { type: "title", text: "Testing Strategy" },
@@ -430,9 +437,9 @@ const topics = [
     preview: "Combine data across multiple tabs",
     desc: "Synthesizing information from 2-3 data sources",
     equations: [
-      { label: "Synthesis", formula: "$$\\text{Combine information from 2+ tabs to answer the question}$$" },
-      { label: "Contradiction Check", formula: "$$\\text{Identify conflicts between sources and resolve them}$$" },
-      { label: "True / False / Cannot Determine", formula: "$$\\text{Cannot Determine = data literally absent from ALL tabs}$$" }
+      { label: "Synthesis", formula: "$$\\text{Combine information from 2+ tabs to answer the question}$$", detail: "Most MSR questions require combining data from 2+ sources. Read all tab titles first to understand what each contains. The answer is rarely found in a single tab — if it is, you may be missing a nuance from another source." },
+      { label: "Contradiction Check", formula: "$$\\text{Identify conflicts between sources and resolve them}$$", detail: "When sources seem to contradict, check for different time periods, different units (thousands vs. millions), or different populations. The contradiction may be apparent, not real. If it's real, the question usually asks you to identify it." },
+      { label: "True / False / Cannot Determine", formula: "$$\\text{Cannot Determine = data literally absent from ALL tabs}$$", detail: "Pick 'Cannot be determined' ONLY when the information is genuinely absent from ALL tabs. If you can derive the answer by combining tabs, it CAN be determined. Common trap: overlooking data in a tab you haven't fully read." }
     ],
     details: [
       { type: "title", text: "Reading Strategy" },
@@ -479,10 +486,10 @@ const topics = [
     preview: "Sort · Filter · Calculate",
     desc: "Analyzing data tables with sort and filter operations",
     equations: [
-      { label: "Sort by Column", formula: "$$\\text{Reorder rows by a specific column (ascending or descending)}$$" },
-      { label: "Filter by Criteria", formula: "$$\\text{Select only rows meeting specific conditions}$$" },
-      { label: "Percentage", formula: "$$\\text{Percentage} = \\frac{\\text{Part}}{\\text{Whole}} \\times 100$$" },
-      { label: "True/False Format", formula: "$$\\text{Each sub-question is evaluated independently}$$" }
+      { label: "Sort by Column", formula: "$$\\text{Reorder rows by a specific column (ascending or descending)}$$", detail: "Mentally sort the table by the column relevant to the question. Sort ascending to find minimums, descending for maximums. On the GMAT, you can click column headers to sort — use this to quickly find rankings and thresholds." },
+      { label: "Filter by Criteria", formula: "$$\\text{Select only rows meeting specific conditions}$$", detail: "Apply the most restrictive filter first to reduce the data set quickly. 'At least' means ≥ (includes the boundary value). 'More than' means > (excludes it). This distinction is tested frequently." },
+      { label: "Percentage", formula: "$$\\text{Percentage} = \\frac{\\text{Part}}{\\text{Whole}} \\times 100$$", detail: "Percentage = (Part/Whole) × 100. The most common error is using the wrong denominator. Always ask: 'Percentage OF WHAT?' The 'whole' changes depending on the question — it could be a row total, column total, or grand total." },
+      { label: "True/False Format", formula: "$$\\text{Each sub-question is evaluated independently}$$", detail: "Each sub-question is independent — getting one wrong doesn't affect the others. Read each statement carefully and verify against the data. 'Majority' means more than 50%. 'Plurality' means the largest group (not necessarily >50%)." }
     ],
     details: [
       { type: "title", text: "Strategy" },
@@ -528,11 +535,11 @@ const topics = [
     preview: "Charts · Graphs · Visual data",
     desc: "Reading bar charts, line graphs, scatter plots, and pie charts",
     equations: [
-      { label: "Bar Chart", formula: "$$\\text{Compare heights/lengths to compare values}$$" },
-      { label: "Line Graph", formula: "$$\\text{Trends (up/down) + Rate of change (slope) + Intersections}$$" },
-      { label: "Scatter Plot", formula: "$$\\text{Correlation: positive (↗), negative (↘), none (random)}$$" },
-      { label: "Pie Chart", formula: "$$\\text{All slices sum to 100\\%}$$" },
-      { label: "Drop-down Format", formula: "$$\\text{Select the correct value from a dropdown menu}$$" }
+      { label: "Bar Chart", formula: "$$\\text{Compare heights/lengths to compare values}$$", detail: "Compare bar heights/lengths to compare values. Always check the y-axis starting point — a non-zero baseline makes small differences look dramatic. Estimate values by referencing gridlines." },
+      { label: "Line Graph", formula: "$$\\text{Trends (up/down) + Rate of change (slope) + Intersections}$$", detail: "Focus on trends (up/down), rate of change (steep vs. flat slope), and intersections (where lines cross = equal values). A steeper slope means faster change. A flat slope means no change, not zero value." },
+      { label: "Scatter Plot", formula: "$$\\text{Correlation: positive (↗), negative (↘), none (random)}$$", detail: "Positive correlation: points trend upper-right. Negative correlation: points trend lower-right. No correlation: random scatter. Outliers are isolated points far from the trend. Correlation does NOT prove causation." },
+      { label: "Pie Chart", formula: "$$\\text{All slices sum to 100\\%}$$", detail: "All slices sum to 100%. To find a missing slice, subtract known percentages from 100%. To find a dollar value, multiply the percentage by the total. Common trap: confusing percentage of total vs. percentage of a sub-group." },
+      { label: "Drop-down Format", formula: "$$\\text{Select the correct value from a dropdown menu}$$", detail: "You must select the correct value from a dropdown — there's no partial credit. Read the sentence with each option inserted to check which makes the statement true. Eliminate options that create false statements." }
     ],
     details: [
       { type: "title", text: "First Steps — ALWAYS Check" },
@@ -588,10 +595,10 @@ const topics = [
     preview: "Two linked answers · Constraints",
     desc: "Solving problems requiring two interdependent values",
     equations: [
-      { label: "Table Format", formula: "$$\\text{Two columns — select one value for each column}$$" },
-      { label: "Constraint Satisfaction", formula: "$$\\text{BOTH values must satisfy ALL conditions simultaneously}$$" },
-      { label: "Problem Types", formula: "$$\\text{Algebraic, Logical, or Verbal reasoning}$$" },
-      { label: "Strategy", formula: "$$\\text{Start with the MOST restrictive constraint first}$$" }
+      { label: "Table Format", formula: "$$\\text{Two columns — select one value for each column}$$", detail: "You select one answer per column from a shared set of values. The two selections are often interdependent — choosing one constrains the other. Read both column headers carefully before starting." },
+      { label: "Constraint Satisfaction", formula: "$$\\text{BOTH values must satisfy ALL conditions simultaneously}$$", detail: "Both values must satisfy ALL conditions simultaneously. Write out the constraints as equations or inequalities before plugging in values. Test your final pair against every stated condition." },
+      { label: "Problem Types", formula: "$$\\text{Algebraic, Logical, or Verbal reasoning}$$", detail: "Two-Part Analysis covers algebraic (find x and y), logical (identify role of two statements), and verbal (strengthen + weaken pair) problems. The algebraic type is most common — set up equations first, then scan the table." },
+      { label: "Strategy", formula: "$$\\text{Start with the MOST restrictive constraint first}$$", detail: "Start with the most restrictive constraint — it eliminates the most options. If stuck, try working backwards from the answer choices. Verify BOTH parts satisfy ALL conditions before confirming." }
     ],
     details: [
       { type: "title", text: "Key Insight" },
@@ -653,9 +660,10 @@ topics.forEach((topic, i) => {
       : eq.formula;
     return `
     <div class="eq-item">
-      <div class="eq-label">${eq.label}</div>
+      <div class="eq-label">${eq.label}<span class="eq-chevron">▼</span></div>
       <div class="eq-formula">${rendered}</div>
       ${eq.note ? `<div class="eq-note">${eq.note}</div>` : ''}
+      ${eq.detail ? `<div class="eq-detail"><div class="eq-detail-inner">${eq.detail}</div></div>` : ''}
     </div>`;
   }).join('');
 
@@ -712,6 +720,10 @@ topics.forEach((topic, i) => {
   `;
 
   hub.appendChild(card);
+});
+
+document.querySelectorAll('.eq-item').forEach(function(el) {
+  el.addEventListener('click', function() { el.classList.toggle('open'); });
 });
 
 function toggleCard(i) {

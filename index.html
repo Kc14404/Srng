@@ -123,12 +123,19 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 14px 16px;
+      cursor: pointer;
+      user-select: none;
     }
     .eq-item .eq-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
     .eq-item .eq-note { font-size: 0.78rem; color: var(--muted); margin-top: 8px; word-break: break-word; }
     .eq-formula { overflow-x: hidden; max-width: 100%; }
     .eq-formula .katex, .eq-formula .katex-html { white-space: normal !important; }
     .eq-plain-text { color: var(--accent2); font-size: 0.95rem; line-height: 1.6; display: block; word-break: break-word; }
+    .eq-chevron { float: right; font-size: 0.7rem; color: var(--muted); transition: transform 0.25s; line-height: 1.8; }
+    .eq-item.open .eq-chevron { transform: rotate(180deg); }
+    .eq-item .eq-detail { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .eq-item.open .eq-detail { max-height: 500px; }
+    .eq-detail-inner { padding-top: 10px; margin-top: 8px; border-top: 1px solid var(--border); font-size: 0.82rem; color: #9aa3b8; line-height: 1.65; }
 
     /* Details */
     .rule-list { display: flex; flex-direction: column; gap: 10px; }
@@ -540,14 +547,14 @@ const topics = [
     preview: "\\(\\frac{a}{b} \\pm \\frac{c}{d} = \\frac{ad \\pm bc}{bd}\\)",
     desc: "Adding, subtracting, multiplying, dividing fractions",
     equations: [
-      { label: "Add — same denominator", formula: "$$\\frac{a}{b} + \\frac{c}{b} = \\frac{a+c}{b}$$" },
-      { label: "Add — different denominators", formula: "$$\\frac{a}{b} + \\frac{c}{d} = \\frac{ad+bc}{bd}$$" },
-      { label: "Subtract — different denominators", formula: "$$\\frac{a}{b} - \\frac{c}{d} = \\frac{ad-bc}{bd}$$" },
-      { label: "Multiply fractions", formula: "$$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{ac}{bd}$$" },
-      { label: "Divide fractions", formula: "$$\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c} = \\frac{ad}{bc}$$" },
-      { label: "Compare size (Bow Tie)", formula: "$$\\frac{a}{b} > \\frac{c}{d} \\text{ if } ad > bc$$" },
-      { label: "Square of a fraction", formula: "$$\\left(\\frac{a}{b}\\right)^2 = \\frac{a^2}{b^2}$$" },
-      { label: "Square root of a fraction", formula: "$$\\sqrt{\\frac{a}{b}} = \\frac{\\sqrt{a}}{\\sqrt{b}}$$" },
+      { label: "Add — same denominator", formula: "$$\\frac{a}{b} + \\frac{c}{b} = \\frac{a+c}{b}$$", detail: "When denominators match, just add/subtract numerators. Always simplify the result. Example: 3/7 + 2/7 = 5/7." },
+      { label: "Add — different denominators", formula: "$$\\frac{a}{b} + \\frac{c}{d} = \\frac{ad+bc}{bd}$$", detail: "Cross-multiply to get a common denominator. The Bow Tie method: multiply each numerator by the other's denominator, then use the product of denominators. Always simplify after." },
+      { label: "Subtract — different denominators", formula: "$$\\frac{a}{b} - \\frac{c}{d} = \\frac{ad-bc}{bd}$$", detail: "Same as addition but subtract the cross products. Watch the sign: ad\u2212bc, not bc\u2212ad. A common mistake is reversing the subtraction order." },
+      { label: "Multiply fractions", formula: "$$\\frac{a}{b} \\times \\frac{c}{d} = \\frac{ac}{bd}$$", detail: "Multiply straight across: numerators together, denominators together. Always simplify BEFORE multiplying by cross-canceling to keep numbers small. Example: (3/4)\u00d7(8/9) \u2014 cancel 3 with 9 and 4 with 8 to get 2/3." },
+      { label: "Divide fractions", formula: "$$\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c} = \\frac{ad}{bc}$$", detail: "Flip the second fraction and multiply. \u2018Keep-Change-Flip\u2019: keep the first, change \u00f7 to \u00d7, flip the second. Never try to divide fractions directly \u2014 always convert to multiplication first." },
+      { label: "Compare size (Bow Tie)", formula: "$$\\frac{a}{b} > \\frac{c}{d} \\text{ if } ad > bc$$", detail: "Cross-multiply to compare without finding a common denominator. Compare ad vs bc: if ad > bc, then a/b > c/d. This is faster than converting to decimals and avoids rounding errors." },
+      { label: "Square of a fraction", formula: "$$\\left(\\frac{a}{b}\\right)^2 = \\frac{a^2}{b^2}$$", detail: "Square both numerator and denominator separately. For fractions between 0 and 1, squaring makes the value SMALLER. Example: (1/3)\u00b2 = 1/9, which is less than 1/3." },
+      { label: "Square root of a fraction", formula: "$$\\sqrt{\\frac{a}{b}} = \\frac{\\sqrt{a}}{\\sqrt{b}}$$", detail: "Take the square root of numerator and denominator separately. For fractions between 0 and 1, the square root makes the value LARGER. Example: \u221a(1/4) = 1/2, which is greater than 1/4." },
     ],
     details: [
       { type: "rule", text: "<strong>Reciprocal:</strong> The reciprocal of \\(x\\) is \\(\\frac{1}{x}\\). Flip the fraction: reciprocal of \\(\\frac{3}{4}\\) is \\(\\frac{4}{3}\\)." },
@@ -619,13 +626,13 @@ const topics = [
     preview: "\\(ax^2 + bx + c = 0\\)",
     desc: "Factoring, FOILing, quadratic identities",
     equations: [
-      { label: "Factor common terms", formula: "$$ab + ac = a(b+c)$$" },
-      { label: "General quadratic form", formula: "$$ax^2 + bx + c = 0$$" },
-      { label: "Factored form (where p·q = c, p+q = b)", formula: "$$(x+p)(x+q) = 0$$" },
-      { label: "Identity 1 — Perfect square sum", formula: "$$(x+y)^2 = x^2 + 2xy + y^2$$" },
-      { label: "Identity 2 — Perfect square difference", formula: "$$(x-y)^2 = x^2 - 2xy + y^2$$" },
-      { label: "Identity 3 — Difference of squares", formula: "$$(x+y)(x-y) = x^2 - y^2$$" },
-      { label: "Zero product property", formula: "$$\\text{If } a \\times b = 0 \\Rightarrow a=0 \\text{ or } b=0$$" },
+      { label: "Factor common terms", formula: "$$ab + ac = a(b+c)$$", detail: "Always look for common factors first before trying other methods. Pull out the GCF of all terms. This simplifies the expression and often reveals the next step." },
+      { label: "General quadratic form", formula: "$$ax^2 + bx + c = 0$$", detail: "Always rearrange to ax\u00b2+bx+c=0 before factoring. If terms are on both sides of the equation, move everything to one side first. The standard form makes it easy to identify a, b, and c." },
+      { label: "Factored form (where p\u00b7q = c, p+q = b)", formula: "$$(x+p)(x+q) = 0$$", detail: "Find two numbers p and q whose product equals c and whose sum equals b. This is the core factoring skill. Practice with mental math \u2014 speed here saves significant time on the GMAT." },
+      { label: "Identity 1 \u2014 Perfect square sum", formula: "$$(x+y)^2 = x^2 + 2xy + y^2$$", detail: "Recognize this pattern to expand or factor quickly. The middle term 2xy is the key identifier. If you see x\u00b2+y\u00b2 without the 2xy term, it is NOT a perfect square \u2014 this is a common trap." },
+      { label: "Identity 2 \u2014 Perfect square difference", formula: "$$(x-y)^2 = x^2 - 2xy + y^2$$", detail: "Same as Identity 1 but with a minus sign. The middle term is \u22122xy. Recognizing this saves time over FOILing. Watch the sign: (x\u2212y)\u00b2 is always positive." },
+      { label: "Identity 3 \u2014 Difference of squares", formula: "$$(x+y)(x-y) = x^2 - y^2$$", detail: "This is the most tested identity on the GMAT. Whenever you see x\u00b2\u2212y\u00b2, factor it as (x+y)(x\u2212y). Also works in reverse: if you see (a+b)(a\u2212b), it equals a\u00b2\u2212b\u00b2. Look for hidden forms like 100\u2212x\u00b2 = (10+x)(10\u2212x)." },
+      { label: "Zero product property", formula: "$$\\text{If } a \\times b = 0 \\Rightarrow a=0 \\text{ or } b=0$$", detail: "If a product equals zero, at least one factor must be zero. After factoring a quadratic into (x+p)(x+q)=0, set each factor to zero separately. This gives you all solutions \u2014 don\u2019t forget to check both." },
     ],
     details: [
       { type: "rule", text: "<strong>FOIL:</strong> \\((x+a)(x+b) = x^2\\) (First) \\(+ bx\\) (Outside) \\(+ ax\\) (Inside) \\(+ ab\\) (Last)" },
@@ -699,16 +706,16 @@ const topics = [
     preview: "\\(\\text{odd} \\times \\text{odd} = \\text{odd}\\)",
     desc: "Even/odd rules, sign rules, prime numbers",
     equations: [
-      { label: "Even ± Even", formula: "$$\\text{even} \\pm \\text{even} = \\text{even}$$" },
-      { label: "Odd ± Odd", formula: "$$\\text{odd} \\pm \\text{odd} = \\text{even}$$" },
-      { label: "Even ± Odd", formula: "$$\\text{even} \\pm \\text{odd} = \\text{odd}$$" },
-      { label: "Even × anything", formula: "$$\\text{even} \\times n = \\text{even}$$" },
-      { label: "Odd × Odd", formula: "$$\\text{odd} \\times \\text{odd} = \\text{odd}$$" },
-      { label: "Same sign multiplication", formula: "$$(+)(+) = (+) \\quad \\text{and} \\quad (-)(-) = (+)$$" },
-      { label: "Different sign multiplication", formula: "$$(+)(-) = (-)$$" },
-      { label: "Two consecutive integers — GCF", formula: "$$\\gcd(n,\\, n+1) = 1 \\quad \\text{(no shared prime factors)}$$" },
-      { label: "Multiples of n", formula: "$$\\text{Multiples of } n = n, 2n, 3n, \\ldots, kn \\quad (k \\in \\mathbb{Z})$$" },
-      { label: "Division formula", formula: "$$x = (\\text{Quotient} \\times y) + r \\quad \\text{where } 0 \\leq r < y$$" },
+      { label: "Even \u00b1 Even", formula: "$$\\text{even} \\pm \\text{even} = \\text{even}$$", detail: "Even \u00b1 even is always even. Think of it as: both numbers have a factor of 2, and adding/subtracting preserves that." },
+      { label: "Odd \u00b1 Odd", formula: "$$\\text{odd} \\pm \\text{odd} = \\text{even}$$", detail: "Odd \u00b1 odd is always even. Each odd number is \u2018one away\u2019 from even, so combining two odd numbers brings you back to even." },
+      { label: "Even \u00b1 Odd", formula: "$$\\text{even} \\pm \\text{odd} = \\text{odd}$$", detail: "Even \u00b1 odd is always odd. One number has a factor of 2, the other doesn\u2019t \u2014 the result won\u2019t have a complete factor of 2." },
+      { label: "Even \u00d7 anything", formula: "$$\\text{even} \\times n = \\text{even}$$", detail: "Even times anything is always even. Once a factor of 2 enters the product, the result is always even regardless of other factors." },
+      { label: "Odd \u00d7 Odd", formula: "$$\\text{odd} \\times \\text{odd} = \\text{odd}$$", detail: "Odd times odd is odd. This is the ONLY multiplication case that stays odd. If even one factor is even, the product is even." },
+      { label: "Same sign multiplication", formula: "$$(+)(+) = (+) \\quad \\text{and} \\quad (-)(-) = (+)$$", detail: "Positive \u00d7 positive = positive. Negative \u00d7 negative = positive. Two negatives cancel out. This applies to division too. Key for DS questions testing sign of a product." },
+      { label: "Different sign multiplication", formula: "$$(+)(-) = (-)$$", detail: "Positive \u00d7 negative = negative. This applies to division too. When multiplying/dividing multiple numbers, count the negatives: even count \u2192 positive result, odd count \u2192 negative." },
+      { label: "Two consecutive integers \u2014 GCF", formula: "$$\\gcd(n,\\, n+1) = 1 \\quad \\text{(no shared prime factors)}$$", detail: "Consecutive integers never share prime factors, so their GCF is always 1. This means n and n+1 are always coprime. Useful for proving divisibility properties and simplifying fractions." },
+      { label: "Multiples of n", formula: "$$\\text{Multiples of } n = n, 2n, 3n, \\ldots, kn \\quad (k \\in \\mathbb{Z})$$", detail: "Multiples of n are n, 2n, 3n, etc. \u2014 they go on forever. The number of multiples of n between a and b is: floor(b/n) \u2212 floor((a\u22121)/n). Multiples are always \u2265 n (for positive n)." },
+      { label: "Division formula", formula: "$$x = (\\text{Quotient} \\times y) + r \\quad \\text{where } 0 \\leq r < y$$", detail: "x = Quotient \u00d7 y + Remainder, where 0 \u2264 r < y. The remainder must always be less than the divisor and non-negative. This formula is essential for remainder problems on the GMAT." },
     ],
     details: [
       { type: "title", text: "Prime Numbers < 100" },
@@ -780,18 +787,18 @@ const topics = [
     preview: "\\(\\text{div by 3 if } \\sum\\text{digits} \\div 3\\)",
     desc: "Divisibility shortcuts for 2 through 11",
     equations: [
-      { label: "Divisible by 2", formula: "$$\\text{Last digit} \\in \\{0, 2, 4, 6, 8\\}$$" },
-      { label: "Divisible by 3", formula: "$$\\text{Sum of digits is divisible by 3}$$", note: "e.g. 123 → 1+2+3 = 6 ÷ 3 ✓" },
-      { label: "Divisible by 4", formula: "$$\\text{Last two digits divisible by } 4$$" },
-      { label: "Divisible by 5", formula: "$$\\text{Last digit is } 0 \\text{ or } 5$$" },
-      { label: "Divisible by 6", formula: "$$\\text{Divisible by both } 2 \\text{ and } 3$$" },
-      { label: "Divisible by 8", formula: "$$\\text{Last three digits divisible by } 8$$" },
-      { label: "Divisible by 9", formula: "$$\\text{Sum of digits is divisible by 9}$$", note: "e.g. 729 → 7+2+9 = 18 ÷ 9 ✓" },
-      { label: "Divisible by 11", formula: "$$\\text{(Sum of odd-position digits)} - \\text{(Sum of even-position digits) is 0 or divisible by 11}$$", note: "e.g. 2728: (2+2) − (7+8) = 4−15 = −11 ✓" },
-      { label: "Trailing zeros — count (5×2) pairs", formula: "$$\\text{trailing zeros of } n = \\text{number of } (5 \\times 2) \\text{ pairs in prime factorization}$$", note: "Example: 5200 = 52 × 10² → 2 trailing zeros" },
-      { label: "Leading zeros in 1/x (x has k digits)", formula: "$$\\frac{1}{x} \\text{ has } (k-1) \\text{ leading zeros, or } (k-2) \\text{ if } x = 10^m$$", note: "Example: 1/400 → k=3 digits, not power of 10 → 2 leading zeros: 0.0025" },
-      { label: "Terminating decimal condition", formula: "$$\\frac{p}{q} \\text{ terminates} \\iff q = 2^a \\cdot 5^b \\text{ (reduced form)}$$" },
-      { label: "Factorial units digit rule", formula: "$$n! \\text{ has units digit } 0 \\text{ for all } n \\geq 5$$" },
+      { label: "Divisible by 2", formula: "$$\\text{Last digit} \\in \\{0, 2, 4, 6, 8\\}$$", detail: "Check only the last digit. If it\u2019s 0, 2, 4, 6, or 8, the number is even and divisible by 2." },
+      { label: "Divisible by 3", formula: "$$\\text{Sum of digits is divisible by 3}$$", note: "e.g. 123 \u2192 1+2+3 = 6 \u00f7 3 \u2713", detail: "Add all digits together. If the sum is divisible by 3, so is the original number. You can repeat the process on the sum. Example: 5,832 \u2192 5+8+3+2=18 \u2192 1+8=9 \u2192 divisible by 3." },
+      { label: "Divisible by 4", formula: "$$\\text{Last two digits divisible by } 4$$", detail: "Check only the last TWO digits. If they form a number divisible by 4, the whole number is. Example: 1,324 \u2192 last two digits are 24 \u2192 24\u00f74=6 \u2192 yes." },
+      { label: "Divisible by 5", formula: "$$\\text{Last digit is } 0 \\text{ or } 5$$", detail: "Check only the last digit. If it\u2019s 0 or 5, the number is divisible by 5. The simplest divisibility test." },
+      { label: "Divisible by 6", formula: "$$\\text{Divisible by both } 2 \\text{ and } 3$$", detail: "Must pass BOTH the test for 2 (even) AND the test for 3 (digit sum divisible by 3). Both conditions are required \u2014 satisfying just one is not enough." },
+      { label: "Divisible by 8", formula: "$$\\text{Last three digits divisible by } 8$$", detail: "Check the last THREE digits. If they form a number divisible by 8, the whole number is. For smaller numbers, just divide by 8 directly." },
+      { label: "Divisible by 9", formula: "$$\\text{Sum of digits is divisible by 9}$$", note: "e.g. 729 \u2192 7+2+9 = 18 \u00f7 9 \u2713", detail: "Same method as divisibility by 3, but the digit sum must be divisible by 9 (not just 3). Note: divisible by 9 always implies divisible by 3, but not vice versa." },
+      { label: "Divisible by 11", formula: "$$\\text{(Sum of odd-position digits)} - \\text{(Sum of even-position digits) is 0 or divisible by 11}$$", note: "e.g. 2728: (2+2) \u2212 (7+8) = 4\u221215 = \u221211 \u2713", detail: "Alternate adding and subtracting digits from left to right. If the result is 0 or divisible by 11, the number is divisible by 11. This rule is rarely tested but appears in harder problems." },
+      { label: "Trailing zeros \u2014 count (5\u00d72) pairs", formula: "$$\\text{trailing zeros of } n = \\text{number of } (5 \\times 2) \\text{ pairs in prime factorization}$$", note: "Example: 5200 = 52 \u00d7 10\u00b2 \u2192 2 trailing zeros", detail: "Each trailing zero needs one pair of factors 5 and 2. Since factors of 2 are always more abundant, just count factors of 5. For n!, count: floor(n/5) + floor(n/25) + floor(n/125) + ..." },
+      { label: "Leading zeros in 1/x (x has k digits)", formula: "$$\\frac{1}{x} \\text{ has } (k-1) \\text{ leading zeros, or } (k-2) \\text{ if } x = 10^m$$", note: "Example: 1/400 \u2192 k=3 digits, not power of 10 \u2192 2 leading zeros: 0.0025", detail: "If x has k digits, 1/x has (k\u22121) leading zeros after the decimal point \u2014 unless x is a perfect power of 10, then (k\u22122). Example: 1/500 has 2 leading zeros (0.002)." },
+      { label: "Terminating decimal condition", formula: "$$\\frac{p}{q} \\text{ terminates} \\iff q = 2^a \\cdot 5^b \\text{ (reduced form)}$$", detail: "A fraction p/q (in lowest terms) terminates if and only if q has no prime factors other than 2 and 5. If q contains 3, 7, 11, or any other prime, the decimal repeats forever." },
+      { label: "Factorial units digit rule", formula: "$$n! \\text{ has units digit } 0 \\text{ for all } n \\geq 5$$", detail: "For n\u22655, n! always ends in 0 because 5!=120 contains the factor pair 5\u00d72. Each additional multiple of 5 adds another trailing zero. So 10! ends in two zeros, 15! in three, etc." },
     ],
     details: [
       { type: "rule", text: "<strong>Remainder range:</strong> Remainder must satisfy \\(0 \\leq r < \\text{divisor}\\). Dividing by 7 → remainder \\(\\in \\{0,1,2,3,4,5,6\\}\\)." },
@@ -861,11 +868,11 @@ const topics = [
     preview: "\\(\\text{LCM} \\times \\text{GCF} = x \\times y\\)",
     desc: "Factor counting, LCM, GCF, perfect squares & cubes",
     equations: [
-      { label: "Number of factors", formula: "$$n = p_1^a \\cdot p_2^b \\cdot p_3^c \\Rightarrow \\text{factors} = (a+1)(b+1)(c+1)$$" },
-      { label: "LCM × GCF relationship", formula: "$$\\text{LCM}(x,y) \\times \\text{GCF}(x,y) = x \\times y$$" },
-      { label: "Perfect square condition", formula: "$$n \\text{ is a perfect square} \\iff \\text{all prime exponents are even}$$", note: "Example: 144 = 2⁴ × 3² ✓ (all even exponents)" },
-      { label: "Perfect cube condition", formula: "$$n \\text{ is a perfect cube} \\iff \\text{all prime exponents are divisible by } 3$$", note: "Example: 216 = 2³ × 3³ ✓" },
-      { label: "Multiples of n", formula: "$$\\text{Multiples of } n: \\quad n,\\ 2n,\\ 3n,\\ \\ldots \\ (\\text{infinite, always } \\geq n)$$" },
+      { label: "Number of factors", formula: "$$n = p_1^a \\cdot p_2^b \\cdot p_3^c \\Rightarrow \\text{factors} = (a+1)(b+1)(c+1)$$", detail: "Prime factorize, add 1 to each exponent, multiply the results. Example: 72=2\u00b3\u00d73\u00b2 \u2192 (3+1)(2+1)=12 factors. Perfect squares have an ODD number of factors (the square root is counted once, not twice)." },
+      { label: "LCM \u00d7 GCF relationship", formula: "$$\\text{LCM}(x,y) \\times \\text{GCF}(x,y) = x \\times y$$", detail: "LCM(x,y) \u00d7 GCF(x,y) = x \u00d7 y. Use this to find a missing value when you know three of the four. This shortcut avoids full prime factorization and is frequently tested." },
+      { label: "Perfect square condition", formula: "$$n \\text{ is a perfect square} \\iff \\text{all prime exponents are even}$$", note: "Example: 144 = 2\u2074 \u00d7 3\u00b2 \u2713 (all even exponents)", detail: "All prime exponents must be even. If any exponent is odd, multiply by that prime once to make it a perfect square. Example: 18=2\u00d73\u00b2 \u2192 multiply by 2 \u2192 36=2\u00b2\u00d73\u00b2 \u2713" },
+      { label: "Perfect cube condition", formula: "$$n \\text{ is a perfect cube} \\iff \\text{all prime exponents are divisible by } 3$$", note: "Example: 216 = 2\u00b3 \u00d7 3\u00b3 \u2713", detail: "All prime exponents must be divisible by 3. If not, multiply by the prime raised to the needed power. Example: 24=2\u00b3\u00d73\u00b9 \u2192 multiply by 3\u00b2=9 \u2192 216=2\u00b3\u00d73\u00b3 \u2713" },
+      { label: "Multiples of n", formula: "$$\\text{Multiples of } n: \\quad n,\\ 2n,\\ 3n,\\ \\ldots \\ (\\text{infinite, always } \\geq n)$$", detail: "Multiples of n form an infinite ascending sequence: n, 2n, 3n, ... Every multiple of n is also a multiple of n\u2019s factors. The LCM of two numbers is the smallest number that is a multiple of both." },
     ],
     details: [
       { type: "title", text: "Counting Factors Example" },
@@ -936,13 +943,13 @@ const topics = [
     preview: "\\(\\sqrt{ab} = \\sqrt{a} \\cdot \\sqrt{b}\\)",
     desc: "Simplifying, multiplying, dividing radicals",
     equations: [
-      { label: "Multiply radicals", formula: "$$\\sqrt{a} \\cdot \\sqrt{b} = \\sqrt{ab}$$" },
-      { label: "Divide radicals", formula: "$$\\frac{\\sqrt{a}}{\\sqrt{b}} = \\sqrt{\\frac{a}{b}}$$" },
-      { label: "Radical as exponent", formula: "$$\\sqrt{x} = x^{1/2} \\qquad \\sqrt[3]{x} = x^{1/3}$$" },
-      { label: "General form", formula: "$$\\sqrt[n]{x} = x^{1/n}$$" },
-      { label: "Square root identity", formula: "$$\\sqrt{x^2} = |x|$$" },
-      { label: "Addition of radicals (warning)", formula: "$$\\sqrt{a+b} \\neq \\sqrt{a} + \\sqrt{b}$$" },
-      { label: "Multiple roots", formula: "$$\\sqrt{\\sqrt{x}} = x^{1/4}$$" },
+      { label: "Multiply radicals", formula: "$$\\sqrt{a} \\cdot \\sqrt{b} = \\sqrt{ab}$$", detail: "You can combine radicals under one root sign when multiplying. Always simplify after combining. Example: \u221a6 \u00d7 \u221a10 = \u221a60 = \u221a(4\u00d715) = 2\u221a15." },
+      { label: "Divide radicals", formula: "$$\\frac{\\sqrt{a}}{\\sqrt{b}} = \\sqrt{\\frac{a}{b}}$$", detail: "Combine under one root sign when dividing. This often simplifies messy expressions. Example: \u221a75/\u221a3 = \u221a25 = 5." },
+      { label: "Radical as exponent", formula: "$$\\sqrt{x} = x^{1/2} \\qquad \\sqrt[3]{x} = x^{1/3}$$", detail: "Converting radicals to fractional exponents makes it easier to apply exponent rules. \u221ax = x^(1/2), \u221bx = x^(1/3). Use this when combining radicals with different indices." },
+      { label: "General form", formula: "$$\\sqrt[n]{x} = x^{1/n}$$", detail: "The nth root of x equals x^(1/n). This generalizes square roots and cube roots. On the GMAT, you\u2019ll mostly see square roots and occasionally cube roots." },
+      { label: "Square root identity", formula: "$$\\sqrt{x^2} = |x|$$", detail: "\u221a(x\u00b2) = |x|, NOT just x. If x is negative, \u221a(x\u00b2) gives the positive value. This is a common trap: \u221a((-3)\u00b2) = \u221a9 = 3, not -3." },
+      { label: "Addition of radicals (warning)", formula: "$$\\sqrt{a+b} \\neq \\sqrt{a} + \\sqrt{b}$$", detail: "You CANNOT split a root across addition or subtraction. \u221a(a+b) \u2260 \u221aa + \u221ab. This is one of the most common algebra mistakes. Example: \u221a(9+16) = \u221a25 = 5, but \u221a9 + \u221a16 = 3+4 = 7 \u2260 5." },
+      { label: "Multiple roots", formula: "$$\\sqrt{\\sqrt{x}} = x^{1/4}$$", detail: "Nested roots multiply their indices: \u221a(\u221ax) = x^(1/4), which is the fourth root. To simplify, convert to fractional exponents and multiply: (1/2)\u00d7(1/2) = 1/4." },
     ],
     details: [
       { type: "title", text: "Approximate values to memorize" },
@@ -1015,16 +1022,16 @@ const topics = [
     preview: "\\(x^a \\cdot x^b = x^{a+b}\\)",
     desc: "Multiplication, division, power rules, units digits",
     equations: [
-      { label: "Multiply like bases", formula: "$$x^a \\cdot x^b = x^{a+b}$$" },
-      { label: "Divide like bases", formula: "$$\\frac{x^a}{x^b} = x^{a-b}$$" },
-      { label: "Power to a power", formula: "$$(x^a)^b = x^{ab}$$" },
-      { label: "Multiply different bases, same exponent", formula: "$$x^a \\cdot y^a = (xy)^a$$" },
-      { label: "Divide different bases, same exponent", formula: "$$\\frac{x^a}{y^a} = \\left(\\frac{x}{y}\\right)^a$$" },
-      { label: "Zero exponent", formula: "$$x^0 = 1 \\quad (x \\neq 0)$$" },
-      { label: "Negative exponent", formula: "$$x^{-a} = \\frac{1}{x^a}$$" },
-      { label: "Units digit — cycle-4 bases", formula: "$$2: 2{\\to}4{\\to}8{\\to}6 \\quad 3: 3{\\to}9{\\to}7{\\to}1 \\quad 7: 7{\\to}9{\\to}3{\\to}1 \\quad 8: 8{\\to}4{\\to}2{\\to}6$$", note: "Find remainder of exponent ÷ 4, then pick that position in the cycle." },
-      { label: "Units digit — cycle-2 bases", formula: "$$4: 4{\\to}6 \\quad 9: 9{\\to}1 \\quad (\\text{odd power} = \\text{first}, \\text{even power} = \\text{second})$$" },
-      { label: "Units digit — fixed bases", formula: "$$0 \\to 0 \\quad 1 \\to 1 \\quad 5 \\to 5 \\quad 6 \\to 6 \\quad (\\text{always})$$" },
+      { label: "Multiply like bases", formula: "$$x^a \\cdot x^b = x^{a+b}$$", detail: "When multiplying same bases, ADD the exponents. This is the most fundamental exponent rule. Works for any base, including variables and fractions." },
+      { label: "Divide like bases", formula: "$$\\frac{x^a}{x^b} = x^{a-b}$$", detail: "When dividing same bases, SUBTRACT the exponents. If the result is negative, flip to a fraction: x^(-n) = 1/x^n." },
+      { label: "Power to a power", formula: "$$(x^a)^b = x^{ab}$$", detail: "When raising a power to another power, MULTIPLY the exponents. Common on GMAT: (2\u00b3)\u2074 = 2\u00b9\u00b2 \u2014 don\u2019t accidentally add (2\u2077) instead." },
+      { label: "Multiply different bases, same exponent", formula: "$$x^a \\cdot y^a = (xy)^a$$", detail: "When bases differ but exponents match, combine the bases under one exponent. Example: 2\u00b3 \u00d7 5\u00b3 = 10\u00b3 = 1000. Useful for simplifying expressions with matching exponents." },
+      { label: "Divide different bases, same exponent", formula: "$$\\frac{x^a}{y^a} = \\left(\\frac{x}{y}\\right)^a$$", detail: "When dividing with the same exponent, combine into one fraction raised to that power. Example: 6\u2074/3\u2074 = (6/3)\u2074 = 2\u2074 = 16." },
+      { label: "Zero exponent", formula: "$$x^0 = 1 \\quad (x \\neq 0)$$", detail: "Anything (except 0) raised to the 0 power equals 1. This follows from x^n/x^n = x^(n-n) = x\u2070 = 1. Note: 0\u2070 is undefined on the GMAT." },
+      { label: "Negative exponent", formula: "$$x^{-a} = \\frac{1}{x^a}$$", detail: "A negative exponent means \u2018take the reciprocal.\u2019 x^(-a) = 1/x^a. This is NOT a negative number \u2014 it\u2019s a fraction. Example: 2^(-3) = 1/8, which is positive." },
+      { label: "Units digit \u2014 cycle-4 bases", formula: "$$2: 2{\\to}4{\\to}8{\\to}6 \\quad 3: 3{\\to}9{\\to}7{\\to}1 \\quad 7: 7{\\to}9{\\to}3{\\to}1 \\quad 8: 8{\\to}4{\\to}2{\\to}6$$", note: "Find remainder of exponent \u00f7 4, then pick that position in the cycle.", detail: "Bases 2,3,7,8 cycle through 4 units digits. Divide the exponent by 4 and use the remainder to find the position in the cycle. Remainder 0 means the 4th (last) position. Memorize all four cycles." },
+      { label: "Units digit \u2014 cycle-2 bases", formula: "$$4: 4{\\to}6 \\quad 9: 9{\\to}1 \\quad (\\text{odd power} = \\text{first}, \\text{even power} = \\text{second})$$", detail: "Bases 4 and 9 alternate between two units digits. Odd powers give the first digit (4 or 9), even powers give the second (6 or 1). Just check if the exponent is odd or even." },
+      { label: "Units digit \u2014 fixed bases", formula: "$$0 \\to 0 \\quad 1 \\to 1 \\quad 5 \\to 5 \\quad 6 \\to 6 \\quad (\\text{always})$$", detail: "Bases 0, 1, 5, and 6 always have the same units digit regardless of the exponent. Any power of 5 ends in 5, any power of 6 ends in 6, etc. No calculation needed." },
     ],
     details: [
       { type: "title", text: "Powers of 2" },
@@ -1097,9 +1104,9 @@ const topics = [
     preview: "\\(P \\to E \\to MD \\to AS\\)",
     desc: "Order of operations & distributive property",
     equations: [
-      { label: "Order of operations", formula: "$$\\underbrace{P}_{\\text{Parentheses}} \\to \\underbrace{E}_{\\text{Exponents}} \\to \\underbrace{MD}_{\\text{Mult/Div}} \\to \\underbrace{AS}_{\\text{Add/Sub}}$$" },
-      { label: "Distributive property", formula: "$$a(b+c) = ab + ac$$" },
-      { label: "Reverse distribution (factoring)", formula: "$$ab + ac = a(b+c)$$" },
+      { label: "Order of operations", formula: "$$\\underbrace{P}_{\\text{Parentheses}} \\to \\underbrace{E}_{\\text{Exponents}} \\to \\underbrace{MD}_{\\text{Mult/Div}} \\to \\underbrace{AS}_{\\text{Add/Sub}}$$", detail: "Parentheses first, then Exponents, then Multiplication/Division (left to right), then Addition/Subtraction (left to right). M and D have EQUAL priority \u2014 process left to right. Same for A and S." },
+      { label: "Distributive property", formula: "$$a(b+c) = ab + ac$$", detail: "Multiply the outside term by EACH term inside the parentheses. This is essential for simplifying expressions and solving equations. Works in reverse too: ab+ac = a(b+c) (factoring)." },
+      { label: "Reverse distribution (factoring)", formula: "$$ab + ac = a(b+c)$$", detail: "Pull out the common factor from all terms. This is the reverse of distribution and is often the key first step in simplification. Find the GCF of all terms and factor it out." },
     ],
     details: [
       { type: "rule", text: "<strong>P</strong>arentheses — always resolve \\((\\ldots)\\) first." },
@@ -1169,9 +1176,10 @@ topics.forEach((topic, i) => {
       : eq.formula;
     return `
     <div class="eq-item">
-      <div class="eq-label">${eq.label}</div>
+      <div class="eq-label">${eq.label}<span class="eq-chevron">▼</span></div>
       <div class="eq-formula">${rendered}</div>
       ${eq.note ? `<div class="eq-note">${eq.note}</div>` : ''}
+      ${eq.detail ? `<div class="eq-detail"><div class="eq-detail-inner">${eq.detail}</div></div>` : ''}
     </div>`;
   }).join('');
 
@@ -1228,6 +1236,10 @@ topics.forEach((topic, i) => {
   `;
 
   hub.appendChild(card);
+});
+
+document.querySelectorAll('.eq-item').forEach(function(el) {
+  el.addEventListener('click', function() { el.classList.toggle('open'); });
 });
 
 function toggleCard(i) {

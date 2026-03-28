@@ -112,9 +112,16 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 14px 16px;
+      cursor: pointer;
+      user-select: none;
     }
     .eq-item .eq-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
     .eq-item .eq-note { font-size: 0.78rem; color: var(--muted); margin-top: 8px; word-break: break-word; }
+    .eq-chevron { float: right; font-size: 0.7rem; color: var(--muted); transition: transform 0.25s; line-height: 1.8; }
+    .eq-item.open .eq-chevron { transform: rotate(180deg); }
+    .eq-item .eq-detail { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .eq-item.open .eq-detail { max-height: 500px; }
+    .eq-detail-inner { padding-top: 10px; margin-top: 8px; border-top: 1px solid var(--border); font-size: 0.82rem; color: #9aa3b8; line-height: 1.65; }
     .eq-formula {
       overflow-x: hidden;
       max-width: 100%;
@@ -272,11 +279,11 @@ const topics = [
     preview: "Conclusion, Premise, Assumption, Logical Gap",
     desc: "Identifying the building blocks of GMAT arguments",
     equations: [
-      { label: "Conclusion", formula: "The main point the author is trying to make" },
-      { label: "Premise", formula: "Evidence or facts used to support the conclusion" },
-      { label: "Assumption", formula: "Unstated but required link between premise and conclusion" },
-      { label: "Logical Gap", formula: "The space between what's stated and what's concluded" },
-      { label: "Counterargument", formula: "Evidence or reasoning that opposes the conclusion" }
+      { label: "Conclusion", formula: "The main point the author is trying to make", detail: "The conclusion is the DESTINATION of the argument — what the author is ultimately trying to prove. Signal words: therefore, thus, so, hence, clearly, consequently. The conclusion can appear anywhere in the passage — it is often NOT the first sentence." },
+      { label: "Premise", formula: "Evidence or facts used to support the conclusion", detail: "Premises are the building blocks — the facts and evidence the author uses. Signal words: because, since, given that, as, for. A strong argument needs premises that directly support the conclusion without logical gaps." },
+      { label: "Assumption", formula: "Unstated but required link between premise and conclusion", detail: "The assumption is the invisible glue between premises and conclusion. It is NEVER stated. To find it, ask: 'What must be true for this conclusion to follow from these premises?' Use the negation test to confirm." },
+      { label: "Logical Gap", formula: "The space between what's stated and what's concluded", detail: "The gap is where the argument 'jumps' from evidence to conclusion without justification. Correct answers in Strengthen/Weaken/Assumption questions almost always target this gap. Identifying it is the single most important CR skill." },
+      { label: "Counterargument", formula: "Evidence or reasoning that opposes the conclusion", detail: "A counterargument opposes the main conclusion. On the GMAT, counterarguments appear in Boldface questions and as wrong-answer traps in Strengthen questions. Don't confuse a counterargument with a weakener — they serve different structural roles." }
     ],
     details: [
       { type: "rule", text: "<strong>Conclusion signals:</strong> 'therefore', 'thus', 'so', 'hence', 'consequently'" },
@@ -335,12 +342,12 @@ const topics = [
     preview: "Attack the assumption, break the causal link",
     desc: "Finding alternative explanations and data flaws",
     equations: [
-      { label: "Weaken", formula: "Attack the assumption (the unstated link)" },
-      { label: "Alternative Explanation", formula: "Another cause that could explain the observed effect" },
-      { label: "Exception to the Rule", formula: "A case where the argument's logic breaks down" },
-      { label: "Data Flaw", formula: "Problems with the evidence (biased sample, small size, wrong metric)" },
-      { label: "Correlation ≠ Causation", formula: "Two things happening together doesn't mean one caused the other" },
-      { label: "Common Wrong Traps", formula: "Strengtheners disguised as weakeners, irrelevant comparisons, out-of-scope info, overly extreme claims" }
+      { label: "Weaken", formula: "Attack the assumption (the unstated link)", detail: "A weakener makes the conclusion LESS likely but doesn't disprove it. The correct answer attacks the assumption, not the premises. Common mistake: picking an answer that contradicts a premise instead of undermining the logical link." },
+      { label: "Alternative Explanation", formula: "Another cause that could explain the observed effect", detail: "If the argument says A caused B, an alternative explanation shows C could have caused B instead. This doesn't prove A didn't happen — it just shows the conclusion isn't the only possibility. Example: sales rose after an ad campaign, but a competitor also closed." },
+      { label: "Exception to the Rule", formula: "A case where the argument's logic breaks down", detail: "An exception shows a case where the argument's logic fails. One strong counterexample can weaken a broad generalization. But be careful: an extreme edge case may be too narrow to truly weaken the argument." },
+      { label: "Data Flaw", formula: "Problems with the evidence (biased sample, small size, wrong metric)", detail: "Look for biased samples, self-reported data, small sample sizes, or wrong metrics. Example: surveying only gym members about exercise benefits creates survivorship bias — those who quit aren't represented." },
+      { label: "Correlation ≠ Causation", formula: "Two things happening together doesn't mean one caused the other", detail: "Two events occurring together doesn't mean one caused the other. There could be a third factor (confounding variable) causing both. On the GMAT, this is the #1 pattern in Weaken questions involving studies or data." },
+      { label: "Common Wrong Traps", formula: "Strengtheners disguised as weakeners, irrelevant comparisons, out-of-scope info, overly extreme claims", detail: "Trap answers in Weaken questions often: (1) strengthen instead of weaken, (2) are irrelevant to the argument's scope, (3) use extreme language, or (4) attack a premise rather than the assumption. Always re-read the conclusion before choosing." }
     ],
     details: [
       { type: "rule", text: "<strong>Step 1:</strong> Always find the conclusion AND assumption FIRST before looking at answers" },
@@ -390,11 +397,11 @@ const topics = [
     preview: "Close the gap, use the negation test",
     desc: "Adding support and identifying hidden requirements",
     equations: [
-      { label: "Strengthen", formula: "Add NEW information that closes the logical gap" },
-      { label: "Assumption", formula: "What MUST be true for the argument to hold (use negation test)" },
-      { label: "Negation Test", formula: "Negate the answer choice — if the argument falls apart, it IS the assumption" },
-      { label: "Necessary Assumption", formula: "Must be true (argument collapses without it)" },
-      { label: "Sufficient Assumption", formula: "If true, guarantees the conclusion (stronger than necessary)" }
+      { label: "Strengthen", formula: "Add NEW information that closes the logical gap", detail: "A strengthener adds NEW information that makes the conclusion more likely. It bridges the gap between premise and conclusion. It does NOT repeat what's already stated. Common mistake: choosing an answer that restates a premise." },
+      { label: "Assumption", formula: "What MUST be true for the argument to hold (use negation test)", detail: "An assumption is what MUST be true (but isn't stated) for the argument to hold. Use the negation test: negate the answer choice — if the argument falls apart, it's the assumption. Assumptions bridge the gap between evidence and conclusion." },
+      { label: "Negation Test", formula: "Negate the answer choice — if the argument falls apart, it IS the assumption", detail: "To use: negate each answer choice and check if the argument collapses. If negating destroys the argument, that choice IS the assumption. Works for necessary assumptions only. Example: 'No side effects exist' → negate to 'Side effects exist' → argument collapses → it's the assumption." },
+      { label: "Necessary Assumption", formula: "Must be true (argument collapses without it)", detail: "A necessary assumption is required for the argument — without it, the argument fails. It doesn't guarantee the conclusion, it just keeps it alive. The negation test identifies necessary assumptions." },
+      { label: "Sufficient Assumption", formula: "If true, guarantees the conclusion (stronger than necessary)", detail: "A sufficient assumption, if true, GUARANTEES the conclusion. It's stronger than a necessary assumption. These appear less often on the GMAT. Think of it as: necessary = 'must be true,' sufficient = 'if true, proves it.'" }
     ],
     details: [
       { type: "rule", text: "<strong>Strengthening</strong> adds NEW information not already in the argument" },
@@ -443,10 +450,10 @@ const topics = [
     preview: "Inference, Evaluate, Boldface, Paradox",
     desc: "Less common but testable CR question formats",
     equations: [
-      { label: "Inference", formula: "What MUST be true based solely on the stated facts (no outside knowledge)" },
-      { label: "Evaluate", formula: "A question whose answer (YES or NO) would help determine the argument's strength" },
-      { label: "Boldface", formula: "Identifying the ROLE of bolded statements in the argument structure" },
-      { label: "Paradox / Explain", formula: "Finding what reconciles two seemingly contradictory facts (both must remain true)" }
+      { label: "Inference", formula: "What MUST be true based solely on the stated facts (no outside knowledge)", detail: "Inferences must be 100% supported by passage text — no outside knowledge, no leaps. Pick the most conservative answer. If any word in the answer goes beyond what's stated, eliminate it. 'Must be true' means provably true, not probably true." },
+      { label: "Evaluate", formula: "A question whose answer (YES or NO) would help determine the argument's strength", detail: "The correct answer is a question that works BOTH ways: answering YES strengthens the argument, answering NO weakens it (or vice versa). Test each answer choice by asking 'Does the answer to this question affect the argument either way?'" },
+      { label: "Boldface", formula: "Identifying the ROLE of bolded statements in the argument structure", detail: "Boldface questions ask about the ROLE of statements, not their truth. Map the argument structure first: which is the conclusion? Which is a premise? Which is a counter? Then match roles. Common roles: main conclusion, supporting premise, counter-premise, background." },
+      { label: "Paradox / Explain", formula: "Finding what reconciles two seemingly contradictory facts (both must remain true)", detail: "Both facts in a paradox MUST remain true — the correct answer explains how they coexist. Wrong answers often contradict one of the facts. Example: 'Sales rose but profits fell' → explanation: costs increased even faster than revenue." }
     ],
     details: [
       { type: "rule", text: "<strong>Inference:</strong> Pick the safest, most conservative answer — it must be 100% supported" },
@@ -495,10 +502,10 @@ const topics = [
     preview: "Passage Map, POE, reading for purpose",
     desc: "How to approach Reading Comprehension passages",
     equations: [
-      { label: "Passage Map", formula: "Topic (what it's about) + Scope (specific focus) + Purpose (why written) + Tone (author's attitude)" },
-      { label: "Paragraph Summary", formula: "Capture each paragraph's role in 3-5 words" },
-      { label: "Question Types", formula: "Main Idea, Detail, Inference, Purpose, Tone, Strengthen/Weaken" },
-      { label: "POE (Process of Elimination)", formula: "Eliminate 3 wrong answers rather than searching for 1 right answer" }
+      { label: "Passage Map", formula: "Topic (what it's about) + Scope (specific focus) + Purpose (why written) + Tone (author's attitude)", detail: "Before answering any question, build a mental map: Topic (subject), Scope (specific angle), Purpose (persuade, inform, compare), Tone (positive, negative, neutral). This takes 15-20 seconds and prevents re-reading the entire passage." },
+      { label: "Paragraph Summary", formula: "Capture each paragraph's role in 3-5 words", detail: "After reading each paragraph, mentally summarize its role in 3-5 words. Example: P1='introduces the problem,' P2='presents solution A,' P3='criticizes solution A,' P4='defends modified version.' This creates a roadmap for detail questions." },
+      { label: "Question Types", formula: "Main Idea, Detail, Inference, Purpose, Tone, Strengthen/Weaken", detail: "Main Idea = big picture (not too broad/narrow). Detail = specific fact from text. Inference = must be 100% supported. Purpose = why the author wrote it. Tone = author's attitude. Know which type you're facing before looking at answers." },
+      { label: "POE (Process of Elimination)", formula: "Eliminate 3 wrong answers rather than searching for 1 right answer", detail: "Eliminate wrong answers rather than searching for the right one. Wrong answers are: too extreme, too broad, too narrow, opposite of what's stated, or out of scope. On the GMAT, 3 answers are clearly wrong if you know what to look for." }
     ],
     details: [
       { type: "rule", text: "<strong>Read for PURPOSE, not content</strong> — understand WHY the author wrote each part" },
@@ -556,11 +563,11 @@ const topics = [
     preview: "Main Idea, Inference, Purpose, Tone",
     desc: "Mastering each RC question format",
     equations: [
-      { label: "Main Idea", formula: "Topic + Scope + Author's Stance (not too broad, not too narrow)" },
-      { label: "Inference", formula: "Must be 100% supported by passage text (no outside knowledge)" },
-      { label: "Author's Purpose", formula: "WHY the author wrote the passage (to argue, analyze, compare, describe)" },
-      { label: "Function", formula: "WHY a specific paragraph or sentence exists in the passage" },
-      { label: "Tone", formula: "HOW the author feels — positive (admiring, optimistic), negative (critical, skeptical), or neutral (objective)" }
+      { label: "Main Idea", formula: "Topic + Scope + Author's Stance (not too broad, not too narrow)", detail: "The correct Main Idea answer matches Topic + Scope + Author's Stance. Too-broad answers cover more than the passage discusses. Too-narrow answers only capture one paragraph. The right answer is the Goldilocks zone." },
+      { label: "Inference", formula: "Must be 100% supported by passage text (no outside knowledge)", detail: "RC inferences must be 100% text-supported — even more conservative than CR inferences. Watch for strength mismatches: if the passage says 'some,' the inference cannot say 'most.' Match the degree of certainty exactly." },
+      { label: "Author's Purpose", formula: "WHY the author wrote the passage (to argue, analyze, compare, describe)", detail: "Purpose answers use specific verbs: argue, analyze, challenge, compare, describe, evaluate, propose, question, refute. Match the verb to what the author actually does. 'Describe' is neutral; 'argue' implies a position; 'challenge' implies opposition." },
+      { label: "Function", formula: "WHY a specific paragraph or sentence exists in the passage", detail: "Function questions ask WHY a sentence or paragraph exists, not WHAT it says. Common functions: introduce a counterargument, provide supporting evidence, illustrate with an example, transition between ideas, qualify a previous claim." },
+      { label: "Tone", formula: "HOW the author feels — positive (admiring, optimistic), negative (critical, skeptical), or neutral (objective)", detail: "Tone exists on a spectrum: admiring → optimistic → cautiously optimistic → neutral → cautious → skeptical → critical → dismissive. Most GMAT passages are neutral or cautiously [positive/negative]. Extreme tones (dismissive, laudatory) are rarely correct." }
     ],
     details: [
       { type: "rule", text: "<strong>Main Idea wrong answers</strong> are either too broad (covers more than the passage) or too narrow (only covers one paragraph)" },
@@ -616,9 +623,10 @@ topics.forEach((topic, i) => {
 
   const eqItems = topic.equations.map(eq => `
     <div class="eq-item">
-      <div class="eq-label">${eq.label}</div>
+      <div class="eq-label">${eq.label}<span class="eq-chevron">▼</span></div>
       <div class="eq-formula">${eq.formula}</div>
       ${eq.note ? `<div class="eq-note">${eq.note}</div>` : ''}
+      ${eq.detail ? `<div class="eq-detail"><div class="eq-detail-inner">${eq.detail}</div></div>` : ''}
     </div>
   `).join('');
 
@@ -675,6 +683,10 @@ topics.forEach((topic, i) => {
   `;
 
   hub.appendChild(card);
+});
+
+document.querySelectorAll('.eq-item').forEach(function(el) {
+  el.addEventListener('click', function() { el.classList.toggle('open'); });
 });
 
 function toggleCard(i) {

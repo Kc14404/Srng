@@ -150,6 +150,8 @@
       min-width: 0;
     }
     .rule-item strong { color: var(--accent2); }
+    .rule-title { display: block; color: var(--accent2); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+    .rule-body { margin: 0; color: var(--text); font-size: 0.84rem; line-height: 1.6; }
     .rule-item code {
       font-family: 'Courier New', monospace;
       background: rgba(108,99,255,0.12);
@@ -426,8 +428,10 @@ topics.forEach((topic, i) => {
   let detailHTML = '<div class="rule-list">';
   const details = topic.details || topic.rules || [];
   details.forEach(d => {
-    if (d.type === 'title' || d.title) {
+    if (d.type === 'title' && !d.content) {
       detailHTML += `<div class="section-title">${d.text || d.title || ''}</div>`;
+    } else if (d.title && d.content) {
+      detailHTML += `<div class="rule-item"><strong class="rule-title">${d.title}</strong><p class="rule-body">${d.content}</p></div>`;
     } else {
       detailHTML += `<div class="rule-item">${d.text || d.content || ''}</div>`;
     }

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GMAT Focus — Data Insights</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$',right:'$$',display:true},
+        {left:'\\(',right:'\\)',display:false}
+      ],
+      throwOnError: false
+    })">
+  </script>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --card: #22263a;
+      --accent: #6c63ff;
+      --accent2: #00d4aa;
+      --text: #e8eaf0;
+      --muted: #8b90a7;
+      --border: #2e3248;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 24px 28px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p { color: var(--muted); margin-top: 8px; font-size: 0.95rem; }
+
+    .hub {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .topic-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .topic-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 8px 30px rgba(108,99,255,0.15); }
+    .topic-card.active { border-color: var(--accent2); }
+
+    .card-header {
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .card-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface);
+      border-radius: 10px;
+    }
+    .card-meta h2 { font-size: 1rem; font-weight: 600; }
+    .card-meta .preview {
+      font-size: 0.82rem;
+      color: var(--accent2);
+      margin-top: 4px;
+    }
+    .card-meta .desc { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+    .expand-arrow { margin-left: auto; font-size: 0.75rem; color: var(--muted); transition: transform 0.3s; align-self: center; flex-shrink: 0; }
+    .topic-card.active .expand-arrow { transform: rotate(180deg); }
+
+    .detail-panel { display: none; background: var(--surface); border-top: 1px solid var(--border); }
+    .topic-card.active .detail-panel { display: block; }
+
+    .detail-tabs { display: flex; border-bottom: 1px solid var(--border); }
+    .tab-btn {
+      padding: 10px 16px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+
+    .tab-content { display: none; padding: 20px; min-width: 0; overflow: hidden; }
+    .tab-content.active { display: block; }
+
+    /* Equations */
+    .eq-list { display: flex; flex-direction: column; gap: 10px; }
+    .eq-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .eq-item .eq-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .eq-item .eq-note { font-size: 0.78rem; color: var(--muted); margin-top: 8px; word-break: break-word; }
+    .eq-formula { overflow-x: auto; overflow-y: hidden; max-width: 100%; -webkit-overflow-scrolling: touch; }
+
+    /* Details */
+    .rule-list { display: flex; flex-direction: column; gap: 10px; }
+    .rule-item {
+      background: var(--card);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 12px 14px;
+      font-size: 0.84rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      min-width: 0;
+    }
+    .rule-item strong { color: var(--accent2); }
+    .rule-item code {
+      font-family: 'Courier New', monospace;
+      background: rgba(108,99,255,0.12);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: #a78bfa;
+    }
+
+    .section-title {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin: 16px 0 6px;
+      font-weight: 700;
+    }
+    .section-title:first-child { margin-top: 0; }
+
+    /* Practice */
+    .practice-list { display: flex; flex-direction: column; gap: 14px; }
+    .practice-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .practice-q {
+      padding: 14px 16px;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      cursor: pointer;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      transition: background 0.15s;
+    }
+    .practice-q:hover { background: rgba(108,99,255,0.05); }
+    .q-num {
+      flex-shrink: 0;
+      width: 22px; height: 22px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: white;
+      margin-top: 1px;
+    }
+    .q-text { flex: 1; }
+    .q-toggle { flex-shrink: 0; color: var(--muted); font-size: 0.7rem; transition: transform 0.2s; }
+    .practice-item.show-ans .q-toggle { transform: rotate(180deg); }
+
+    .practice-ans {
+      display: none;
+      padding: 12px 16px 14px 48px;
+      border-top: 1px solid var(--border);
+      font-size: 0.83rem;
+      line-height: 1.6;
+      color: var(--muted);
+      background: rgba(0,212,170,0.04);
+    }
+    .practice-item.show-ans .practice-ans { display: block; }
+    .practice-ans .ans-label { font-size: 0.68rem; color: var(--accent2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .practice-ans .step { margin-bottom: 4px; }
+
+    /* KaTeX overrides */
+    .katex { color: var(--accent2); }
+    .eq-item .katex { font-size: 1.05rem; }
+    .practice-q .katex, .practice-ans .katex { font-size: 0.9rem; color: #a78bfa; }
+    .rule-item .katex { font-size: 0.88rem; color: #a78bfa; }
+
+    /* Prevent KaTeX display math from overflowing */
+    .katex-display {
+      overflow-x: auto;
+      overflow-y: hidden;
+      max-width: 100%;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .katex-display > .katex { max-width: none; }
+
+    /* Global overflow safety */
+    .eq-item, .rule-item, .practice-q, .practice-ans {
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    @media (max-width: 480px) {
+      .eq-item .katex { font-size: 0.95rem; }
+    }
+
+    /* Nav bar */
+    .site-nav {
+      background: #1a1d27;
+      border-bottom: 1px solid #2e3248;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+    }
+    .nav-brand {
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: #6c63ff;
+      padding: 14px 20px 14px 0;
+      text-decoration: none;
+      flex-shrink: 0;
+      border-right: 1px solid #2e3248;
+      margin-right: 8px;
+    }
+    .nav-link {
+      padding: 14px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #8b90a7;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .nav-link:hover { color: #e8eaf0; }
+    .nav-link.active { color: #00d4aa; border-bottom-color: #00d4aa; }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5rem; }
+      .hub { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a class="nav-brand" href="index.html">GMAT Hub</a>
+  <a class="nav-link" href="index.html">📐 Math</a>
+  <a class="nav-link" href="verbal.html">📖 Verbal</a>
+  <a class="nav-link active" href="di.html">📊 Data Insights</a>
+  <a class="nav-link" href="log.html">📋 Log</a>
+</nav>
+
+<header>
+  <h1>GMAT Focus — Data Insights</h1>
+  <p>Click any topic to explore frameworks, rules, and practice problems.</p>
+</header>
+
+<div class="hub" id="hub"></div>
+
+<script>
+const topics = [
+  {
+    icon: "⚖️",
+    title: "DS Framework",
+    preview: "A · B · C · D · E",
+    desc: "Data Sufficiency answer choices and evaluation method",
+    equations: [
+      { label: "Answer A", formula: "$$\\text{Statement 1 ALONE is sufficient; Statement 2 alone is NOT}$$" },
+      { label: "Answer B", formula: "$$\\text{Statement 2 ALONE is sufficient; Statement 1 alone is NOT}$$" },
+      { label: "Answer C", formula: "$$\\text{BOTH statements TOGETHER are sufficient, but NEITHER alone}$$" },
+      { label: "Answer D", formula: "$$\\text{EACH statement ALONE is sufficient}$$" },
+      { label: "Answer E", formula: "$$\\text{Statements 1 and 2 TOGETHER are NOT sufficient}$$" },
+      { label: "Value Question", formula: "$$\\text{Need exactly ONE numerical answer}$$" },
+      { label: "Yes/No Question", formula: "$$\\text{Need a DEFINITE yes OR a DEFINITE no}$$" }
+    ],
+    details: [
+      { type: "title", text: "Evaluation Process" },
+      { type: "rule", text: "<strong>Step 1:</strong> Evaluate Statement 1 alone → Sufficient or Not?" },
+      { type: "rule", text: "<strong>Step 2:</strong> Evaluate Statement 2 alone → Sufficient or Not?" },
+      { type: "rule", text: "<strong>Step 3:</strong> If neither alone works, combine both → Sufficient or Not?" },
+      { type: "title", text: "AD/BCE Split" },
+      { type: "rule", text: "If S1 sufficient → answer is <strong>A or D</strong>. Then test S2: if also sufficient → D, if not → A." },
+      { type: "rule", text: "If S1 NOT sufficient → answer is <strong>B, C, or E</strong>. Then test S2: if sufficient → B, if not → test both together: sufficient → C, not → E." },
+      { type: "title", text: "Key Principles" },
+      { type: "rule", text: "<strong>Never calculate the actual answer</strong> — only determine IF it CAN be answered." },
+      { type: "rule", text: "<strong>Yes/No trap:</strong> 'Sometimes yes + sometimes no' = NOT sufficient. A definite 'no' IS sufficient." }
+    ],
+    practice: [
+      {
+        q: "What is the value of \\(x\\)? (1) \\(x^2 = 9\\) (2) \\(x > 0\\)",
+        steps: [
+          "S1: \\(x^2 = 9\\) → \\(x = 3\\) or \\(x = -3\\). Two values → Not sufficient.",
+          "S2: \\(x > 0\\) → infinite positive values → Not sufficient.",
+          "Both: \\(x^2 = 9\\) AND \\(x > 0\\) → \\(x = 3\\) only. One value → <strong>Sufficient.</strong>",
+          "<strong>Answer: C</strong>"
+        ]
+      },
+      {
+        q: "Is \\(x > 0\\)? (1) \\(x^3 > 0\\) (2) \\(x^2 > 0\\)",
+        steps: [
+          "S1: \\(x^3 > 0\\). Since cubing preserves sign, \\(x > 0\\). Definite YES → Sufficient.",
+          "S2: \\(x^2 > 0\\). Both positive and negative numbers have positive squares. Could be yes or no → Not sufficient.",
+          "<strong>Answer: A</strong> (S1 alone sufficient, S2 not)"
+        ]
+      },
+      {
+        q: "Is integer \\(n\\) even? (1) \\(2n\\) is even (2) \\(n + 1\\) is odd",
+        steps: [
+          "S1: \\(2n\\) is even. But \\(2 \\times\\) anything is always even — this tells us nothing about \\(n\\). Not sufficient.",
+          "S2: \\(n + 1\\) is odd → \\(n\\) must be even (even + 1 = odd). Definite YES → Sufficient.",
+          "<strong>Answer: B</strong>"
+        ]
+      },
+      {
+        q: "What is the value of \\(x + y\\)? (1) \\(x = 3\\) (2) \\(y = 7\\)",
+        steps: [
+          "S1: \\(x = 3\\) but \\(y\\) unknown → infinite values for \\(x + y\\) → Not sufficient.",
+          "S2: \\(y = 7\\) but \\(x\\) unknown → Not sufficient.",
+          "Both: \\(x = 3\\) and \\(y = 7\\) → \\(x + y = 10\\). One value → Sufficient.",
+          "<strong>Answer: C</strong>"
+        ]
+      },
+      {
+        q: "Is \\(xy > 0\\)? (1) \\(x > 0\\) (2) \\(y < 0\\)",
+        steps: [
+          "S1: \\(x > 0\\) but \\(y\\) unknown → if \\(y > 0\\) then yes, if \\(y < 0\\) then no → Not sufficient.",
+          "S2: \\(y < 0\\) but \\(x\\) unknown → same issue → Not sufficient.",
+          "Both: \\(x > 0\\) and \\(y < 0\\) → \\(xy < 0\\). Definite NO → Sufficient (a definite NO is sufficient!).",
+          "<strong>Answer: C</strong>"
+        ]
+      }
+    ]
+  },
+  {
+    icon: "🧠",
+    title: "DS Advanced Traps",
+    preview: "Zero · Negative · Fraction traps",
+    desc: "Common traps and edge cases in Data Sufficiency",
+    equations: [
+      { label: "Zero Trap", formula: "$$\\text{Always test } x = 0 \\text{ — it breaks many assumptions}$$" },
+      { label: "Negative Trap", formula: "$$\\text{Test negative numbers — signs flip with multiplication}$$" },
+      { label: "Fraction Trap", formula: "$$0 < x < 1: \\quad x^2 < x < \\sqrt{x}$$", note: "Squaring makes fractions SMALLER" },
+      { label: "Integer Constraint", formula: "$$\\text{Integer constraints are very restrictive — few values to test}$$" },
+      { label: "Absolute Value", formula: "$$|x| = 3 \\Rightarrow x = 3 \\text{ OR } x = -3$$" }
+    ],
+    details: [
+      { type: "title", text: "Testing Strategy" },
+      { type: "rule", text: "<strong>Never assume positive.</strong> If the problem doesn't say 'positive,' test negatives and zero." },
+      { type: "rule", text: "<strong>If 'positive integer' is stated,</strong> use it — this eliminates fractions, negatives, and zero." },
+      { type: "title", text: "Numbers to Always Test" },
+      { type: "rule", text: "Test these values: <strong>negative integer</strong> (e.g., −2), <strong>zero</strong>, <strong>positive fraction</strong> (e.g., ½), <strong>one</strong>, <strong>positive integer</strong> (e.g., 3), <strong>large number</strong> (e.g., 100)" },
+      { type: "title", text: "Geometry Trap" },
+      { type: "rule", text: "Knowing area alone does NOT determine shape dimensions. A rectangle with area 12 could be 3×4, 2×6, 1×12, etc." }
+    ],
+    practice: [
+      {
+        q: "Is \\(x > 0\\)? (1) \\(x^2 > 0\\) (2) \\(x^3 > 0\\)",
+        steps: [
+          "S1: \\(x^2 > 0\\). Test \\(x = 2\\): \\(4 > 0\\) ✓ (yes). Test \\(x = -2\\): \\(4 > 0\\) ✓ (but \\(x < 0\\)). Sometimes yes, sometimes no → Not sufficient.",
+          "S2: \\(x^3 > 0\\). Cubing preserves sign → \\(x > 0\\). Definite YES → Sufficient.",
+          "Note: \\(x^2 > 0\\) means \\(x \\neq 0\\) but doesn't determine sign. The <strong>zero trap</strong> — \\(x^2 > 0\\) already excludes zero, but the <strong>negative trap</strong> remains.",
+          "<strong>Answer: B</strong>"
+        ]
+      },
+      {
+        q: "Is \\(x^2 > x\\)? (1) \\(x > 1\\) (2) \\(x < 0\\)",
+        steps: [
+          "S1: \\(x > 1\\). Try \\(x = 2\\): \\(4 > 2\\) ✓. Try \\(x = 1.5\\): \\(2.25 > 1.5\\) ✓. For all \\(x > 1\\), \\(x^2 > x\\). Definite YES → Sufficient.",
+          "S2: \\(x < 0\\). Try \\(x = -2\\): \\(4 > -2\\) ✓. Try \\(x = -0.5\\): \\(0.25 > -0.5\\) ✓. For all \\(x < 0\\), \\(x^2\\) is positive and \\(x\\) is negative. Definite YES → Sufficient.",
+          "<strong>Answer: D</strong> (Each alone sufficient)"
+        ]
+      },
+      {
+        q: "Is \\(x^2 < x\\)? (1) \\(x > 0\\) (2) \\(x < 1\\)",
+        steps: [
+          "\\(x^2 < x\\) means \\(0 < x < 1\\) (the fraction trap zone).",
+          "S1: \\(x > 0\\). Try \\(x = 0.5\\): \\(0.25 < 0.5\\) ✓. Try \\(x = 2\\): \\(4 < 2\\) ✗. Not sufficient.",
+          "S2: \\(x < 1\\). Try \\(x = 0.5\\): \\(0.25 < 0.5\\) ✓. Try \\(x = -1\\): \\(1 < -1\\) ✗. Not sufficient.",
+          "Both: \\(0 < x < 1\\) → always \\(x^2 < x\\). Definite YES → Sufficient.",
+          "<strong>Answer: C</strong>"
+        ]
+      },
+      {
+        q: "Is \\(n\\) prime? (1) \\(10 < n < 14\\) (2) \\(n\\) is odd",
+        steps: [
+          "S1: \\(10 < n < 14\\) → \\(n\\) could be 11, 12, or 13. If integer: 11 (prime), 12 (not prime), 13 (prime). Not sufficient.",
+          "S2: \\(n\\) is odd → could be any odd number. Not sufficient.",
+          "Both: odd integers where \\(10 < n < 14\\) → \\(n = 11\\) or \\(n = 13\\). Both are prime → Definite YES → Sufficient.",
+          "<strong>Answer: C</strong>"
+        ]
+      }
+    ]
+  },
+  {
+    icon: "📑",
+    title: "Multi-Source Reasoning",
+    preview: "Combine data across multiple tabs",
+    desc: "Synthesizing information from 2-3 data sources",
+    equations: [
+      { label: "Synthesis", formula: "$$\\text{Combine information from 2+ tabs to answer the question}$$" },
+      { label: "Contradiction Check", formula: "$$\\text{Identify conflicts between sources and resolve them}$$" },
+      { label: "True / False / Cannot Determine", formula: "$$\\text{Cannot Determine = data literally absent from ALL tabs}$$" }
+    ],
+    details: [
+      { type: "title", text: "Reading Strategy" },
+      { type: "rule", text: "<strong>Read tab titles first</strong> to understand what each source contains." },
+      { type: "rule", text: "Most MSR questions test your ability to <strong>combine information across tabs</strong>." },
+      { type: "title", text: "Cannot Determine" },
+      { type: "rule", text: "'Cannot be determined' is correct ONLY when the data is <strong>genuinely absent</strong> from all sources." },
+      { type: "title", text: "Common Traps" },
+      { type: "rule", text: "Watch for: <strong>different time periods</strong> across tabs, <strong>different units</strong> (thousands vs millions), <strong>different sample groups</strong> (all employees vs managers only)." }
+    ],
+    practice: [
+      {
+        q: "Tab 1 shows Company revenue: $5M. Tab 2 shows Company has 250 employees. Question: What is the revenue per employee?",
+        steps: [
+          "This requires synthesizing data from BOTH tabs.",
+          "Revenue per employee = \\(\\frac{\\$5{,}000{,}000}{250} = \\$20{,}000\\)",
+          "Key skill: neither tab alone answers the question — you must combine.",
+          "<strong>Answer: $20,000 per employee</strong>"
+        ]
+      },
+      {
+        q: "Tab 1: 'Company grew 15% in 2023.' Tab 2: 'Industry average growth was 20% in 2023.' Tab 3: 'Company CEO states: Our growth outpaced the industry.' — Is the CEO's statement supported?",
+        steps: [
+          "Tab 1: Company grew 15%. Tab 2: Industry grew 20%.",
+          "15% < 20% → Company underperformed the industry.",
+          "Tab 3 contradicts Tabs 1+2. The CEO's statement is NOT supported.",
+          "<strong>Answer: False</strong> — the data shows company growth (15%) was below industry average (20%)."
+        ]
+      },
+      {
+        q: "Tab 1 shows Q1-Q3 sales data. Tab 2 shows annual employee counts. Question: 'What were Q4 sales?' — Can this be determined?",
+        steps: [
+          "Tab 1 has Q1-Q3 sales but NOT Q4.",
+          "Tab 2 has employee data, which is irrelevant to Q4 sales.",
+          "No source contains Q4 sales data → genuinely absent.",
+          "<strong>Answer: Cannot be determined</strong> — Q4 data is not provided in any source."
+        ]
+      }
+    ]
+  },
+  {
+    icon: "📊",
+    title: "Table Analysis",
+    preview: "Sort · Filter · Calculate",
+    desc: "Analyzing data tables with sort and filter operations",
+    equations: [
+      { label: "Sort by Column", formula: "$$\\text{Reorder rows by a specific column (ascending or descending)}$$" },
+      { label: "Filter by Criteria", formula: "$$\\text{Select only rows meeting specific conditions}$$" },
+      { label: "Percentage", formula: "$$\\text{Percentage} = \\frac{\\text{Part}}{\\text{Whole}} \\times 100$$" },
+      { label: "True/False Format", formula: "$$\\text{Each sub-question is evaluated independently}$$" }
+    ],
+    details: [
+      { type: "title", text: "Strategy" },
+      { type: "rule", text: "<strong>Read the question FIRST,</strong> then determine which column to sort/filter by." },
+      { type: "rule", text: "'At least' means \\(\\geq\\) (includes the value). 'More than' means \\(>\\) (excludes the value)." },
+      { type: "title", text: "Sorting" },
+      { type: "rule", text: "Sort ascending to find <strong>minimum</strong> values. Sort descending to find <strong>maximum</strong> values." },
+      { type: "rule", text: "When comparing, sort by the relevant column to quickly identify rankings." }
+    ],
+    practice: [
+      {
+        q: "Table: Countries with GDP and Population. Sort by GDP per capita to find the country with the highest GDP per capita.",
+        steps: [
+          "GDP per capita = GDP ÷ Population for each country.",
+          "Calculate for each row, then sort descending.",
+          "The country at the top after sorting has the highest GDP per capita.",
+          "<strong>Strategy:</strong> Don't calculate all — estimate first, then verify the top candidates."
+        ]
+      },
+      {
+        q: "Table shows 20 products with Category, Price, and Rating columns. How many products are in the 'Electronics' category with a rating of at least 4.0?",
+        steps: [
+          "Filter 1: Category = 'Electronics' → narrow down rows.",
+          "Filter 2: Rating \\(\\geq 4.0\\) (note: 'at least' includes 4.0 exactly).",
+          "Count the rows that pass BOTH filters.",
+          "<strong>Key:</strong> Apply the most restrictive filter first to reduce the counting work."
+        ]
+      },
+      {
+        q: "True or False: 'The majority of companies in the table have revenue above $10M.' Table has 15 companies, 8 with revenue above $10M.",
+        steps: [
+          "Majority means more than half → more than \\(\\frac{15}{2} = 7.5\\).",
+          "8 companies have revenue above $10M.",
+          "\\(8 > 7.5\\) → Yes, a majority.",
+          "<strong>Answer: True</strong>"
+        ]
+      }
+    ]
+  },
+  {
+    icon: "📈",
+    title: "Graphics Interpretation",
+    preview: "Charts · Graphs · Visual data",
+    desc: "Reading bar charts, line graphs, scatter plots, and pie charts",
+    equations: [
+      { label: "Bar Chart", formula: "$$\\text{Compare heights/lengths to compare values}$$" },
+      { label: "Line Graph", formula: "$$\\text{Trends (up/down) + Rate of change (slope) + Intersections}$$" },
+      { label: "Scatter Plot", formula: "$$\\text{Correlation: positive (↗), negative (↘), none (random)}$$" },
+      { label: "Pie Chart", formula: "$$\\text{All slices sum to 100\\%}$$" },
+      { label: "Drop-down Format", formula: "$$\\text{Select the correct value from a dropdown menu}$$" }
+    ],
+    details: [
+      { type: "title", text: "First Steps — ALWAYS Check" },
+      { type: "rule", text: "Check <strong>axis labels</strong> — what is being measured?" },
+      { type: "rule", text: "Check <strong>scale and units</strong> — thousands? millions? percentages?" },
+      { type: "rule", text: "Check <strong>legend</strong> — what does each color/line represent?" },
+      { type: "title", text: "Common Traps" },
+      { type: "rule", text: "<strong>Non-zero baseline:</strong> A y-axis starting at 50 (not 0) makes small differences look huge. A bar going from 50 to 100 is NOT a 100% increase if the baseline is 50 — it's a \\(\\frac{100-50}{50} = 100\\%\\) increase, but visually it looks like the bar doubled from nothing." },
+      { type: "rule", text: "<strong>Correlation ≠ Causation:</strong> A scatter plot showing correlation does NOT prove one variable causes the other." },
+      { type: "rule", text: "<strong>Steeper slope = faster rate of change.</strong> A steeper line means the value is increasing/decreasing more rapidly." }
+    ],
+    practice: [
+      {
+        q: "A bar chart shows Sales in Year 1 = 200 and Year 2 = 250, but the y-axis starts at 150. A student says 'Sales almost tripled.' Is this correct?",
+        steps: [
+          "The y-axis starts at 150 (non-zero baseline trap).",
+          "Visually, the Year 2 bar looks ~3× taller than Year 1.",
+          "But actual increase: \\(\\frac{250 - 200}{200} = 25\\%\\) increase, not tripled.",
+          "<strong>Answer: No — sales increased by 25%, not tripled. The non-zero baseline distorted the visual.</strong>"
+        ]
+      },
+      {
+        q: "A line graph shows Product A's sales rising steeply from Q1 to Q2, then gradually from Q2 to Q4. Product B's sales rise gradually throughout. When did Product A's growth rate slow?",
+        steps: [
+          "Growth RATE = slope of the line.",
+          "Steep slope (Q1→Q2) = fast growth. Gradual slope (Q2→Q4) = slower growth.",
+          "The growth rate slowed starting at Q2, even though sales continued to increase.",
+          "<strong>Answer: After Q2</strong> — the slope decreased, indicating slowing growth."
+        ]
+      },
+      {
+        q: "A scatter plot shows a negative correlation between 'Hours of TV watched' and 'Test scores.' Can we conclude TV causes lower scores?",
+        steps: [
+          "Negative correlation: as TV hours increase, test scores tend to decrease.",
+          "But correlation ≠ causation. Possible confounders: students who watch more TV may study less, come from different backgrounds, etc.",
+          "The scatter plot shows a relationship, not a cause.",
+          "<strong>Answer: No — correlation does not prove causation.</strong>"
+        ]
+      },
+      {
+        q: "A pie chart shows: Product A = 35%, Product B = 25%, Product C = 20%, Other = ?%. Total revenue is $400,000. What is Product C's revenue?",
+        steps: [
+          "Other = 100% - 35% - 25% - 20% = 20%.",
+          "Product C revenue = 20% × $400,000 = $80,000.",
+          "<strong>Answer: $80,000</strong>"
+        ]
+      }
+    ]
+  },
+  {
+    icon: "⚡",
+    title: "Two-Part Analysis",
+    preview: "Two linked answers · Constraints",
+    desc: "Solving problems requiring two interdependent values",
+    equations: [
+      { label: "Table Format", formula: "$$\\text{Two columns — select one value for each column}$$" },
+      { label: "Constraint Satisfaction", formula: "$$\\text{BOTH values must satisfy ALL conditions simultaneously}$$" },
+      { label: "Problem Types", formula: "$$\\text{Algebraic, Logical, or Verbal reasoning}$$" },
+      { label: "Strategy", formula: "$$\\text{Start with the MOST restrictive constraint first}$$" }
+    ],
+    details: [
+      { type: "title", text: "Key Insight" },
+      { type: "rule", text: "The two answers are often <strong>NOT independent</strong> — choosing one constrains the other." },
+      { type: "title", text: "Strategy" },
+      { type: "rule", text: "<strong>Step 1:</strong> Identify the most restrictive constraint and start there." },
+      { type: "rule", text: "<strong>Step 2:</strong> Set up the equation or inequality before plugging in values." },
+      { type: "rule", text: "<strong>Step 3:</strong> Verify BOTH parts satisfy ALL conditions." }
+    ],
+    practice: [
+      {
+        q: "Find two integers \\(x\\) and \\(y\\) such that \\(x + y = 10\\) and \\(x > y\\). Values available: 2, 3, 4, 5, 6, 7, 8.",
+        steps: [
+          "Constraint 1: \\(x + y = 10\\). Constraint 2: \\(x > y\\).",
+          "Possible pairs summing to 10: (8,2), (7,3), (6,4).",
+          "All satisfy \\(x > y\\) since the first number is larger.",
+          "Most restrictive: both must be from the given list and sum to 10.",
+          "<strong>Answer: Any of (8,2), (7,3), or (6,4) — but on GMAT, the table would narrow to one valid pair.</strong>"
+        ]
+      },
+      {
+        q: "A team of 5 must include exactly 2 from Department A (Alice, Bob, Carol) and exactly 3 from Department B (Dan, Eve, Frank, Grace). The team must include Alice. Select one person NOT on the team from each department.",
+        steps: [
+          "Department A: Must include Alice + 1 more from {Bob, Carol}. So one of Bob/Carol is excluded.",
+          "Department B: Must include 3 from {Dan, Eve, Frank, Grace}. So one is excluded.",
+          "If Alice + Bob chosen → Carol excluded from A.",
+          "If Alice + Carol chosen → Bob excluded from A.",
+          "The two answers (one from each department) are linked by the total team constraint.",
+          "<strong>Strategy:</strong> Start with Dept A (more restrictive — only 3 people, need 2 including Alice)."
+        ]
+      },
+      {
+        q: "A company allocates $100,000 between marketing (\\(m\\)) and R&D (\\(r\\)). Marketing must be at least $30,000 and R&D at least $40,000. Maximize the difference \\(m - r\\).",
+        steps: [
+          "Constraints: \\(m + r = 100{,}000\\), \\(m \\geq 30{,}000\\), \\(r \\geq 40{,}000\\).",
+          "To maximize \\(m - r\\): maximize \\(m\\) and minimize \\(r\\).",
+          "Minimum \\(r = 40{,}000\\) → \\(m = 60{,}000\\).",
+          "\\(m - r = 60{,}000 - 40{,}000 = 20{,}000\\).",
+          "<strong>Answer: m = $60,000, r = $40,000</strong>"
+        ]
+      }
+    ]
+  }
+];
+
+const hub = document.getElementById('hub');
+
+topics.forEach((topic, i) => {
+  const card = document.createElement('div');
+  card.className = 'topic-card';
+  card.id = `topic-${i}`;
+
+  const eqItems = topic.equations.map(eq => `
+    <div class="eq-item">
+      <div class="eq-label">${eq.label}</div>
+      <div class="eq-formula">${eq.formula}</div>
+      ${eq.note ? `<div class="eq-note">${eq.note}</div>` : ''}
+    </div>
+  `).join('');
+
+  let detailHTML = '<div class="rule-list">';
+  topic.details.forEach(d => {
+    if (d.type === 'title') {
+      detailHTML += `<div class="section-title">${d.text}</div>`;
+    } else {
+      detailHTML += `<div class="rule-item">${d.text}</div>`;
+    }
+  });
+  detailHTML += '</div>';
+
+  const practiceHTML = topic.practice.map((p, j) => `
+    <div class="practice-item" id="prac-${i}-${j}">
+      <div class="practice-q" onclick="toggleAnswer(${i},${j})">
+        <div class="q-num">${j+1}</div>
+        <div class="q-text">${p.q}</div>
+        <div class="q-toggle">▼</div>
+      </div>
+      <div class="practice-ans">
+        <div class="ans-label">Solution</div>
+        ${p.steps.map(s => `<div class="step">${s}</div>`).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${i})">
+      <div class="card-icon">${topic.icon}</div>
+      <div class="card-meta">
+        <h2>${topic.title}</h2>
+        <div class="preview">${topic.preview}</div>
+        <div class="desc">${topic.desc}</div>
+      </div>
+      <div class="expand-arrow">▼</div>
+    </div>
+    <div class="detail-panel">
+      <div class="detail-tabs">
+        <button class="tab-btn active" onclick="switchTab(event,${i},'eq')">📐 Equations</button>
+        <button class="tab-btn" onclick="switchTab(event,${i},'detail')">📖 Rules</button>
+        <button class="tab-btn" onclick="switchTab(event,${i},'practice')">✏️ Practice</button>
+      </div>
+      <div class="tab-content active" id="tab-eq-${i}">
+        <div class="eq-list">${eqItems}</div>
+      </div>
+      <div class="tab-content" id="tab-detail-${i}">
+        ${detailHTML}
+      </div>
+      <div class="tab-content" id="tab-practice-${i}">
+        <div class="practice-list">${practiceHTML}</div>
+      </div>
+    </div>
+  `;
+
+  hub.appendChild(card);
+});
+
+function toggleCard(i) {
+  const card = document.getElementById(`topic-${i}`);
+  card.classList.toggle('active');
+  if (card.classList.contains('active')) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function switchTab(e, i, tab) {
+  e.stopPropagation();
+  const card = document.getElementById(`topic-${i}`);
+  card.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  card.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById(`tab-${tab}-${i}`).classList.add('active');
+}
+
+function toggleAnswer(i, j) {
+  document.getElementById(`prac-${i}-${j}`).classList.toggle('show-ans');
+}
+</script>
+
+</body>
+</html>

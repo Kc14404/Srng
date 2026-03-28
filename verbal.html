@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GMAT Focus — Verbal Reasoning</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --card: #22263a;
+      --accent: #6c63ff;
+      --accent2: #00d4aa;
+      --text: #e8eaf0;
+      --muted: #8b90a7;
+      --border: #2e3248;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 24px 28px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p { color: var(--muted); margin-top: 8px; font-size: 0.95rem; }
+
+    .hub {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .topic-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .topic-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 8px 30px rgba(108,99,255,0.15); }
+    .topic-card.active { border-color: var(--accent2); }
+
+    .card-header {
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .card-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface);
+      border-radius: 10px;
+    }
+    .card-meta h2 { font-size: 1rem; font-weight: 600; }
+    .card-meta .preview {
+      font-size: 0.82rem;
+      color: var(--accent2);
+      margin-top: 4px;
+    }
+    .card-meta .desc { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+    .expand-arrow { margin-left: auto; font-size: 0.75rem; color: var(--muted); transition: transform 0.3s; align-self: center; flex-shrink: 0; }
+    .topic-card.active .expand-arrow { transform: rotate(180deg); }
+
+    .detail-panel { display: none; background: var(--surface); border-top: 1px solid var(--border); }
+    .topic-card.active .detail-panel { display: block; }
+
+    .detail-tabs { display: flex; border-bottom: 1px solid var(--border); }
+    .tab-btn {
+      padding: 10px 16px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+
+    .tab-content { display: none; padding: 20px; min-width: 0; overflow: hidden; }
+    .tab-content.active { display: block; }
+
+    /* Equations / Key Concepts */
+    .eq-list { display: flex; flex-direction: column; gap: 10px; }
+    .eq-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .eq-item .eq-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .eq-item .eq-note { font-size: 0.78rem; color: var(--muted); margin-top: 8px; word-break: break-word; }
+    .eq-formula {
+      overflow-x: auto;
+      overflow-y: hidden;
+      max-width: 100%;
+      -webkit-overflow-scrolling: touch;
+      font-size: 0.92rem;
+      color: var(--accent2);
+      line-height: 1.6;
+    }
+
+    /* Details */
+    .rule-list { display: flex; flex-direction: column; gap: 10px; }
+    .rule-item {
+      background: var(--card);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 12px 14px;
+      font-size: 0.84rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      min-width: 0;
+    }
+    .rule-item strong { color: var(--accent2); }
+    .rule-item code {
+      font-family: 'Courier New', monospace;
+      background: rgba(108,99,255,0.12);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: #a78bfa;
+    }
+
+    .section-title {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin: 16px 0 6px;
+      font-weight: 700;
+    }
+    .section-title:first-child { margin-top: 0; }
+
+    /* Practice */
+    .practice-list { display: flex; flex-direction: column; gap: 14px; }
+    .practice-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .practice-q {
+      padding: 14px 16px;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      cursor: pointer;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      transition: background 0.15s;
+    }
+    .practice-q:hover { background: rgba(108,99,255,0.05); }
+    .q-num {
+      flex-shrink: 0;
+      width: 22px; height: 22px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: white;
+      margin-top: 1px;
+    }
+    .q-text { flex: 1; }
+    .q-toggle { flex-shrink: 0; color: var(--muted); font-size: 0.7rem; transition: transform 0.2s; }
+    .practice-item.show-ans .q-toggle { transform: rotate(180deg); }
+
+    .practice-ans {
+      display: none;
+      padding: 12px 16px 14px 48px;
+      border-top: 1px solid var(--border);
+      font-size: 0.83rem;
+      line-height: 1.6;
+      color: var(--muted);
+      background: rgba(0,212,170,0.04);
+    }
+    .practice-item.show-ans .practice-ans { display: block; }
+    .practice-ans .ans-label { font-size: 0.68rem; color: var(--accent2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .practice-ans .step { margin-bottom: 4px; }
+
+    /* Global overflow safety */
+    .eq-item, .rule-item, .practice-q, .practice-ans {
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    /* Nav bar */
+    .site-nav {
+      background: #1a1d27;
+      border-bottom: 1px solid #2e3248;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+    }
+    .nav-brand {
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: #6c63ff;
+      padding: 14px 20px 14px 0;
+      text-decoration: none;
+      flex-shrink: 0;
+      border-right: 1px solid #2e3248;
+      margin-right: 8px;
+    }
+    .nav-link {
+      padding: 14px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #8b90a7;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .nav-link:hover { color: #e8eaf0; }
+    .nav-link.active { color: #00d4aa; border-bottom-color: #00d4aa; }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5rem; }
+      .hub { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a class="nav-brand" href="index.html">GMAT Hub</a>
+  <a class="nav-link" href="index.html">📐 Math</a>
+  <a class="nav-link active" href="verbal.html">📖 Verbal</a>
+  <a class="nav-link" href="di.html">📊 Data Insights</a>
+  <a class="nav-link" href="log.html">📋 Log</a>
+</nav>
+
+<header>
+  <h1>GMAT Focus — Verbal Reasoning</h1>
+  <p>Critical Reasoning & Reading Comprehension — click any topic to explore concepts, rules, and practice.</p>
+</header>
+
+<div class="hub" id="hub"></div>
+
+<script>
+const topics = [
+  {
+    icon: "🏗️",
+    title: "Argument Structure",
+    preview: "Conclusion, Premise, Assumption, Logical Gap",
+    desc: "Identifying the building blocks of GMAT arguments",
+    equations: [
+      { label: "Conclusion", formula: "The main point the author is trying to make" },
+      { label: "Premise", formula: "Evidence or facts used to support the conclusion" },
+      { label: "Assumption", formula: "Unstated but required link between premise and conclusion" },
+      { label: "Logical Gap", formula: "The space between what's stated and what's concluded" },
+      { label: "Counterargument", formula: "Evidence or reasoning that opposes the conclusion" }
+    ],
+    details: [
+      { type: "rule", text: "<strong>Conclusion signals:</strong> 'therefore', 'thus', 'so', 'hence', 'consequently'" },
+      { type: "rule", text: "<strong>Premise signals:</strong> 'because', 'since', 'as', 'given that'" },
+      { type: "rule", text: "<strong>Key rule:</strong> The assumption is NEVER explicitly stated in the argument" },
+      { type: "rule", text: "<strong>Strategy:</strong> Always pre-think your answer before reading the answer choices" }
+    ],
+    practice: [
+      {
+        q: "\"Company X's profits rose 20% after launching a new ad campaign. Therefore, the ad campaign was effective.\" — What is the unstated assumption?",
+        steps: [
+          "The assumption is that no other factors (seasonal trends, price changes, market shifts) contributed to the profit increase.",
+          "The argument assumes the ad campaign was the sole cause.",
+          "<strong>Answer: No external factors caused the profit increase — only the ad campaign did.</strong>"
+        ]
+      },
+      {
+        q: "\"Studies show that students who eat breakfast score higher on tests. Therefore, schools should provide free breakfast to improve test scores.\" — What would most weaken this argument?",
+        steps: [
+          "Evidence that students who eat breakfast differ in other ways (e.g., come from wealthier families, sleep more) that independently affect test scores.",
+          "This breaks the causal link between breakfast and scores.",
+          "<strong>Answer: A confounding variable (wealth, sleep) explains both breakfast-eating and higher scores.</strong>"
+        ]
+      },
+      {
+        q: "\"Since the factory installed new filters, air quality complaints from nearby residents have dropped. The filters must be reducing pollution.\" — What would strengthen this conclusion?",
+        steps: [
+          "Evidence that no other changes occurred during the same period (e.g., no reduction in production, no weather changes).",
+          "This eliminates alternative explanations for fewer complaints.",
+          "<strong>Answer: No other factors changed — only the filters were introduced.</strong>"
+        ]
+      },
+      {
+        q: "\"All of our best-selling products were developed by Team Alpha. Therefore, Team Alpha is our most innovative team.\" — Identify the conclusion.",
+        steps: [
+          "Signal word: \"Therefore.\"",
+          "Conclusion: \"Team Alpha is our most innovative team.\"",
+          "Premise: \"All best-selling products were developed by Team Alpha.\"",
+          "<strong>Answer: The conclusion is \"Team Alpha is our most innovative team.\"</strong>"
+        ]
+      },
+      {
+        q: "\"Crime rates have fallen every year since the city increased police patrols. Police patrols reduce crime.\" — Identify ALL premises in this argument.",
+        steps: [
+          "Premise 1: Crime rates have fallen every year.",
+          "Premise 2: The city increased police patrols.",
+          "These are the stated facts supporting the conclusion that patrols reduce crime.",
+          "<strong>Answer: Two premises — falling crime rates and increased patrols.</strong>"
+        ]
+      }
+    ]
+  },
+  {
+    icon: "⚡",
+    title: "CR — Weaken",
+    preview: "Attack the assumption, break the causal link",
+    desc: "Finding alternative explanations and data flaws",
+    equations: [
+      { label: "Weaken", formula: "Attack the assumption (the unstated link)" },
+      { label: "Alternative Explanation", formula: "Another cause that could explain the observed effect" },
+      { label: "Exception to the Rule", formula: "A case where the argument's logic breaks down" },
+      { label: "Data Flaw", formula: "Problems with the evidence (biased sample, small size, wrong metric)" },
+      { label: "Correlation ≠ Causation", formula: "Two things happening together doesn't mean one caused the other" },
+      { label: "Common Wrong Traps", formula: "Strengtheners disguised as weakeners, irrelevant comparisons, out-of-scope info, overly extreme claims" }
+    ],
+    details: [
+      { type: "rule", text: "<strong>Step 1:</strong> Always find the conclusion AND assumption FIRST before looking at answers" },
+      { type: "rule", text: "<strong>Core principle:</strong> The correct weakener attacks the link between evidence and conclusion" },
+      { type: "rule", text: "<strong>Watch for:</strong> Survey/study flaws — self-reported data, non-representative samples" },
+      { type: "rule", text: "<strong>Causation traps:</strong> \"A happened, then B happened\" doesn't mean A caused B" }
+    ],
+    practice: [
+      {
+        q: "\"Cities that banned plastic bags saw a 30% reduction in litter. Therefore, banning plastic bags reduces litter.\" — Classic causal weaken?",
+        steps: [
+          "The cities that chose to ban plastic bags may have also implemented other anti-litter measures simultaneously (street cleaning, fines, awareness campaigns).",
+          "The ban alone may not be responsible.",
+          "<strong>Answer: Alternative explanation — other anti-litter measures were also introduced.</strong>"
+        ]
+      },
+      {
+        q: "\"Employees who work from home report higher job satisfaction than office workers. Therefore, companies should allow remote work to increase satisfaction.\" — Identify the trap answer: \"Remote workers also earn higher salaries on average.\"",
+        steps: [
+          "This is actually a WEAKENER, not a trap — it provides an alternative explanation for higher satisfaction.",
+          "A true trap answer would be something irrelevant like \"Remote workers spend less on commuting,\" which doesn't address satisfaction.",
+          "<strong>Answer: The salary statement is a valid weakener (alternative cause), not a trap.</strong>"
+        ]
+      },
+      {
+        q: "\"After Hospital X switched to electronic records, patient error rates dropped 15%. Electronic records reduce errors.\" — Weaken this causal chain.",
+        steps: [
+          "Hospital X also hired additional quality-control staff during the same transition period.",
+          "This alternative explanation breaks the causal chain between electronic records and reduced errors.",
+          "<strong>Answer: A confounding factor (new staff) could explain the drop in errors.</strong>"
+        ]
+      },
+      {
+        q: "\"A survey of gym members found that 80% reported improved mood. Therefore, exercise improves mood.\" — Identify the data flaw.",
+        steps: [
+          "The survey only includes current gym members (survivorship bias).",
+          "People whose mood didn't improve likely quit the gym and aren't in the sample.",
+          "The data is from a self-selected, non-representative group.",
+          "<strong>Answer: Survivorship bias — only those who stayed are surveyed.</strong>"
+        ]
+      }
+    ]
+  },
+  {
+    icon: "🔗",
+    title: "CR — Strengthen & Assumption",
+    preview: "Close the gap, use the negation test",
+    desc: "Adding support and identifying hidden requirements",
+    equations: [
+      { label: "Strengthen", formula: "Add NEW information that closes the logical gap" },
+      { label: "Assumption", formula: "What MUST be true for the argument to hold (use negation test)" },
+      { label: "Negation Test", formula: "Negate the answer choice — if the argument falls apart, it IS the assumption" },
+      { label: "Necessary Assumption", formula: "Must be true (argument collapses without it)" },
+      { label: "Sufficient Assumption", formula: "If true, guarantees the conclusion (stronger than necessary)" }
+    ],
+    details: [
+      { type: "rule", text: "<strong>Strengthening</strong> adds NEW information not already in the argument" },
+      { type: "rule", text: "<strong>Assumption</strong> is already implicitly required — it's not new info, it's a hidden requirement" },
+      { type: "rule", text: "<strong>Negation test:</strong> Negate each answer choice; the one that destroys the argument is the assumption" },
+      { type: "rule", text: "<strong>Bridge concepts:</strong> The assumption typically bridges two concepts mentioned in the argument" }
+    ],
+    practice: [
+      {
+        q: "Negation test: \"New medication X reduces symptoms in 70% of patients. Therefore, doctors should prescribe X for all patients with this condition.\" — Test this assumption: \"Medication X does not have severe side effects.\"",
+        steps: [
+          "Negate it: \"Medication X DOES have severe side effects.\"",
+          "If true, doctors should NOT prescribe it for all patients — the argument collapses.",
+          "<strong>Answer: \"X does not have severe side effects\" IS a necessary assumption (negation destroys the argument).</strong>"
+        ]
+      },
+      {
+        q: "\"Local farms produce fresher food than imported food. Therefore, buying local is healthier.\" — What would strengthen this?",
+        steps: [
+          "NEW information needed: \"Fresher food retains more nutrients and fewer preservatives than food transported long distances.\"",
+          "This closes the gap between \"fresher\" and \"healthier\" by providing the missing link.",
+          "<strong>Answer: Evidence that freshness directly leads to better health outcomes.</strong>"
+        ]
+      },
+      {
+        q: "\"Students who participated in the tutoring program scored 15% higher. The program should be expanded.\" — Which is a wrong-answer trap for a strengthen question?",
+        steps: [
+          "\"The tutoring program was popular with students\" — this is irrelevant to whether scores improved BECAUSE of the program.",
+          "A real strengthener would address the causal link, e.g., \"Students with similar backgrounds who didn't participate showed no improvement.\"",
+          "<strong>Answer: Popularity is irrelevant — a strengthener must support the causal claim.</strong>"
+        ]
+      },
+      {
+        q: "\"Since our company switched to open-plan offices, collaboration has increased. Therefore, open-plan offices boost collaboration.\" — Identify the assumption AND what would strengthen it.",
+        steps: [
+          "Assumption: No other factor caused the increase in collaboration (e.g., new team-building initiatives).",
+          "Strengthen: \"No other workplace changes were made during the same period.\"",
+          "<strong>Answer: Assumption = no alternative cause. Strengthen = eliminate other explanations.</strong>"
+        ]
+      }
+    ]
+  },
+  {
+    icon: "🔍",
+    title: "CR — Other Types",
+    preview: "Inference, Evaluate, Boldface, Paradox",
+    desc: "Less common but testable CR question formats",
+    equations: [
+      { label: "Inference", formula: "What MUST be true based solely on the stated facts (no outside knowledge)" },
+      { label: "Evaluate", formula: "A question whose answer (YES or NO) would help determine the argument's strength" },
+      { label: "Boldface", formula: "Identifying the ROLE of bolded statements in the argument structure" },
+      { label: "Paradox / Explain", formula: "Finding what reconciles two seemingly contradictory facts (both must remain true)" }
+    ],
+    details: [
+      { type: "rule", text: "<strong>Inference:</strong> Pick the safest, most conservative answer — it must be 100% supported" },
+      { type: "rule", text: "<strong>Evaluate:</strong> The correct answer works BOTH ways (YES strengthens, NO weakens, or vice versa)" },
+      { type: "rule", text: "<strong>Boldface:</strong> Map the argument structure first (conclusion, premise, counter) before matching roles" },
+      { type: "rule", text: "<strong>Paradox:</strong> Both facts MUST remain true — the answer explains why they coexist" }
+    ],
+    practice: [
+      {
+        q: "(Inference) \"All of Company Z's managers have MBAs. Some of Company Z's managers have worked there for over 10 years. No one without an MBA has been promoted to director.\" — What must be true?",
+        steps: [
+          "Some people at Company Z who have worked there over 10 years have MBAs. (Safe — we know some managers have 10+ years, and ALL managers have MBAs.)",
+          "We CANNOT infer that long tenure leads to promotion or that all MBA holders are managers.",
+          "<strong>Answer: Some 10+ year employees have MBAs (this is the safest inference).</strong>"
+        ]
+      },
+      {
+        q: "(Evaluate) \"The city plans to reduce traffic by adding bike lanes, expecting commuters to switch from cars to bikes.\" — Which question would help evaluate this plan?",
+        steps: [
+          "\"Is the majority of the city's traffic congestion caused by short-distance commuters who could feasibly bike?\"",
+          "YES → plan could work (target audience exists). NO → plan likely fails (most traffic is long-distance).",
+          "<strong>Answer: A question that tests whether the target population (switchable commuters) is large enough.</strong>"
+        ]
+      },
+      {
+        q: "(Paradox) \"Country X increased its education budget by 40% over 5 years, yet student test scores declined during the same period.\" — Explain the paradox.",
+        steps: [
+          "The additional funding was directed toward building new schools in underserved areas, dramatically increasing enrollment of previously untested students.",
+          "Their scores started lower, bringing down the national average despite improvements among existing students.",
+          "<strong>Answer: New, lower-scoring students entered the pool, masking per-student gains.</strong>"
+        ]
+      },
+      {
+        q: "(Boldface) \"Critics argue that renewable energy is too expensive. <em>However, the cost of solar panels has dropped 90% in the last decade.</em> <em>Therefore, renewable energy is now economically competitive with fossil fuels.</em>\" — What roles do the bold statements play?",
+        steps: [
+          "First bold: A premise that counters the critics' position (evidence against the opposing view).",
+          "Second bold: The main conclusion of the argument (what the author is arguing).",
+          "<strong>Answer: First = counter-evidence premise. Second = main conclusion.</strong>"
+        ]
+      }
+    ]
+  },
+  {
+    icon: "📖",
+    title: "RC — Strategy",
+    preview: "Passage Map, POE, reading for purpose",
+    desc: "How to approach Reading Comprehension passages",
+    equations: [
+      { label: "Passage Map", formula: "Topic (what it's about) + Scope (specific focus) + Purpose (why written) + Tone (author's attitude)" },
+      { label: "Paragraph Summary", formula: "Capture each paragraph's role in 3-5 words" },
+      { label: "Question Types", formula: "Main Idea, Detail, Inference, Purpose, Tone, Strengthen/Weaken" },
+      { label: "POE (Process of Elimination)", formula: "Eliminate 3 wrong answers rather than searching for 1 right answer" }
+    ],
+    details: [
+      { type: "rule", text: "<strong>Read for PURPOSE, not content</strong> — understand WHY the author wrote each part" },
+      { type: "rule", text: "<strong>Contrast words:</strong> 'but', 'however', 'although', 'yet', 'nevertheless' — they signal the author's real point" },
+      { type: "rule", text: "<strong>Opinion signals:</strong> 'surprisingly', 'importantly', 'unfortunately' — they reveal the author's stance" },
+      { type: "rule", text: "<strong>Extreme language</strong> ('always', 'never', 'all', 'none') is usually wrong in answer choices" },
+      { type: "rule", text: "<strong>Text evidence:</strong> The correct answer ALWAYS has text evidence — if you can't point to support in the passage, it's wrong" }
+    ],
+    practice: [
+      {
+        q: "A passage discusses three theories of extinction, spending most time on Theory C and calling it 'promising.' The question asks for the main idea. Trap answer: 'Theory C is the correct explanation for extinction.' — Why is this a trap?",
+        steps: [
+          "\"Correct explanation\" is too strong — the author said \"promising,\" not \"correct.\"",
+          "The right answer would be something like \"Theory C offers a more compelling explanation than previous theories.\"",
+          "<strong>Answer: The trap exaggerates the author's position — watch for strength mismatches.</strong>"
+        ]
+      },
+      {
+        q: "The passage states 'GDP rose 3% in Q2.' A question asks 'What was the economic growth rate in Q2?' — How do you handle a detail question?",
+        steps: [
+          "Go back to the passage and find the exact reference.",
+          "The answer is directly stated: 3%. For detail questions, the answer is almost always a close paraphrase of specific text.",
+          "<strong>Answer: Don't overthink — detail questions reward literal reading.</strong>"
+        ]
+      },
+      {
+        q: "The passage says 'While early studies suggested coffee was harmful, recent research indicates moderate consumption may have protective effects.' What can be inferred?",
+        steps: [
+          "Scientific understanding of coffee's health effects has changed over time. This is safely supported.",
+          "You CANNOT infer that coffee is definitively healthy or that early studies were wrong — only that the evidence has shifted.",
+          "<strong>Answer: Understanding has evolved (safe). Coffee is healthy (too strong — wrong).</strong>"
+        ]
+      },
+      {
+        q: "An author writes: 'The results were, predictably, disappointing.' What does the word 'predictably' reveal about tone?",
+        steps: [
+          "The author expected the negative outcome — this signals a critical or resigned tone.",
+          "Words like 'predictably', 'unsurprisingly', 'inevitably' reveal the author anticipated the result.",
+          "<strong>Answer: Critical/skeptical tone — the author expected failure.</strong>"
+        ]
+      },
+      {
+        q: "A passage argues that a new policy will improve education. A question asks what would strengthen this argument (RC-style, not CR-style). How does this differ from a CR strengthen question?",
+        steps: [
+          "In RC, the answer must be consistent with information IN the passage.",
+          "Unlike CR (where new outside info is introduced), RC strengthen answers point to passage evidence that further supports the author's claim.",
+          "<strong>Answer: RC = support from within the passage. CR = new external information.</strong>"
+        ]
+      }
+    ]
+  },
+  {
+    icon: "🎯",
+    title: "RC — Question Types",
+    preview: "Main Idea, Inference, Purpose, Tone",
+    desc: "Mastering each RC question format",
+    equations: [
+      { label: "Main Idea", formula: "Topic + Scope + Author's Stance (not too broad, not too narrow)" },
+      { label: "Inference", formula: "Must be 100% supported by passage text (no outside knowledge)" },
+      { label: "Author's Purpose", formula: "WHY the author wrote the passage (to argue, analyze, compare, describe)" },
+      { label: "Function", formula: "WHY a specific paragraph or sentence exists in the passage" },
+      { label: "Tone", formula: "HOW the author feels — positive (admiring, optimistic), negative (critical, skeptical), or neutral (objective)" }
+    ],
+    details: [
+      { type: "rule", text: "<strong>Main Idea wrong answers</strong> are either too broad (covers more than the passage) or too narrow (only covers one paragraph)" },
+      { type: "rule", text: "<strong>Inference</strong> needs 100% text support — if any part is unsupported, eliminate it" },
+      { type: "rule", text: "<strong>Purpose verbs to know:</strong> analyze, argue, challenge, compare, describe, evaluate, examine, propose, question, refute" },
+      { type: "rule", text: "<strong>Tone spectrum:</strong> admiring → optimistic → cautiously optimistic → objective/neutral → cautious → skeptical → critical → dismissive" }
+    ],
+    practice: [
+      {
+        q: "A passage discusses the decline of coral reefs, focusing on how rising ocean temperatures are the primary cause. Main idea answer choices: (A) Coral reefs are dying worldwide. (B) Rising temperatures are the leading threat to coral reefs. (C) Ocean pollution harms marine life. — Eliminate wrong answers.",
+        steps: [
+          "(A) is too broad — it doesn't mention the specific cause.",
+          "(C) is off-scope — the passage is about temperature, not pollution.",
+          "(B) matches the Topic (coral reefs) + Scope (temperature as primary cause).",
+          "<strong>Answer: (B) — it captures both the topic and the specific focus.</strong>"
+        ]
+      },
+      {
+        q: "The passage states: 'While Dr. Lee's findings were initially dismissed, subsequent studies largely confirmed her results.' Trap inference: 'Dr. Lee's findings are now universally accepted.' — Why is this wrong?",
+        steps: [
+          "\"Universally accepted\" goes beyond \"largely confirmed.\"",
+          "\"Largely\" means mostly, not completely.",
+          "A safe inference: \"Dr. Lee's findings have gained significant support from later research.\"",
+          "<strong>Answer: Always match the strength of your inference to the passage language.</strong>"
+        ]
+      },
+      {
+        q: "A passage has 4 paragraphs: P1 introduces a problem, P2 describes a proposed solution, P3 presents criticisms of the solution, P4 argues the solution is still worthwhile despite flaws. What is the function of P3?",
+        steps: [
+          "P3 serves to acknowledge counterarguments before the author defends the solution in P4.",
+          "Its function is \"to present objections that the author will subsequently address.\"",
+          "<strong>Answer: P3 creates a concession-rebuttal structure (acknowledge then counter).</strong>"
+        ]
+      },
+      {
+        q: "An author writes about a controversial new technology: 'While concerns about privacy are not unfounded, the potential benefits to public health are substantial and should not be dismissed.' What is the author's tone?",
+        steps: [
+          "The author acknowledges negatives (\"concerns are not unfounded\") but emphasizes positives (\"substantial benefits,\" \"should not be dismissed\").",
+          "This is neither fully positive nor negative — it's measured advocacy.",
+          "<strong>Answer: Cautiously optimistic — balanced acknowledgment with a positive lean.</strong>"
+        ]
+      }
+    ]
+  }
+];
+
+const hub = document.getElementById('hub');
+
+topics.forEach((topic, i) => {
+  const card = document.createElement('div');
+  card.className = 'topic-card';
+  card.id = `topic-${i}`;
+
+  const eqItems = topic.equations.map(eq => `
+    <div class="eq-item">
+      <div class="eq-label">${eq.label}</div>
+      <div class="eq-formula">${eq.formula}</div>
+      ${eq.note ? `<div class="eq-note">${eq.note}</div>` : ''}
+    </div>
+  `).join('');
+
+  let detailHTML = '<div class="rule-list">';
+  topic.details.forEach(d => {
+    if (d.type === 'title') {
+      detailHTML += `<div class="section-title">${d.text}</div>`;
+    } else {
+      detailHTML += `<div class="rule-item">${d.text}</div>`;
+    }
+  });
+  detailHTML += '</div>';
+
+  const practiceHTML = topic.practice.map((p, j) => `
+    <div class="practice-item" id="prac-${i}-${j}">
+      <div class="practice-q" onclick="toggleAnswer(${i},${j})">
+        <div class="q-num">${j+1}</div>
+        <div class="q-text">${p.q}</div>
+        <div class="q-toggle">▼</div>
+      </div>
+      <div class="practice-ans">
+        <div class="ans-label">Solution</div>
+        ${p.steps.map(s => `<div class="step">${s}</div>`).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${i})">
+      <div class="card-icon">${topic.icon}</div>
+      <div class="card-meta">
+        <h2>${topic.title}</h2>
+        <div class="preview">${topic.preview}</div>
+        <div class="desc">${topic.desc}</div>
+      </div>
+      <div class="expand-arrow">▼</div>
+    </div>
+    <div class="detail-panel">
+      <div class="detail-tabs">
+        <button class="tab-btn active" onclick="switchTab(event,${i},'eq')">📋 Key Concepts</button>
+        <button class="tab-btn" onclick="switchTab(event,${i},'detail')">📖 Rules</button>
+        <button class="tab-btn" onclick="switchTab(event,${i},'practice')">✏️ Practice</button>
+      </div>
+      <div class="tab-content active" id="tab-eq-${i}">
+        <div class="eq-list">${eqItems}</div>
+      </div>
+      <div class="tab-content" id="tab-detail-${i}">
+        ${detailHTML}
+      </div>
+      <div class="tab-content" id="tab-practice-${i}">
+        <div class="practice-list">${practiceHTML}</div>
+      </div>
+    </div>
+  `;
+
+  hub.appendChild(card);
+});
+
+function toggleCard(i) {
+  const card = document.getElementById(`topic-${i}`);
+  card.classList.toggle('active');
+  if (card.classList.contains('active')) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function switchTab(e, i, tab) {
+  e.stopPropagation();
+  const card = document.getElementById(`topic-${i}`);
+  card.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  card.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById(`tab-${tab}-${i}`).classList.add('active');
+}
+
+function toggleAnswer(i, j) {
+  document.getElementById(`prac-${i}-${j}`).classList.toggle('show-ans');
+}
+</script>
+
+</body>
+</html>

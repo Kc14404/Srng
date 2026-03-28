@@ -209,9 +209,184 @@
     .practice-q .katex, .practice-ans .katex { font-size: 0.9rem; color: #a78bfa; }
     .rule-item .katex { font-size: 0.88rem; color: #a78bfa; }
 
+    /* Analyzer FAB */
+    .fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 1.4rem;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(108,99,255,0.4);
+      z-index: 100;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(108,99,255,0.5); }
+
+    /* Modal overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .modal-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h3 { font-size: 1rem; font-weight: 700; }
+    .modal-header p { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+    .modal-close { background: none; border: none; color: var(--muted); font-size: 1.2rem; cursor: pointer; padding: 4px; }
+    .modal-close:hover { color: var(--text); }
+
+    .modal-body { padding: 20px 24px; }
+
+    .input-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .input-tab {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .input-tab.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+    .input-panel { display: none; }
+    .input-panel.active { display: block; }
+
+    .q-textarea {
+      width: 100%;
+      min-height: 120px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .q-textarea:focus { border-color: var(--accent); }
+    .q-textarea::placeholder { color: var(--muted); }
+
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .upload-zone:hover { border-color: var(--accent); background: rgba(108,99,255,0.04); }
+    .upload-zone.has-image { border-color: var(--accent2); border-style: solid; }
+    .upload-zone .upload-icon { font-size: 2rem; margin-bottom: 8px; }
+    .upload-zone p { color: var(--muted); font-size: 0.84rem; }
+    .upload-zone .img-preview { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 10px; }
+    #imageInput { display: none; }
+
+    .analyze-btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .analyze-btn:hover { opacity: 0.9; }
+    .analyze-btn:active { transform: scale(0.98); }
+    .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Results */
+    .result-area { margin-top: 20px; }
+    .result-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .badge {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .badge-topic { background: rgba(108,99,255,0.2); border: 1px solid rgba(108,99,255,0.4); color: #a78bfa; }
+    .badge-type { background: rgba(0,212,170,0.15); border: 1px solid rgba(0,212,170,0.3); color: var(--accent2); }
+
+    .hints-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
+    .hint-cards { display: flex; flex-direction: column; gap: 8px; }
+    .hint-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .hint-header {
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .hint-header:hover { background: rgba(255,255,255,0.03); }
+    .hint-num {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .hint-num.h1 { background: rgba(250,204,21,0.2); color: #fbbf24; border: 1px solid rgba(250,204,21,0.3); }
+    .hint-num.h2 { background: rgba(251,146,60,0.2); color: #fb923c; border: 1px solid rgba(251,146,60,0.3); }
+    .hint-num.h3 { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+    .hint-label { font-size: 0.8rem; color: var(--muted); flex: 1; }
+    .hint-arrow { font-size: 0.7rem; color: var(--muted); transition: transform 0.2s; }
+    .hint-card.revealed .hint-arrow { transform: rotate(180deg); }
+    .hint-body {
+      display: none;
+      padding: 0 16px 14px 50px;
+      font-size: 0.84rem;
+      line-height: 1.6;
+      color: var(--text);
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+    .hint-card.revealed .hint-body { display: block; }
+
+    .error-msg { color: #f87171; font-size: 0.84rem; margin-top: 12px; text-align: center; }
+    .loading-dots { text-align: center; padding: 20px; color: var(--muted); font-size: 0.9rem; }
+
     @media (max-width: 600px) {
       header h1 { font-size: 1.5rem; }
       .hub { grid-template-columns: 1fr; }
+      .fab { bottom: 20px; right: 20px; }
     }
   </style>
 </head>
@@ -223,6 +398,45 @@
 </header>
 
 <div class="hub" id="hub"></div>
+
+<!-- FAB -->
+<button class="fab" onclick="openAnalyzer()" title="Analyze a question">🔍</button>
+
+<!-- Analyzer Modal -->
+<div class="modal-overlay" id="analyzerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3>🧠 Question Analyzer</h3>
+        <p>Paste a question or upload a screenshot — get hints, not answers.</p>
+      </div>
+      <button class="modal-close" onclick="closeAnalyzer()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="input-tabs">
+        <button class="input-tab active" onclick="switchInput('text')">📝 Paste Text</button>
+        <button class="input-tab" onclick="switchInput('image')">📸 Screenshot</button>
+      </div>
+
+      <div class="input-panel active" id="panel-text">
+        <textarea class="q-textarea" id="questionText" placeholder="Paste your GMAT question here…"></textarea>
+      </div>
+
+      <div class="input-panel" id="panel-image">
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imageInput').click()">
+          <div class="upload-icon">📷</div>
+          <p>Click to upload or drag & drop a screenshot</p>
+          <img id="imgPreview" class="img-preview" style="display:none" />
+        </div>
+        <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)" />
+      </div>
+
+      <button class="analyze-btn" id="analyzeBtn" onclick="analyzeQuestion()">Analyze Question →</button>
+
+      <div class="result-area" id="resultArea" style="display:none"></div>
+    </div>
+  </div>
+</div>
 
 <script>
 const topics = [
@@ -935,6 +1149,147 @@ function switchTab(e, i, tab) {
 
 function toggleAnswer(i, j) {
   document.getElementById(`prac-${i}-${j}`).classList.toggle('show-ans');
+}
+
+// ── Analyzer ──────────────────────────────────────────────
+let currentInputMode = 'text';
+let uploadedImageData = null;
+let uploadedMimeType = null;
+
+function openAnalyzer() {
+  document.getElementById('analyzerModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAnalyzer() {
+  document.getElementById('analyzerModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('analyzerModal').addEventListener('click', function(e) {
+  if (e.target === this) closeAnalyzer();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeAnalyzer();
+});
+
+function switchInput(mode) {
+  currentInputMode = mode;
+  document.querySelectorAll('.input-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.input-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(`panel-${mode}`).classList.add('active');
+  document.getElementById('resultArea').style.display = 'none';
+}
+
+function handleImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const result = ev.target.result;
+    const base64 = result.split(',')[1];
+    uploadedImageData = base64;
+    uploadedMimeType = file.type;
+    const preview = document.getElementById('imgPreview');
+    preview.src = result;
+    preview.style.display = 'block';
+    const zone = document.getElementById('uploadZone');
+    zone.classList.add('has-image');
+    zone.querySelector('p').textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+// Drag & drop
+const uploadZone = document.getElementById('uploadZone');
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.style.borderColor = 'var(--accent2)'; });
+uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = ''; });
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.style.borderColor = '';
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    document.getElementById('imageInput').files = dt.files;
+    handleImageUpload({ target: { files: [file] } });
+  }
+});
+
+async function analyzeQuestion() {
+  const btn = document.getElementById('analyzeBtn');
+  const resultArea = document.getElementById('resultArea');
+
+  let payload = {};
+  if (currentInputMode === 'text') {
+    const text = document.getElementById('questionText').value.trim();
+    if (!text) { alert('Please paste a question first.'); return; }
+    payload = { text };
+  } else {
+    if (!uploadedImageData) { alert('Please upload a screenshot first.'); return; }
+    payload = { image: { data: uploadedImageData, mimeType: uploadedMimeType } };
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Analyzing…';
+  resultArea.style.display = 'block';
+  resultArea.innerHTML = '<div class="loading-dots">🤔 Analyzing your question…</div>';
+
+  try {
+    const res = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if (!res.ok || data.error) throw new Error(data.error || 'Something went wrong');
+
+    const hintLabels = ['Gentle nudge', 'Point in the right direction', 'First concrete step'];
+    const hintClasses = ['h1', 'h2', 'h3'];
+
+    resultArea.innerHTML = `
+      <div class="result-badges">
+        <span class="badge badge-topic">📚 ${data.topic}</span>
+        <span class="badge badge-type">🏷 ${data.questionType}</span>
+      </div>
+      <div class="hints-title">Progressive Hints — reveal when you're ready</div>
+      <div class="hint-cards">
+        ${data.hints.map((hint, i) => `
+          <div class="hint-card" id="hint-${i}">
+            <div class="hint-header" onclick="revealHint(${i})">
+              <div class="hint-num ${hintClasses[i]}">${i+1}</div>
+              <div class="hint-label">${hintLabels[i]}</div>
+              <div class="hint-arrow">▼</div>
+            </div>
+            <div class="hint-body">${hint}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    // Re-render math in result
+    if (window.renderMathInElement) {
+      renderMathInElement(resultArea, {
+        delimiters: [
+          {left:'$$',right:'$$',display:true},
+          {left:'\\(',right:'\\)',display:false}
+        ],
+        throwOnError: false
+      });
+    }
+  } catch (err) {
+    resultArea.innerHTML = `<div class="error-msg">❌ ${err.message}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Analyze Question →';
+  }
+}
+
+function revealHint(i) {
+  document.getElementById(`hint-${i}`).classList.toggle('revealed');
 }
 </script>
 </body>

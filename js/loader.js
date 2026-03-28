@@ -6,9 +6,13 @@
  */
 
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour
+const CACHE_VERSION = 'v3'; // bump to bust cache on content updates
 
 async function loadTopics(section) {
-  const cacheKey = `gmat_topics_${section}`;
+  const cacheKey = `gmat_topics_${CACHE_VERSION}_${section}`;
+  // Clear old cache keys
+  ['v1','v2'].forEach(v => localStorage.removeItem(`gmat_topics_${v}_${section}`));
+  localStorage.removeItem(`gmat_topics_${section}`);
   const cached = localStorage.getItem(cacheKey);
 
   // Try cache first

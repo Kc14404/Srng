@@ -1,1 +1,6 @@
 .vercel
+
+node_modules/
+TASK*.md
+db/audit_data.json
+db/null_answers.json

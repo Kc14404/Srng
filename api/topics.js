@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
     // Get topics for this section
     const topics = await sbGet(
-      `topics?section_id=eq.${sectionId}&order=order_idx&select=id,title,subtitle,order_idx`
+      `topics?section_id=eq.${sectionId}&order=order_idx&select=id,title,subtitle,icon,order_idx`
     );
 
     // For each topic, fetch all sub-data in parallel
@@ -46,6 +46,7 @@ export default async function handler(req, res) {
         id: topic.id,
         title: topic.title,
         subtitle: topic.subtitle,
+        icon: topic.icon || '',
         equations,
         rules,
         methods: methods.map(m => ({

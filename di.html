@@ -346,8 +346,9 @@
     /* ── Desktop 3-Pane Layout (≥1024px) ── */
     @media (min-width: 1024px) {
       .site-nav { display: none; }
-      .dt-wrap { display: flex; min-height: 100vh; }
-      #dt-rail { width: 240px; min-width: 240px; background: #1a1a2e; border-right: 1px solid #2a2a3e; position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; }
+      body { overflow: hidden; height: 100vh; }
+      .dt-wrap { display: flex; height: 100vh; }
+      #dt-rail { width: 200px; flex-shrink: 0; background: #1a1a2e; border-right: 1px solid #2a2a3e; overflow-y: auto; display: flex; flex-direction: column; }
       .dt-rail-section { padding: 16px; border-bottom: 1px solid #2a2a3e; }
       .dt-rail-logo { font-size: 0.85rem; font-weight: 700; color: #a78bfa; letter-spacing: 0.05em; }
       .dt-rail-nav { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; }
@@ -363,22 +364,21 @@
       .dt-rail-footer { padding: 12px 16px; border-top: 1px solid #2a2a3e; }
       .dt-footer-btn { width: 100%; padding: 9px; background: rgba(108,99,255,0.12); border: 1px solid rgba(108,99,255,0.3); border-radius: 8px; color: #a78bfa; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
       .dt-footer-btn:hover { background: rgba(108,99,255,0.22); }
-      .dt-content { flex: 1; min-width: 0; padding: 32px 40px; overflow-y: auto; }
-      #dt-overview { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-      .dt-overview-card { background: #1a1a2e; border: 1px solid #2a2a3e; border-radius: 12px; padding: 20px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+      #dt-middle { width: 320px; flex-shrink: 0; overflow-y: auto; padding: 20px; border-right: 1px solid #2a2a3e; background: var(--bg); }
+      #dt-middle .dt-overview-grid { display: flex; flex-direction: column; gap: 12px; }
+      .dt-overview-card { background: #1a1a2e; border: 1px solid #2a2a3e; border-radius: 12px; padding: 16px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
       .dt-overview-card:hover { border-color: #a78bfa; background: #1e1e35; }
-      .dt-overview-icon { font-size: 1.8rem; margin-bottom: 8px; }
-      .dt-overview-title { font-size: 0.95rem; font-weight: 600; color: #e2e8f0; margin-bottom: 4px; }
-      .dt-overview-sub { font-size: 0.78rem; color: #6b7280; line-height: 1.4; }
-      #dt-breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
-      #dt-back-btn { background: none; border: none; color: #a78bfa; cursor: pointer; font-size: 0.85rem; padding: 4px 8px; border-radius: 6px; }
-      #dt-back-btn:hover { background: #1e1e35; }
+      .dt-overview-card.active { border-color: var(--accent); background: rgba(99, 102, 241, 0.12); }
+      .dt-overview-icon { font-size: 1.4rem; margin-bottom: 6px; }
+      .dt-overview-title { font-size: 0.9rem; font-weight: 600; color: #e2e8f0; margin-bottom: 2px; }
+      .dt-overview-sub { font-size: 0.75rem; color: #6b7280; line-height: 1.4; }
+      #dt-detail { flex: 1; overflow-y: auto; padding: 24px; background: var(--bg); }
       .topic-card { border-radius: 12px; }
       .card-header { cursor: default; }
       .expand-arrow { display: none; }
       .detail-panel { display: block !important; }
       .hub { display: block; max-width: none; margin: 0; padding: 0; }
-      header { text-align: left; padding: 0 0 24px; border: none; background: none; }
+      header { display: none; }
     }
   </style>
   <script src="/js/loader.js"></script>
@@ -597,6 +597,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <script>
+var _dtCurrentTopic = -1;
+
 function buildRailHTML(topics) {
   var path = window.location.pathname;
   var isIndex = path === '/' || path.endsWith('index.html') || path === '';
@@ -604,7 +606,7 @@ function buildRailHTML(topics) {
   var isDI = path.endsWith('di.html');
   var isLog = path.endsWith('log.html');
   var html = '<div class="dt-rail-section">';
-  html += '<div class="dt-rail-logo">\uD83C\uDF93 GMAT Hub</div>';
+  html += '<div class="dt-rail-logo">\u26A1 GMAT Hub</div>';
   html += '<div class="dt-rail-nav">';
   html += '<a href="index.html" class="dt-rail-link'+(isIndex?' active':'')+'"><span>\uD83D\uDCD0</span> Math</a>';
   html += '<a href="verbal.html" class="dt-rail-link'+(isVerbal?' active':'')+'"><span>\uD83D\uDCAC</span> Verbal</a>';
@@ -619,77 +621,68 @@ function buildRailHTML(topics) {
   html += '<div class="dt-rail-footer"><button id="dt-rail-analyzer" class="dt-footer-btn">\uD83D\uDD0D Analyzer</button></div>';
   return html;
 }
-function dtShowOverview() {
-  if (!window._dtTopics) return;
-  var topics = window._dtTopics;
-  var hub = document.getElementById('hub');
-  var overview = document.getElementById('dt-overview');
-  var breadcrumb = document.getElementById('dt-breadcrumb');
-  if (!overview) {
-    overview = document.createElement('div');
-    overview.id = 'dt-overview';
-    hub.parentNode.insertBefore(overview, hub);
-  }
-  if (!breadcrumb) {
-    breadcrumb = document.createElement('div');
-    breadcrumb.id = 'dt-breadcrumb';
-    breadcrumb.innerHTML = '<button id="dt-back-btn" onclick="dtShowOverview()">\u2190 All Topics</button>';
-    hub.parentNode.insertBefore(breadcrumb, overview);
-  }
-  overview.innerHTML = topics.map(function(t, i) {
-    return '<div class="dt-overview-card" onclick="dtSelectTopic('+i+')"><div class="dt-overview-icon">'+(t.icon||'')+'</div><div class="dt-overview-title">'+t.title+'</div><div class="dt-overview-sub">'+(t.preview||t.subtitle||t.desc||'')+'</div></div>';
-  }).join('');
-  overview.style.display = '';
-  breadcrumb.style.display = 'none';
-  hub.style.display = 'none';
-  document.querySelectorAll('.dt-topic-item').forEach(function(el) { el.classList.remove('active'); });
+
+function buildMiddleHTML(topics) {
+  var html = '<div class="dt-overview-grid">';
+  topics.forEach(function(t, i) {
+    html += '<div class="dt-overview-card" data-idx="'+i+'"><div class="dt-overview-icon">'+(t.icon||'')+'</div><div class="dt-overview-title">'+t.title+'</div><div class="dt-overview-sub">'+(t.preview||t.subtitle||t.desc||'')+'</div></div>';
+  });
+  html += '</div>';
+  return html;
 }
+
 function dtSelectTopic(i) {
   if (window.innerWidth < 1024) return;
+  if (i === _dtCurrentTopic) return;
   var hub = document.getElementById('hub');
-  var overview = document.getElementById('dt-overview');
-  var breadcrumb = document.getElementById('dt-breadcrumb');
-  if (overview) overview.style.display = 'none';
-  if (breadcrumb) breadcrumb.style.display = '';
-  hub.style.display = 'block';
-  var cards = hub.querySelectorAll('.topic-card');
-  cards.forEach(function(card, idx) {
-    if (idx === i) { card.style.display = ''; card.classList.add('active'); }
-    else { card.style.display = 'none'; }
-  });
+  var detail = document.getElementById('dt-detail');
+  var prev = detail.querySelector('.topic-card');
+  if (prev) { prev.classList.remove('active'); hub.appendChild(prev); }
+  var card = document.getElementById('topic-' + i);
+  if (card) { card.classList.add('active'); detail.innerHTML = ''; detail.appendChild(card); }
+  _dtCurrentTopic = i;
+  document.querySelectorAll('#dt-middle .dt-overview-card').forEach(function(el, idx) { el.classList.toggle('active', idx === i); });
   document.querySelectorAll('.dt-topic-item').forEach(function(el, idx) { el.classList.toggle('active', idx === i); });
-  var content = document.querySelector('.dt-content');
-  if (content) content.scrollTo(0, 0);
+  if (window.renderMathInElement) {
+    renderMathInElement(detail, { delimiters: [{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}], throwOnError: false });
+  }
+  detail.scrollTo(0, 0);
 }
+
 function initDesktopLayout() {
   if (window.innerWidth < 1024) return;
   var hub = document.getElementById('hub');
   if (!hub || !window._dtTopics) return;
-  var existing = document.querySelector('.dt-wrap');
-  if (existing) return;
+  if (document.querySelector('.dt-wrap')) return;
   var topics = window._dtTopics;
   var wrap = document.createElement('div');
   wrap.className = 'dt-wrap';
   var rail = document.createElement('div');
   rail.id = 'dt-rail';
   rail.innerHTML = buildRailHTML(topics);
-  var content = document.createElement('div');
-  content.className = 'dt-content';
-  var header = document.querySelector('header');
-  hub.parentNode.insertBefore(wrap, header || hub);
+  var middle = document.createElement('div');
+  middle.id = 'dt-middle';
+  middle.innerHTML = buildMiddleHTML(topics);
+  var detail = document.createElement('div');
+  detail.id = 'dt-detail';
+  detail.innerHTML = '<div id="dt-detail-placeholder"><div style="color:var(--muted);text-align:center;padding:60px 20px;">\u2190 Select a topic to explore</div></div>';
+  hub.parentNode.insertBefore(wrap, hub);
   wrap.appendChild(rail);
-  if (header) content.appendChild(header);
-  content.appendChild(hub);
-  wrap.appendChild(content);
-  dtShowOverview();
+  wrap.appendChild(middle);
+  wrap.appendChild(detail);
+  hub.style.display = 'none';
+  var header = document.querySelector('header');
+  if (header) header.style.display = 'none';
   rail.querySelectorAll('.dt-topic-item').forEach(function(item, i) {
     item.addEventListener('click', function() { dtSelectTopic(i); });
+  });
+  middle.querySelectorAll('.dt-overview-card').forEach(function(card, i) {
+    card.addEventListener('click', function() { dtSelectTopic(i); });
   });
   var analyzerBtn = rail.querySelector('#dt-rail-analyzer');
   if (analyzerBtn) {
     analyzerBtn.addEventListener('click', function() {
-      var fab = document.querySelector('.fab');
-      if (fab) fab.click();
+      if (typeof openAnalyzer === 'function') openAnalyzer();
     });
   }
 }

@@ -278,6 +278,29 @@
       pointer-events: none;
     }
     .ref-term.tip-active .ref-tip { display: block; }
+
+    .method-list { display: flex; flex-direction: column; gap: 14px; }
+    .method-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .method-name { font-size: 0.95rem; font-weight: 600; color: var(--accent2); margin-bottom: 6px; }
+    .method-when { font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; }
+    .method-steps { margin: 8px 0 8px 16px; font-size: 0.84rem; line-height: 1.7; color: #c8d0e0; }
+    .method-steps li { margin-bottom: 4px; }
+    .method-tip { font-size: 0.8rem; color: #a78bfa; font-style: italic; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+
+    .tq-list { display: flex; flex-direction: column; gap: 14px; }
+    .tq-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .tq-header { padding: 16px; cursor: pointer; }
+    .tq-header:hover { background: rgba(108,99,255,0.06); }
+    .tq-type-badge { display: inline-block; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; background: rgba(108,99,255,0.18); color: #a78bfa; border-radius: 4px; padding: 2px 8px; margin-bottom: 8px; }
+    .tq-question { font-size: 0.88rem; color: #e0e4f0; line-height: 1.6; margin-bottom: 8px; }
+    .tq-cta { font-size: 0.75rem; color: var(--muted); }
+    .tq-item.open .tq-cta { display: none; }
+    .tq-solution { display: none; border-top: 1px solid var(--border); padding: 16px; background: rgba(0,0,0,0.2); }
+    .tq-item.open .tq-solution { display: block; }
+    .tq-sol-section { margin-bottom: 12px; font-size: 0.84rem; line-height: 1.65; color: #b8c0d4; }
+    .tq-sol-section strong { color: #e0e4f0; }
+    .tq-steps { margin: 6px 0 0 16px; }
+    .tq-steps li { margin-bottom: 5px; }
   </style>
 </head>
 <body>
@@ -360,6 +383,49 @@ const topics = [
           "<strong>Answer: Two premises — falling crime rates and increased patrols.</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "Conclusion-First Method",
+        when: "Mapping any CR argument quickly",
+        steps: ["Find the conclusion (look for 'therefore/thus/so')", "Find the premises (look for 'because/since')", "Identify what's assumed (the unstated link)"],
+        tip: "Ask 'Why does the author believe this?' → premises. Ask 'What's the author trying to prove?' → conclusion."
+      },
+      {
+        name: "Argument Mapping",
+        when: "Visualizing complex arguments",
+        steps: ["Draw: Premise₁ + Premise₂ → [GAP/ASSUMPTION] → Conclusion", "Label each component", "The gap is what you'll attack or support"],
+        tip: "The gap always exists — there's always an unstated bridge."
+      },
+      {
+        name: "Pre-thinking",
+        when: "Before looking at answer choices",
+        steps: ["Identify conclusion", "Find the assumption/gap", "Predict what a correct answer might say", "Then match to answer choices"],
+        tip: "Pre-thinking eliminates 80% of trap answers before you even read them."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Identify Conclusion",
+        q: "\"City Y increased its police budget by 20%. Crime fell 15% the following year. Therefore, increased police funding reduces crime.\" — What is the conclusion?",
+        identify: "'Therefore' signals the conclusion",
+        method: "Conclusion-First",
+        steps: ["Spot 'therefore'", "Everything after = conclusion: 'increased police funding reduces crime'", "Everything before = premises", "Answer: 'Increased police funding reduces crime.'"]
+      },
+      {
+        type: "Identify Assumption",
+        q: "Same argument — what is the key assumption?",
+        identify: "Assumption = unstated bridge between premises and conclusion",
+        method: "Ask 'what must be true for this to work?'",
+        steps: ["Premises: budget +20%, crime −15%", "Conclusion: funding causes crime reduction", "Assumption: no other factor (new officers, season, demographics) caused the drop", "Answer: No other concurrent factor caused the crime reduction."]
+      },
+      {
+        type: "Identify Premise",
+        q: "\"All successful startups have strong leadership. TechCo has strong leadership. Therefore, TechCo will succeed.\" — How many premises?",
+        identify: "Count statements that support the conclusion",
+        method: "Find signal words (all, has)",
+        steps: ["'All successful startups have strong leadership' = premise 1", "'TechCo has strong leadership' = premise 2", "Answer: 2 premises"]
+      }
     ]
   },
   {
@@ -415,6 +481,49 @@ const topics = [
           "<strong>Answer: Survivorship bias — only those who stayed are surveyed.</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "ACE Method (Assumption, Conclusion, Evidence)",
+        when: "Any Weaken question",
+        steps: ["A: Find the Assumption (unstated link)", "C: Confirm the Conclusion", "E: Find the Evidence/Premises", "Pick answer that attacks the Assumption"],
+        tip: "The correct weakener attacks the GAP — the link between evidence and conclusion."
+      },
+      {
+        name: "Alternative Cause Attack",
+        when: "The argument makes a causal claim",
+        steps: ["Identify the causal claim: 'X caused Y'", "Predict: look for an answer that says 'Z caused Y' or 'X didn't cause Y'", "Match answer to prediction"],
+        tip: "The best alternative cause explains the SAME observation through a different mechanism."
+      },
+      {
+        name: "Scope Shift",
+        when: "The conclusion generalizes beyond the premises",
+        steps: ["Note the scope of the evidence (limited sample, specific time/place)", "Note the scope of the conclusion (broader generalization)", "Correct weakener shows the gap between these scopes"],
+        tip: "'The study was conducted on only 50 people' is a scope weakener."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Causal Weaken",
+        q: "\"A study found that people who drink 2+ cups of coffee daily have 30% lower rates of depression. Therefore, drinking coffee reduces depression.\" — Weaken this.",
+        identify: "Causal claim + correlation data → look for alternative explanation",
+        method: "Alternative Cause Attack",
+        steps: ["Conclusion: coffee reduces depression", "Assumption: no other cause explains lower depression rates", "Best weakener: people who drink coffee are more socially active, and social activity reduces depression", "Answer: People who regularly drink coffee tend to drink it in social settings, which independently reduces depression."]
+      },
+      {
+        type: "Data Flaw Weaken",
+        q: "\"Our customer survey shows 94% satisfaction. Clearly, our product is excellent.\" — Weaken this.",
+        identify: "Survey as evidence → question the data quality",
+        method: "Survey Flaw Attack",
+        steps: ["Who took the survey?", "When/how was it administered?", "Best flaw: survey only sent to customers who made repeat purchases — already satisfied customers", "Answer: The survey was only distributed to customers who made a second purchase."]
+      },
+      {
+        type: "Generalization Weaken",
+        q: "\"In our city, switching to LED streetlights reduced crime by 15%. All cities should switch to LED lighting.\" — Weaken.",
+        identify: "Generalizing from one city → attack the scope",
+        method: "Scope Shift",
+        steps: ["Evidence: one city, one result", "Conclusion: all cities", "Weakener: other cities may not have same conditions", "Answer: Cities with different crime patterns or existing lighting infrastructure may not see the same reduction."]
+      }
     ]
   },
   {
@@ -468,6 +577,49 @@ const topics = [
           "<strong>Answer: Assumption = no alternative cause. Strengthen = eliminate other explanations.</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "Negation Test",
+        when: "Assumption questions",
+        steps: ["Negate each answer choice (reverse it)", "Apply the negated version to the argument", "If the argument falls apart → that IS the assumption"],
+        tip: "The negation test is the most reliable assumption-finding tool. Use it when two answers seem equally good."
+      },
+      {
+        name: "Gap-Fill Method",
+        when: "Strengthen questions",
+        steps: ["Identify the logical gap between premises and conclusion", "Ask: 'What piece of information would bridge this gap?'", "Find the answer choice that provides that bridge"],
+        tip: "Unlike assumptions, strengtheners don't need to be strictly necessary — they just need to make the conclusion more likely."
+      },
+      {
+        name: "Sufficient Assumption Check",
+        when: "'Allows conclusion to be properly drawn' questions",
+        steps: ["Find the conclusion", "For each answer choice, ask: 'If this is true, is the conclusion GUARANTEED?'", "Pick the answer that makes the conclusion 100% certain"],
+        tip: "Sufficient assumptions close ALL logical gaps simultaneously."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Assumption",
+        q: "\"Our new medication reduced symptoms in rats. It will therefore be effective in humans.\" — What assumption does this rely on?",
+        identify: "Causal generalization from animals to humans",
+        method: "Negation Test",
+        steps: ["Candidate: 'The biological mechanisms causing symptoms are similar in rats and humans'", "Negate: 'The mechanisms are NOT similar'", "If mechanisms differ, rat results tell us nothing about humans → argument collapses", "Answer: The biological mechanisms are similar between rats and humans."]
+      },
+      {
+        type: "Strengthen",
+        q: "Same argument. Strengthen it.",
+        identify: "Find what closes the rat-to-human gap",
+        method: "Gap-Fill",
+        steps: ["Gap: rat results may not apply to humans", "Strengthener: evidence that rat biology IS similar to human biology for this type of medication", "Best answer: Prior medications that reduced symptoms in rats using the same mechanism also reduced symptoms in humans", "Answer: Other medications using the same mechanism that were effective in rats were also found effective in humans."]
+      },
+      {
+        type: "Sufficient Assumption",
+        q: "\"Only GMAT-certified instructors should teach GMAT prep. Jamie is GMAT-certified. Therefore, Jamie should teach GMAT prep.\" — What assumption makes this valid?",
+        identify: "Missing link in categorical syllogism",
+        method: "Sufficient Assumption Check",
+        steps: ["Conclusion: Jamie should teach GMAT prep", "Need: being GMAT-certified = should teach", "Answer: Any GMAT-certified instructor who wants to teach should do so."]
+      }
     ]
   },
   {
@@ -519,6 +671,49 @@ const topics = [
           "Second bold: The main conclusion of the argument (what the author is arguing).",
           "<strong>Answer: First = counter-evidence premise. Second = main conclusion.</strong>"
         ]
+      }
+    ],
+    methods: [
+      {
+        name: "Inference Ladder",
+        when: "Inference questions",
+        steps: ["Read all stated facts carefully", "Ask: 'What is the MOST cautious conclusion these facts support?'", "Climb the ladder: fact → slight inference → moderate inference → strong inference", "Stop at the lowest safe rung"],
+        tip: "If you need outside knowledge, climb back down — inference must be 100% passage-based."
+      },
+      {
+        name: "Evaluate Both Ways",
+        when: "Evaluate questions",
+        steps: ["For each answer choice, ask it as a question", "Answer YES: does it strengthen or weaken?", "Answer NO: does the opposite happen?", "Correct answer works both ways"],
+        tip: "If YES strengthens AND NO weakens → strong evaluate answer. If YES does nothing → eliminate."
+      },
+      {
+        name: "Boldface Role Mapping",
+        when: "Boldface questions",
+        steps: ["Read the FULL argument, ignoring the bold text", "Identify: conclusion, all premises, counterarguments", "Now classify each bolded statement against your map"],
+        tip: "The first bold is often a premise or background; the second bold is often the conclusion or a counterargument."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Inference",
+        q: "\"All GMAT test-takers study for the exam. Some test-takers score above 700. No score above 700 is achieved without preparation.\" — What can be inferred?",
+        identify: "Logical inference from 3 statements",
+        method: "Inference Ladder",
+        steps: ["Fact: all test-takers study", "Fact: some score >700", "Fact: >700 requires preparation", "Conservative inference: Some test-takers who study score above 700", "Answer: Some test-takers who study score above 700."]
+      },
+      {
+        type: "Paradox",
+        q: "\"Despite a record wheat harvest last year, bread prices rose by 12%.\" — Which explains this?",
+        identify: "Two contradictory facts — find what reconciles them",
+        method: "Both-facts-remain-true check",
+        steps: ["Large harvest should lower prices", "But prices rose", "Look for: something that disrupted the harvest-to-price relationship", "Answer: A transportation strike prevented the harvest from reaching processing facilities."]
+      },
+      {
+        type: "Boldface",
+        q: "\"<strong>Raising the minimum wage always hurts employment.</strong> Studies show job losses in three cities that raised minimum wage. <strong>Therefore, city X should not raise its minimum wage.</strong>\" — Classify the bold statements.",
+        identify: "Map the argument structure",
+        method: "Boldface Role Mapping",
+        steps: ["Map: first bold = general claim stated as fact → premise", "'Studies show...' = supporting evidence", "Second bold = conclusion", "Answer: First bold = premise/general claim; Second bold = main conclusion."]
       }
     ]
   },
@@ -581,6 +776,49 @@ const topics = [
           "<strong>Answer: RC = support from within the passage. CR = new external information.</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "SCOPE Mapping",
+        when: "Reading actively",
+        steps: ["S: Subject — what is the passage about?", "C: Claim — what's the main argument?", "O: Organization — how is it structured?", "P: Purpose — why was this written?", "E: Evidence — what supports the main claim?"],
+        tip: "Do this in 30 seconds, not 3 minutes — quick notes, not summaries."
+      },
+      {
+        name: "3-2-1 Elimination",
+        when: "Any RC question",
+        steps: ["Eliminate 3 clearly wrong answers", "Of the 2 remaining, find the one with direct text support", "Never choose an answer without a specific line/paragraph to support it"],
+        tip: "If you can't cite where in the passage the answer comes from, it's probably wrong."
+      },
+      {
+        name: "Question Type Routing",
+        when: "Applying the right strategy per question",
+        steps: ["Identify question type from stem", "Main Idea → check full passage scope", "Detail → skim to find", "Inference → find most conservative supported conclusion", "Tone → note author language choices"],
+        tip: null
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Main Idea",
+        q: "A passage discusses how bees use the sun's position to navigate, describes waggle dance communication, and concludes that bee navigation is more sophisticated than previously thought. What is the main idea?",
+        identify: "Main idea = topic + scope + author's stance",
+        method: "SCOPE mapping",
+        steps: ["Topic: bee navigation", "Claim: more sophisticated than thought", "Correct: 'The article argues that bees employ complex navigational methods that demonstrate higher sophistication than earlier research suggested.'", "Wrong: 'Bees use the sun to navigate' (too narrow) or 'All insects have sophisticated navigation' (too broad)", "Answer: Bee navigation is more sophisticated than previously believed."]
+      },
+      {
+        type: "Inference",
+        q: "The passage states: 'While solar panels have become 40% cheaper since 2015, adoption rates in rural areas remain below 10%.' — What can be inferred?",
+        identify: "Inference from one passage statement",
+        method: "Inference Ladder — stay conservative",
+        steps: ["Facts: prices fell 40%, adoption <10% in rural areas", "Conservative inference: lower price alone hasn't driven rural adoption", "Does NOT infer: solar is failing, rural people dislike solar, etc.", "Answer: Price reduction alone has not been sufficient to drive widespread rural adoption."]
+      },
+      {
+        type: "Tone",
+        q: "Author uses: 'so-called experts claim,' 'the allegedly groundbreaking study,' 'proponents insist without evidence' — What is the author's tone?",
+        identify: "Tone markers in language",
+        method: "Identify modifier words",
+        steps: ["'So-called' = dismissive", "'Allegedly' = skeptical", "'Without evidence' = critical", "Overall: skeptical/critical toward the experts", "Answer: Skeptical and critical."]
+      }
     ]
   },
   {
@@ -636,6 +874,49 @@ const topics = [
           "<strong>Answer: Cautiously optimistic — balanced acknowledgment with a positive lean.</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "Scope Bracket Method",
+        when: "Main Idea questions",
+        steps: ["Identify the narrowest the correct answer can be (must cover all paragraphs)", "Identify the broadest it can be (must not exceed what the passage discusses)", "Correct answer fits within this bracket"],
+        tip: "Too narrow = only one paragraph; too broad = goes beyond the passage's scope."
+      },
+      {
+        name: "100% Rule",
+        when: "Inference questions",
+        steps: ["Find a candidate answer", "Ask: 'Is there ANY scenario where this could be false, given the passage?'", "If yes — eliminate it", "Correct answer has 0% chance of being false given the text"],
+        tip: "Words like 'all,' 'never,' 'only,' 'always' in an inference answer almost always make it too strong to be 100% supported."
+      },
+      {
+        name: "Author Verb Test",
+        when: "Author's Purpose questions",
+        steps: ["Identify the main PURPOSE verb in each answer: 'to argue,' 'to describe,' 'to refute,' 'to compare'", "Eliminate answers where the verb doesn't match", "Then check the topic phrase for scope"],
+        tip: "An author who presents both sides neutrally is 'analyzing' or 'comparing,' not 'arguing.'"
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Main Idea",
+        q: "A passage has 3 paragraphs: (1) introduces a problem with plastic pollution (2) describes current recycling limitations (3) proposes biodegradable alternatives. Which main idea is correct: (A) 'Plastic pollution is a serious problem' (B) 'Current recycling is inadequate and biodegradable alternatives are needed' (C) 'All plastics should be replaced'",
+        identify: "Main idea must cover ALL paragraphs",
+        method: "Scope Bracket",
+        steps: ["A: too narrow — only paragraph 1", "B: covers all 3 paragraphs ✓", "C: too extreme — 'all plastics' goes beyond what's stated", "Answer: B"]
+      },
+      {
+        type: "Function",
+        q: "In a passage about electric vehicles, paragraph 2 details a study where EV drivers had higher satisfaction than gas-car drivers. Why is this paragraph included?",
+        identify: "Function = what JOB does this paragraph do?",
+        method: "Zoom out — what does it support?",
+        steps: ["Main argument: EVs are superior/gaining popularity", "Para 2 provides supporting evidence", "Function: to provide concrete data supporting the passage's main argument", "Answer: To provide empirical support for the claim that EVs offer a superior driving experience."]
+      },
+      {
+        type: "Tone Shift",
+        q: "The author begins by describing early enthusiasm for nuclear energy, then pivots to discussing unforeseen safety challenges. What is the author's overall tone?",
+        identify: "Tone can shift — identify the NET tone",
+        method: "Note the pivot",
+        steps: ["Early: positive/enthusiastic tone about nuclear", "Pivot: 'however, unforeseen challenges'", "Net tone: balanced/cautionary — acknowledging both promise and problems", "Answer: Balanced and cautionary, acknowledging both early promise and subsequent challenges."]
+      }
     ]
   }
 ];
@@ -680,6 +961,36 @@ topics.forEach((topic, i) => {
     </div>
   `).join('');
 
+  const methodsHTML = topic.methods.map(m => `
+    <div class="method-item">
+      <div class="method-name">${m.name}</div>
+      <div class="method-when"><em>Use when:</em> ${m.when}</div>
+      <ol class="method-steps">
+        ${m.steps.map(s => `<li>${s}</li>`).join('')}
+      </ol>
+      ${m.tip ? `<div class="method-tip">💡 ${m.tip}</div>` : ''}
+    </div>
+  `).join('');
+
+  const tqHTML = topic.typicalQuestions.map((tq, j) => `
+    <div class="tq-item" id="tq-${i}-${j}">
+      <div class="tq-header" onclick="toggleTQ('tq-${i}-${j}')">
+        <div class="tq-type-badge">${tq.type}</div>
+        <div class="tq-question">${tq.q}</div>
+        <div class="tq-cta">Tap to see how to solve ▼</div>
+      </div>
+      <div class="tq-solution">
+        <div class="tq-sol-section"><strong>🔍 Identify:</strong> ${tq.identify}</div>
+        <div class="tq-sol-section"><strong>📐 Method:</strong> ${tq.method}</div>
+        <div class="tq-sol-section"><strong>📋 Steps:</strong>
+          <ol class="tq-steps">
+            ${tq.steps.map(s => `<li>${s}</li>`).join('')}
+          </ol>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
   card.innerHTML = `
     <div class="card-header" onclick="toggleCard(${i})">
       <div class="card-icon">${topic.icon}</div>
@@ -694,6 +1005,8 @@ topics.forEach((topic, i) => {
       <div class="detail-tabs">
         <button class="tab-btn active" onclick="switchTab(event,${i},'eq')">📋 Key Concepts</button>
         <button class="tab-btn" onclick="switchTab(event,${i},'detail')">📖 Rules</button>
+        <button class="tab-btn" onclick="switchTab(event,${i},'methods')">🔧 Key Methods</button>
+        <button class="tab-btn" onclick="switchTab(event,${i},'tq')">❓ Typical Questions</button>
         <button class="tab-btn" onclick="switchTab(event,${i},'practice')">✏️ Practice</button>
       </div>
       <div class="tab-content active" id="tab-eq-${i}">
@@ -701,6 +1014,12 @@ topics.forEach((topic, i) => {
       </div>
       <div class="tab-content" id="tab-detail-${i}">
         ${detailHTML}
+      </div>
+      <div class="tab-content" id="tab-methods-${i}">
+        <div class="method-list">${methodsHTML}</div>
+      </div>
+      <div class="tab-content" id="tab-tq-${i}">
+        <div class="tq-list">${tqHTML}</div>
       </div>
       <div class="tab-content" id="tab-practice-${i}">
         <div class="practice-list">${practiceHTML}</div>
@@ -742,6 +1061,11 @@ function switchTab(e, i, tab) {
   card.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   e.target.classList.add('active');
   document.getElementById(`tab-${tab}-${i}`).classList.add('active');
+}
+
+function toggleTQ(id) {
+  const item = document.getElementById(id);
+  item.classList.toggle('open');
 }
 
 function toggleAnswer(i, j) {

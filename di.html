@@ -305,6 +305,29 @@
       pointer-events: none;
     }
     .ref-term.tip-active .ref-tip { display: block; }
+
+    .method-list { display: flex; flex-direction: column; gap: 14px; }
+    .method-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .method-name { font-size: 0.95rem; font-weight: 600; color: var(--accent2); margin-bottom: 6px; }
+    .method-when { font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; }
+    .method-steps { margin: 8px 0 8px 16px; font-size: 0.84rem; line-height: 1.7; color: #c8d0e0; }
+    .method-steps li { margin-bottom: 4px; }
+    .method-tip { font-size: 0.8rem; color: #a78bfa; font-style: italic; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+
+    .tq-list { display: flex; flex-direction: column; gap: 14px; }
+    .tq-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .tq-header { padding: 16px; cursor: pointer; }
+    .tq-header:hover { background: rgba(108,99,255,0.06); }
+    .tq-type-badge { display: inline-block; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; background: rgba(108,99,255,0.18); color: #a78bfa; border-radius: 4px; padding: 2px 8px; margin-bottom: 8px; }
+    .tq-question { font-size: 0.88rem; color: #e0e4f0; line-height: 1.6; margin-bottom: 8px; }
+    .tq-cta { font-size: 0.75rem; color: var(--muted); }
+    .tq-item.open .tq-cta { display: none; }
+    .tq-solution { display: none; border-top: 1px solid var(--border); padding: 16px; background: rgba(0,0,0,0.2); }
+    .tq-item.open .tq-solution { display: block; }
+    .tq-sol-section { margin-bottom: 12px; font-size: 0.84rem; line-height: 1.65; color: #b8c0d4; }
+    .tq-sol-section strong { color: #e0e4f0; }
+    .tq-steps { margin: 6px 0 0 16px; }
+    .tq-steps li { margin-bottom: 5px; }
   </style>
 </head>
 <body>
@@ -396,6 +419,49 @@ const topics = [
           "<strong>Answer: C</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "AD/BCE Split",
+        when: "Eliminating answer choices early",
+        steps: ["Evaluate S1 alone", "If sufficient → answer is A or D, eliminate B/C/E", "If not sufficient → answer is B/C/E, eliminate A/D", "Then test S2 alone"],
+        tip: "This halves your remaining choices after just one evaluation."
+      },
+      {
+        name: "Construct a Counterexample (for E)",
+        when: "Proving answer is E",
+        steps: ["Find two scenarios using BOTH statements", "One scenario gives answer YES", "Other gives NO", "If both scenarios satisfy all conditions → answer is E"],
+        tip: "If you find even one ambiguous case, E is correct."
+      },
+      {
+        name: "Yes/No Consistency Check",
+        when: "Yes/no DS questions",
+        steps: ["Test several values satisfying the statement", "If ALWAYS yes → sufficient", "If ALWAYS no → sufficient", "If sometimes yes AND sometimes no → NOT sufficient"],
+        tip: "'Always' is the key word — even one counterexample breaks sufficiency."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Value DS",
+        q: "What is x? (1) x² = 16 (2) x > 0",
+        identify: "Value question — need exactly one solution",
+        method: "AD/BCE Split",
+        steps: ["S1: x=4 or x=−4 → two values → NOT sufficient (→ BCE)", "S2: x>0 → infinitely many values → NOT sufficient (→ CE)", "Together: x²=16 AND x>0 → x=4 only → Sufficient", "Answer: C"]
+      },
+      {
+        type: "Yes/No DS",
+        q: "Is n even? (1) n/2 is an integer (2) n+1 is odd",
+        identify: "Yes/No — need definite consistent answer",
+        method: "Test each statement",
+        steps: ["S1: n/2 integer means n is even → ALWAYS yes → Sufficient (→ A or D)", "S2: n+1 odd means n is even → ALWAYS yes → Sufficient", "Both alone sufficient", "Answer: D"]
+      },
+      {
+        type: "Yes/No Trap",
+        q: "Is xy > 0? (1) x > 0 (2) y > 0",
+        identify: "Product sign requires BOTH variables' signs",
+        method: "AD/BCE Split",
+        steps: ["S1: x>0 but y unknown → xy could be pos or neg → NOT sufficient (→ BCE)", "S2: y>0 but x unknown → same issue → NOT sufficient (→ CE)", "Together: both positive → xy>0 → YES, Sufficient", "Answer: C"]
+      }
     ]
   },
   {
@@ -456,6 +522,49 @@ const topics = [
           "<strong>Answer: C</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "ZOFNI Testing (Zero, One, Fraction, Negative, Integer)",
+        when: "Any DS question with variables",
+        steps: ["Test x=0", "Test x=1 and x=−1", "Test x=1/2", "Test x=−3", "Test a large integer"],
+        tip: "If any test gives a different answer, the statement is NOT sufficient."
+      },
+      {
+        name: "Integer Trap Exploit",
+        when: "'Integer' is mentioned in the problem",
+        steps: ["Count all possible integer values under the given constraints", "If only one value → definite answer → sufficient", "If multiple values that all give same answer → sufficient", "If multiple values give different answers → not sufficient"],
+        tip: "Small ranges of integers (like 1-10) can be listed exhaustively."
+      },
+      {
+        name: "Inequality Sign Flip Alert",
+        when: "Dividing/multiplying inequalities",
+        steps: ["If you multiply or divide by a NEGATIVE number → FLIP the inequality sign", "If variable could be negative, you CANNOT divide both sides by it", "Instead, test cases"],
+        tip: "'x > 0 is NOT stated' = do NOT divide by x without checking sign."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Zero Trap",
+        q: "Is x/|x| = 1? (1) x² > 0 (2) x > −1",
+        identify: "x/|x|=1 iff x>0 — need to establish positivity",
+        method: "ZOFNI Testing",
+        steps: ["S1: x²>0 means x≠0, but x could be −3 → x/|x|=−1 → NOT sufficient", "S2: x>−1 → x could be −0.5 → x/|x|=−1 → or x=2 → x/|x|=1 → NOT sufficient", "Together: x≠0 and x>−1 → x could be −0.5 (fails) or 2 (works) → still NOT sufficient", "Answer: E"]
+      },
+      {
+        type: "Integer Constraint",
+        q: "Is n² > n? (1) n is a positive integer (2) n < 10",
+        identify: "n²>n is true when n>1 or n<0",
+        method: "Integer Trap Exploit",
+        steps: ["S1: positive integer → n≥1. If n=1: 1>1? No. If n=2: 4>2? Yes. NOT always true → Not sufficient", "S2: n<10 → n could be −3 (works) or 0 (0>0? No) → Not sufficient", "Together: n is positive integer AND n<10 → n∈{1,2,...,9}. n=1: 1>1? No → Not sufficient", "Answer: E"]
+      },
+      {
+        type: "Negative Trap",
+        q: "Is x > 0? (1) x³ > 0 (2) x + |x| = 2x",
+        identify: "Sign of x from algebraic conditions",
+        method: "ZOFNI Testing",
+        steps: ["S1: x³>0 → x>0 (odd powers preserve sign) → ALWAYS yes → Sufficient", "S2: x+|x|=2x → |x|=x → x≥0. But x=0 also satisfies → not definite YES → Not sufficient", "Answer: A"]
+      }
     ]
   },
   {
@@ -505,6 +614,49 @@ const topics = [
           "<strong>Answer: Cannot be determined</strong> — Q4 data is not provided in any source."
         ]
       }
+    ],
+    methods: [
+      {
+        name: "Tab-First Scanning",
+        when: "The start of every MSR question set",
+        steps: ["Read each tab title", "Read first sentence of each tab", "Note: what type of data is in each tab? numbers? text? dates?", "Build a mental map before answering"],
+        tip: "30 seconds scanning upfront saves 2 minutes per question."
+      },
+      {
+        name: "Source Triangulation",
+        when: "A question requires combining tabs",
+        steps: ["Identify which tabs have relevant data", "Extract the specific data point from each", "Combine/compare as required", "Check if any tab contradicts or qualifies the data"],
+        tip: "Most MSR questions are specifically designed to require 2+ tabs — if one tab seems to fully answer it, double-check the others."
+      },
+      {
+        name: "Cannot Determine Filter",
+        when: "'Cannot be determined' is an option",
+        steps: ["Check ALL tabs for the relevant data", "Check if it can be calculated from available data", "Only choose 'Cannot Determine' if the data literally does not exist anywhere in the tabs"],
+        tip: "'I'd have to calculate it' ≠ Cannot Determine. 'The data isn't there at all' = Cannot Determine."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Synthesis",
+        q: "Tab 1: Company revenue by region (North: $5M, South: $3M). Tab 2: Employee count by region (North: 50, South: 60). Which region has higher revenue per employee?",
+        identify: "Cross-tab calculation required",
+        method: "Source Triangulation",
+        steps: ["North: $5M÷50=$100K per employee", "South: $3M÷60=$50K per employee", "North is higher", "Answer: North region"]
+      },
+      {
+        type: "Contradiction",
+        q: "Tab 1 says Product X launched in Q1 2023. Tab 2 shows first sales of Product X in Q3 2023. Are these contradictory?",
+        identify: "Apparent contradiction between tabs",
+        method: "Look for structural difference",
+        steps: ["Q1 launch vs Q3 first sales", "Possible resolution: Q1 = development/soft launch, Q3 = commercial launch", "Not necessarily contradictory", "Answer: Not necessarily — the Q1 date may refer to internal launch while Q3 is commercial release."]
+      },
+      {
+        type: "Cannot Determine",
+        q: "Tab 1 shows monthly sales. Tab 2 shows product categories. The question asks: what is the profit margin for Product A in March?",
+        identify: "Is profit margin data available?",
+        method: "Cannot Determine Filter",
+        steps: ["Tab 1: sales only, no cost data", "Tab 2: category info, no margin data", "No tab contains cost or margin information → cannot calculate profit margin", "Answer: Cannot be determined"]
+      }
     ]
   },
   {
@@ -553,6 +705,49 @@ const topics = [
           "\\(8 > 7.5\\) → Yes, a majority.",
           "<strong>Answer: True</strong>"
         ]
+      }
+    ],
+    methods: [
+      {
+        name: "Sort-Then-Answer",
+        when: "Any table question",
+        steps: ["Read the question FIRST", "Identify which column is relevant", "Sort that column ascending or descending", "Then answer"],
+        tip: "Never look at all rows unsorted — always sort first for efficiency."
+      },
+      {
+        name: "Two-Column Filter",
+        when: "Multi-condition questions",
+        steps: ["Identify both conditions", "Sort by first condition, eliminate failing rows", "Within survivors, check second condition", "Count or calculate from final filtered set"],
+        tip: "Apply the most restrictive condition first to minimize rows to check."
+      },
+      {
+        name: "True/False Independent Evaluation",
+        when: "True/False format questions",
+        steps: ["Treat each sub-question as completely independent", "Read each sub-question as if it's the only one", "Go to the table, test it, mark T or F", "Never let your T/F on one affect your reasoning on another"],
+        tip: "One wrong sub-answer is costly — take time on each one."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Sort & Rank",
+        q: "The table shows 10 countries with GDP and population. Which 2 countries have the highest GDP per capita?",
+        identify: "Ranking question requiring calculated column",
+        method: "Sort-Then-Answer",
+        steps: ["Mentally or literally compute GDP/population for each row", "Sort descending", "Top 2 emerge", "Answer: Read top 2 from sorted column"]
+      },
+      {
+        type: "Multi-Condition Count",
+        q: "How many employees have salary > $80K AND tenure > 5 years?",
+        identify: "Two simultaneous conditions — filter approach",
+        method: "Two-Column Filter",
+        steps: ["Filter: salary > $80K → say 8 rows remain", "Of those 8, check tenure > 5 years → say 3 qualify", "Count: 3", "Answer: 3 employees"]
+      },
+      {
+        type: "True/False — Majority",
+        q: "True or False: The majority of products rated above 4.0 are in the Electronics category.",
+        identify: "'Majority' = >50% — requires counting",
+        method: "True/False Independent Evaluation",
+        steps: ["Filter for rating > 4.0 → say 12 products", "Count Electronics among them → say 7", "7/12 = 58% > 50% → True", "Answer: True"]
       }
     ]
   },
@@ -614,6 +809,49 @@ const topics = [
           "<strong>Answer: $80,000</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "ABLS Check",
+        when: "The start of every graph question",
+        steps: ["A: Axes — what do they measure? what are units?", "B: Baseline — does y-axis start at 0?", "L: Legend — what do colors/shapes mean?", "S: Scale — is the scale uniform or logarithmic?"],
+        tip: "80% of graph trap answers exploit baseline or scale misreading."
+      },
+      {
+        name: "Rate of Change vs Level",
+        when: "Line graph questions",
+        steps: ["Level = height of the line at a point", "Rate of change = steepness of the slope between two points", "'Greatest increase' → find steepest positive slope, NOT the highest point"],
+        tip: "Draw a mental tangent to compare slopes at different points."
+      },
+      {
+        name: "Pie Chart Absolute Calculation",
+        when: "Total is given with a pie chart",
+        steps: ["Find the percentage of the target slice", "Multiply by the total: Absolute value = % × Total", "Compare absolute values carefully — a bigger % on a smaller total may be less"],
+        tip: "Always ask 'is a total given?' before attempting any pie chart calculation."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Baseline Trap",
+        q: "A bar chart shows 2022 revenue at $4.2M and 2023 at $4.8M. The y-axis starts at $4M. The 2023 bar looks 3x taller. What is the actual percentage increase?",
+        identify: "Non-zero baseline distorting visual",
+        method: "ABLS Check → use actual values",
+        steps: ["Actual values: $4.2M and $4.8M", "Increase: $0.6M", "%: 0.6/4.2 = ~14.3%", "Answer: ~14%, not 200%"]
+      },
+      {
+        type: "Rate vs Level",
+        q: "A line graph shows temperature: Jan=60, Mar=65, Jun=80, Jul=79. Between which months was the rate of increase greatest?",
+        identify: "Rate of change = slope, not absolute value",
+        method: "Rate of Change vs Level",
+        steps: ["Jan-Mar: +5 over 2 months = +2.5/month", "Mar-Jun: +15 over 3 months = +5/month", "Jun-Jul: −1 over 1 month = −1/month", "Steepest positive slope: Mar-Jun", "Answer: March to June"]
+      },
+      {
+        type: "Correlation",
+        q: "A scatter plot shows points spreading randomly with no clear pattern. What relationship does this show?",
+        identify: "Scatter plot pattern analysis",
+        method: "ABLS then pattern check",
+        steps: ["No clustering around a line", "Both positive and negative slopes present in small clusters", "No trend", "Answer: No significant correlation between the variables"]
+      }
     ]
   },
   {
@@ -667,6 +905,49 @@ const topics = [
           "<strong>Answer: m = $60,000, r = $40,000</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "Constraint Mapping",
+        when: "The start of every Two-Part question",
+        steps: ["List ALL constraints on paper", "Mark which constraints apply to Column 1, Column 2, or both", "Eliminate rows that violate any constraint for each column", "Find rows that satisfy all constraints for each column simultaneously"],
+        tip: "Write C1, C2, C1+C2 next to each constraint."
+      },
+      {
+        name: "Most Restrictive First",
+        when: "Quickly narrowing options",
+        steps: ["Identify which constraint eliminates the most rows", "Apply it first", "With fewer rows remaining, apply next constraint", "Repeat until you have the answer"],
+        tip: "Equality constraints (x=5) are usually more restrictive than inequality constraints (x>0)."
+      },
+      {
+        name: "Verify Both",
+        when: "Final check before confirming answer",
+        steps: ["Take your selected C1 value and C2 value", "Apply EVERY constraint to check", "Make sure the combination satisfies ALL conditions together", "Only then submit"],
+        tip: "Many students lose points by verifying each column independently but not verifying the COMBINATION."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Algebraic",
+        q: "Select values for x and y such that x + y = 12, x > y, and both are positive integers. Options: {1,2,3,4,5,6,7,8,9,10,11}",
+        identify: "Two-part algebraic with 3 constraints",
+        method: "Constraint Mapping",
+        steps: ["x+y=12 and x>y → x>6", "Valid pairs: (7,5),(8,4),(9,3),(10,2),(11,1)", "All valid — pick any (e.g., x=7, y=5)", "Answer: x=7, y=5"]
+      },
+      {
+        type: "Logical",
+        q: "Select 2 employees for a team: A won't work with C. B requires D. Options: {A, B, C, D, E}",
+        identify: "Logical constraint satisfaction",
+        method: "Most Restrictive First",
+        steps: ["B requires D → if B selected, D must also be selected", "A won't work with C → if A, no C", "Valid 2-person teams: {B,D}, {A,E}, {A,D}, {D,E}, etc.", "Answer depends on question specifics"]
+      },
+      {
+        type: "Optimization",
+        q: "Select advertising spend and R&D spend to maximize total while keeping advertising ≤ $100K and R&D ≤ $60K. Options: {$20K, $40K, $60K, $80K, $100K}",
+        identify: "Maximize subject to upper bounds",
+        method: "Verify Both",
+        steps: ["Max advertising within limit: $100K", "Max R&D within limit: $60K", "Total: $160K", "Verify: $100K ≤ $100K ✓, $60K ≤ $60K ✓", "Answer: Advertising=$100K, R&D=$60K"]
+      }
     ]
   }
 ];
@@ -718,6 +999,36 @@ topics.forEach((topic, i) => {
     </div>
   `).join('');
 
+  const methodsHTML = topic.methods.map(m => `
+    <div class="method-item">
+      <div class="method-name">${m.name}</div>
+      <div class="method-when"><em>Use when:</em> ${m.when}</div>
+      <ol class="method-steps">
+        ${m.steps.map(s => `<li>${s}</li>`).join('')}
+      </ol>
+      ${m.tip ? `<div class="method-tip">💡 ${m.tip}</div>` : ''}
+    </div>
+  `).join('');
+
+  const tqHTML = topic.typicalQuestions.map((tq, j) => `
+    <div class="tq-item" id="tq-${i}-${j}">
+      <div class="tq-header" onclick="toggleTQ('tq-${i}-${j}')">
+        <div class="tq-type-badge">${tq.type}</div>
+        <div class="tq-question">${tq.q}</div>
+        <div class="tq-cta">Tap to see how to solve ▼</div>
+      </div>
+      <div class="tq-solution">
+        <div class="tq-sol-section"><strong>🔍 Identify:</strong> ${tq.identify}</div>
+        <div class="tq-sol-section"><strong>📐 Method:</strong> ${tq.method}</div>
+        <div class="tq-sol-section"><strong>📋 Steps:</strong>
+          <ol class="tq-steps">
+            ${tq.steps.map(s => `<li>${s}</li>`).join('')}
+          </ol>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
   card.innerHTML = `
     <div class="card-header" onclick="toggleCard(${i})">
       <div class="card-icon">${topic.icon}</div>
@@ -730,8 +1041,10 @@ topics.forEach((topic, i) => {
     </div>
     <div class="detail-panel">
       <div class="detail-tabs">
-        <button class="tab-btn active" onclick="switchTab(event,${i},'eq')">📐 Equations</button>
+        <button class="tab-btn active" onclick="switchTab(event,${i},'eq')">📋 Key Concepts</button>
         <button class="tab-btn" onclick="switchTab(event,${i},'detail')">📖 Rules</button>
+        <button class="tab-btn" onclick="switchTab(event,${i},'methods')">🔧 Key Methods</button>
+        <button class="tab-btn" onclick="switchTab(event,${i},'tq')">❓ Typical Questions</button>
         <button class="tab-btn" onclick="switchTab(event,${i},'practice')">✏️ Practice</button>
       </div>
       <div class="tab-content active" id="tab-eq-${i}">
@@ -739,6 +1052,12 @@ topics.forEach((topic, i) => {
       </div>
       <div class="tab-content" id="tab-detail-${i}">
         ${detailHTML}
+      </div>
+      <div class="tab-content" id="tab-methods-${i}">
+        <div class="method-list">${methodsHTML}</div>
+      </div>
+      <div class="tab-content" id="tab-tq-${i}">
+        <div class="tq-list">${tqHTML}</div>
       </div>
       <div class="tab-content" id="tab-practice-${i}">
         <div class="practice-list">${practiceHTML}</div>
@@ -780,6 +1099,11 @@ function switchTab(e, i, tab) {
   card.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   e.target.classList.add('active');
   document.getElementById(`tab-${tab}-${i}`).classList.add('active');
+}
+
+function toggleTQ(id) {
+  const item = document.getElementById(id);
+  item.classList.toggle('open');
 }
 
 function toggleAnswer(i, j) {

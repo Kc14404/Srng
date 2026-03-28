@@ -507,6 +507,29 @@
       pointer-events: none;
     }
     .ref-term.tip-active .ref-tip { display: block; }
+
+    .method-list { display: flex; flex-direction: column; gap: 14px; }
+    .method-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .method-name { font-size: 0.95rem; font-weight: 600; color: var(--accent2); margin-bottom: 6px; }
+    .method-when { font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; }
+    .method-steps { margin: 8px 0 8px 16px; font-size: 0.84rem; line-height: 1.7; color: #c8d0e0; }
+    .method-steps li { margin-bottom: 4px; }
+    .method-tip { font-size: 0.8rem; color: #a78bfa; font-style: italic; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+
+    .tq-list { display: flex; flex-direction: column; gap: 14px; }
+    .tq-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .tq-header { padding: 16px; cursor: pointer; }
+    .tq-header:hover { background: rgba(108,99,255,0.06); }
+    .tq-type-badge { display: inline-block; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; background: rgba(108,99,255,0.18); color: #a78bfa; border-radius: 4px; padding: 2px 8px; margin-bottom: 8px; }
+    .tq-question { font-size: 0.88rem; color: #e0e4f0; line-height: 1.6; margin-bottom: 8px; }
+    .tq-cta { font-size: 0.75rem; color: var(--muted); }
+    .tq-item.open .tq-cta { display: none; }
+    .tq-solution { display: none; border-top: 1px solid var(--border); padding: 16px; background: rgba(0,0,0,0.2); }
+    .tq-item.open .tq-solution { display: block; }
+    .tq-sol-section { margin-bottom: 12px; font-size: 0.84rem; line-height: 1.65; color: #b8c0d4; }
+    .tq-sol-section strong { color: #e0e4f0; }
+    .tq-steps { margin: 6px 0 0 16px; }
+    .tq-steps li { margin-bottom: 5px; }
   </style>
 </head>
 <body>
@@ -644,6 +667,49 @@ const topics = [
           "<strong>Answer: 87.5%</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "Keep-Change-Flip (KCF)",
+        when: "Dividing fractions",
+        steps: ["Write a÷b", "Change ÷ to ×", "Flip c/d to d/c", "Multiply across"],
+        tip: "Always simplify by cross-canceling BEFORE multiplying."
+      },
+      {
+        name: "Bowtie Method",
+        when: "Comparing or adding fractions with different denominators",
+        steps: ["Multiply diagonally (top-left × bottom-right, top-right × bottom-left)", "Those products are your new numerators", "The new denominator is the product of both denominators"],
+        tip: "Faster than finding LCM for comparison questions."
+      },
+      {
+        name: "Benchmark Fractions",
+        when: "Estimating or comparing fractions quickly",
+        steps: ["Compare to benchmarks: 0, 1/4, 1/2, 3/4, 1", "Ask: is this fraction above or below 1/2?", "Use to eliminate answer choices"],
+        tip: "1/2 test — if numerator × 2 > denominator, fraction > 1/2."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Computation",
+        q: "What is \\(\\frac{3}{4} \\div \\frac{9}{16}\\)?",
+        identify: "Division of fractions — use KCF",
+        method: "Keep-Change-Flip then multiply",
+        steps: ["Keep 3/4", "Change ÷ to ×", "Flip 9/16 to 16/9", "(3/4)×(16/9) — cross cancel: 3 and 9 → 1/3, 16 and 4 → 4/1, so (1×4)/(1×3) = 4/3", "Answer: 4/3"]
+      },
+      {
+        type: "Comparison",
+        q: "Which is larger: \\(\\frac{7}{15}\\) or \\(\\frac{8}{17}\\)?",
+        identify: "Comparison of two fractions without common denominator — use Bowtie",
+        method: "Cross-multiply to compare",
+        steps: ["7×17 = 119 vs 8×15 = 120", "120 > 119, so 8/17 > 7/15", "Answer: 8/17"]
+      },
+      {
+        type: "Word Problem",
+        q: "A recipe calls for 2/3 cup of sugar. If you make 1.5 batches, how much sugar is needed?",
+        identify: "Fraction × mixed number",
+        method: "Convert 1.5 to 3/2, then multiply",
+        steps: ["2/3 × 3/2", "Cross cancel: 3/3=1 and 2/2=1 → (1×1)/(1×1) = 1", "Answer: 1 cup"]
+      }
     ]
   },
   {
@@ -723,6 +789,49 @@ const topics = [
           "Cancel \\((x-5)\\): \\(= x + 5\\) (where \\(x \\neq 5\\))",
           "<strong>Answer: \\(x + 5\\)</strong>"
         ]
+      }
+    ],
+    methods: [
+      {
+        name: "Substitution Method",
+        when: "Solving systems of 2 equations",
+        steps: ["Isolate one variable in the simpler equation", "Substitute into the other equation", "Solve for one variable", "Back-substitute to find the other"],
+        tip: "Pick the equation and variable that give the cleanest isolation."
+      },
+      {
+        name: "FOIL + Factoring",
+        when: "Solving quadratics",
+        steps: ["Set equation = 0", "Find two numbers that multiply to c and add to b", "Write as (x+p)(x+q)=0", "Set each factor to 0"],
+        tip: "If factoring fails, use the quadratic formula."
+      },
+      {
+        name: "Difference of Squares",
+        when: "You see an a²−b² pattern",
+        steps: ["Recognize a²−b²", "Factor as (a+b)(a−b)", "Solve each factor"],
+        tip: "Memorize: x²−1=(x+1)(x−1), x²−4=(x+2)(x−2), x²−9=(x+3)(x−3)."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Algebra",
+        q: "If 3x + 7 = 22, what is x?",
+        identify: "Simple linear equation — isolate variable",
+        method: "Inverse operations",
+        steps: ["3x = 22−7 = 15", "x = 15/3 = 5", "Answer: 5"]
+      },
+      {
+        type: "Quadratic",
+        q: "What are the solutions to \\(x^2 - 5x + 6 = 0\\)?",
+        identify: "Quadratic set to zero — factor",
+        method: "Find p,q where p×q=6 and p+q=−5",
+        steps: ["p=−2, q=−3", "(x−2)(x−3)=0", "x=2 or x=3", "Answer: x=2 or x=3"]
+      },
+      {
+        type: "System",
+        q: "If 2x+y=10 and x−y=2, what is x?",
+        identify: "System of 2 equations — add to eliminate y",
+        method: "Addition/elimination",
+        steps: ["Add equations: 3x=12", "x=4", "Answer: x=4"]
       }
     ]
   },
@@ -805,6 +914,49 @@ const topics = [
           "<strong>Answer: \\(xz < 0\\)</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "NOFZ Testing (Negative, One, Fraction, Zero)",
+        when: "Any property question about a variable",
+        steps: ["Test x=−2", "Test x=−1 and x=1", "Test x=1/2", "Test x=0"],
+        tip: "If ANY test breaks a property, the property is NOT always true."
+      },
+      {
+        name: "Even/Odd Tracking",
+        when: "A problem involves parity (even/odd results)",
+        steps: ["Label each number E or O", "Apply rules: E+E=E, O+O=E, E+O=O, E×any=E, O×O=O", "Track through the expression"],
+        tip: "Even + Even = Even is the one students most often forget."
+      },
+      {
+        name: "Prime Factorization",
+        when: "Divisibility, LCM/GCF, or factor counting questions",
+        steps: ["Divide by 2 repeatedly", "Then try 3, 5, 7, 11...", "Write as product of primes: n = 2^a × 3^b × 5^c..."],
+        tip: "Build a factor tree starting from obvious factors."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Conceptual",
+        q: "If n is an odd integer, which of the following must be even? (A) n+1 (B) n² (C) n+n",
+        identify: "Must-be-even with odd variable — apply parity rules",
+        method: "Test each with n=1 and n=3",
+        steps: ["n+1: 1+1=2 ✓ even", "n²: 1²=1 ✗ odd", "n+n=2n: 2×1=2 ✓ always even", "Answer: A (n+1) and C (n+n=2n) are always even"]
+      },
+      {
+        type: "DS-style",
+        q: "Is integer k divisible by 6? (1) k is divisible by 2 (2) k is divisible by 3",
+        identify: "DS yes/no — divisibility by 6 requires both 2 and 3",
+        method: "AD/BCE split",
+        steps: ["S1 alone: divisible by 2 but not necessarily 3 → Not sufficient", "S2 alone: divisible by 3 but not necessarily 2 → Not sufficient", "Together: divisible by both 2 and 3 → divisible by 6 → Sufficient", "Answer: C"]
+      },
+      {
+        type: "Word Problem",
+        q: "The product of three consecutive even integers is 480. What is the middle integer?",
+        identify: "Consecutive integers product — set up algebraic expression",
+        method: "Let integers = n−2, n, n+2",
+        steps: ["(n−2)(n)(n+2)=480", "Try n=8: 6×8×10=480 ✓", "Answer: 8"]
+      }
     ]
   },
   {
@@ -886,6 +1038,49 @@ const topics = [
           "<strong>Answer: remainder = 1</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "Divisibility Quick-Check",
+        when: "Asked if a large number is divisible",
+        steps: ["Check last digit for 2, 5, 10", "Sum digits for 3, 9", "Check last 2 digits for 4", "Combine: if divisible by 2 AND 3, then by 6"],
+        tip: "For 7 and 11, use the alternating sum method."
+      },
+      {
+        name: "Trailing Zeros Count",
+        when: "Asked about trailing zeros in n! or large products",
+        steps: ["Count factors of 5: ⌊n/5⌋ + ⌊n/25⌋ + ⌊n/125⌋...", "Count factors of 2 (always more than 5s)", "Trailing zeros = count of 5s"],
+        tip: "Every factor of 10 = one 5 paired with one 2."
+      },
+      {
+        name: "Factor of n! Method",
+        when: "Questions about divisibility of factorials",
+        steps: ["Write out n! = n × (n−1) × ... × 1", "Check which primes appear", "All integers ≤ n are factors"],
+        tip: "n! is divisible by ALL integers from 1 to n."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Computation",
+        q: "How many trailing zeros does 25! have?",
+        identify: "Trailing zeros in factorial — count factor pairs of (2×5)",
+        method: "Count 5s in prime factorization",
+        steps: ["⌊25/5⌋=5, ⌊25/25⌋=1", "Total 5s = 5+1 = 6", "Answer: 6 trailing zeros"]
+      },
+      {
+        type: "Conceptual",
+        q: "Is 3,456 divisible by 9?",
+        identify: "Divisibility test — sum of digits",
+        method: "Add all digits, check if divisible by 9",
+        steps: ["3+4+5+6=18", "18÷9=2", "Answer: Yes, divisible by 9"]
+      },
+      {
+        type: "DS-style",
+        q: "Is n divisible by 12? (1) n is divisible by 4 (2) n is divisible by 6",
+        identify: "DS — 12=4×3=2²×3; need all prime factors",
+        method: "Check if both statements together give 2²×3",
+        steps: ["S1: divisible by 4=2²", "S2: divisible by 6=2×3", "Together: 2² and 3 both present → divisible by 12", "Answer: C"]
+      }
     ]
   },
   {
@@ -960,6 +1155,49 @@ const topics = [
           "Statement (2): \\(n=8=2^3\\) → factors \\(= 1,2,4,8\\) → 4. <strong>Sufficient.</strong>",
           "<strong>Answer: Either statement alone is sufficient (D)</strong>"
         ]
+      }
+    ],
+    methods: [
+      {
+        name: "Prime Factorization for GCF/LCM",
+        when: "Any GCF or LCM question",
+        steps: ["Prime factorize both numbers", "GCF = product of common prime factors with LOWER exponents", "LCM = product of ALL prime factors with HIGHER exponents"],
+        tip: "GCF × LCM = Product of the two numbers (for two numbers)."
+      },
+      {
+        name: "Listing Factors Method",
+        when: "Small numbers or when prime factorization seems slow",
+        steps: ["List all factor pairs of n: 1×n, 2×?, 3×?, ...", "Stop when factors start repeating", "Count total"],
+        tip: "Perfect squares have an ODD number of factors."
+      },
+      {
+        name: "Factor Count Formula",
+        when: "Counting total factors without listing",
+        steps: ["Prime factorize: n = p₁^a × p₂^b × p₃^c", "Total factors = (a+1)(b+1)(c+1)"],
+        tip: "Add 1 to each exponent because you include the 0 power (= 1)."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Computation",
+        q: "What is the GCF of 48 and 180?",
+        identify: "GCF — prime factorize both",
+        method: "Take lower exponents of common primes",
+        steps: ["48=2⁴×3, 180=2²×3²×5", "Common: 2² and 3¹", "GCF=4×3=12", "Answer: 12"]
+      },
+      {
+        type: "Computation",
+        q: "What is the LCM of 12 and 18?",
+        identify: "LCM — prime factorize",
+        method: "Take higher exponents of all primes",
+        steps: ["12=2²×3, 18=2×3²", "Take 2² and 3²", "LCM=4×9=36", "Answer: 36"]
+      },
+      {
+        type: "Conceptual",
+        q: "How many factors does 360 have?",
+        identify: "Factor counting — use formula",
+        method: "Prime factorize then apply (a+1)(b+1)(c+1)",
+        steps: ["360=2³×3²×5¹", "(3+1)(2+1)(1+1)=4×3×2=24", "Answer: 24 factors"]
       }
     ]
   },
@@ -1039,6 +1277,49 @@ const topics = [
           "Same base → add exponents: \\(x^{\\frac{1}{2} + \\frac{1}{3}} = x^{\\frac{3+2}{6}} = x^{5/6}\\)",
           "<strong>Answer: \\(x^{5/6}\\)</strong>"
         ]
+      }
+    ],
+    methods: [
+      {
+        name: "Simplify Radicals",
+        when: "Simplifying √n or ⁿ√x",
+        steps: ["Find largest perfect square factor", "Split: √(a×b)=√a×√b", "Take √ of the perfect square"],
+        tip: "Memorize perfect squares: 1,4,9,16,25,36,49,64,81,100,121,144."
+      },
+      {
+        name: "Rationalize the Denominator",
+        when: "A radical appears in the denominator",
+        steps: ["Multiply numerator and denominator by the radical", "Simplify"],
+        tip: "For a+√b in denominator, multiply by its conjugate (a−√b)."
+      },
+      {
+        name: "Exponent-Radical Conversion",
+        when: "Converting between radical and exponent form",
+        steps: ["√x = x^(1/2), ∛x = x^(1/3), ⁿ√x = x^(1/n)", "Apply exponent rules"],
+        tip: "Once in exponent form, all standard exponent rules apply."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Computation",
+        q: "Simplify: \\(\\sqrt{72}\\)",
+        identify: "Simplify radical — find largest perfect square factor",
+        method: "√(36×2)=√36×√2",
+        steps: ["72=36×2", "√72=√36×√2=6√2", "Answer: 6√2"]
+      },
+      {
+        type: "Algebra",
+        q: "If \\(\\sqrt{x+5}=4\\), what is x?",
+        identify: "Radical equation — square both sides",
+        method: "Isolate radical, then square",
+        steps: ["Square both sides: x+5=16", "x=11. Check: √16=4 ✓", "Answer: x=11"]
+      },
+      {
+        type: "Comparison",
+        q: "Which is greater: \\(\\sqrt{50}\\) or 7?",
+        identify: "Compare radical to integer",
+        method: "Square both sides (both positive)",
+        steps: ["√50 vs 7 → 50 vs 49", "50>49, so √50>7", "Answer: √50 is greater"]
       }
     ]
   },
@@ -1122,6 +1403,49 @@ const topics = [
           "<strong>Answer: 1</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "MADSPM Rules (Multiply-Add, Divide-Subtract, Power-Multiply)",
+        when: "Simplifying exponential expressions",
+        steps: ["M: xᵃ×xᵇ=xᵃ⁺ᵇ", "D: xᵃ÷xᵇ=xᵃ⁻ᵇ", "P: (xᵃ)ᵇ=xᵃˣᵇ"],
+        tip: "Never add or subtract expressions with different bases directly — only multiply/divide."
+      },
+      {
+        name: "Units Digit Pattern Method",
+        when: "'What is the units digit of x^n' questions",
+        steps: ["Find the units digit of the base", "Write out the cycle: 2→2,4,8,6,2,4,8,6...", "Use n mod (cycle length) to find position"],
+        tip: "Most bases cycle with length 4. Exceptions: 0,1,5,6 always give same units digit."
+      },
+      {
+        name: "Negative/Fractional Exponents",
+        when: "You see x⁻ⁿ or x^(p/q)",
+        steps: ["x⁻ⁿ = 1/xⁿ (flip to denominator)", "x^(p/q) = qth root of xᵖ", "Combine: x^(−p/q) = 1/(qth root of xᵖ)"],
+        tip: "Negative exponent = reciprocal; fractional exponent = root."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Computation",
+        q: "What is the units digit of \\(7^{53}\\)?",
+        identify: "Units digit of power — find cycle",
+        method: "7 cycles: 7,9,3,1,7,9,3,1 (length 4)",
+        steps: ["53 mod 4 = 1", "Position 1 in cycle = 7", "Answer: units digit is 7"]
+      },
+      {
+        type: "Simplification",
+        q: "Simplify: \\(\\frac{2^3 \\times 2^5}{2^4}\\)",
+        identify: "Exponential expression with same base",
+        method: "Multiply-Add then Divide-Subtract",
+        steps: ["Numerator: 2³×2⁵=2⁸", "2⁸÷2⁴=2⁴=16", "Answer: 16"]
+      },
+      {
+        type: "Algebra",
+        q: "If \\(3^x = 81\\), what is x?",
+        identify: "Exponential equation — express both sides as same base",
+        method: "Rewrite 81 as power of 3",
+        steps: ["81=3⁴", "3^x=3⁴ → x=4", "Answer: x=4"]
+      }
     ]
   },
   {
@@ -1183,6 +1507,49 @@ const topics = [
           "<strong>Answer: \\(3x(2x+3)\\)</strong>"
         ]
       }
+    ],
+    methods: [
+      {
+        name: "PEMDAS Order",
+        when: "Any complex arithmetic expression",
+        steps: ["P: Parentheses/brackets first, innermost first", "E: Exponents", "MD: Multiply and Divide left-to-right", "AS: Add and Subtract left-to-right"],
+        tip: "Multiplication and division have equal priority — go left to right, don't assume × comes before ÷."
+      },
+      {
+        name: "Nested Parentheses",
+        when: "Expressions have multiple layers of brackets",
+        steps: ["Start with innermost bracket", "Work outward layer by layer", "Replace each bracket with its value before moving out"],
+        tip: "Use different bracket types [()] to keep track: solve () first, then [], then {}."
+      },
+      {
+        name: "Distribution Before Addition",
+        when: "Parentheses have a multiplier outside",
+        steps: ["Multiply the outside term by EACH term inside", "Then combine like terms", "Then continue with PEMDAS"],
+        tip: "A negative sign outside parentheses changes the sign of EVERY term inside."
+      }
+    ],
+    typicalQuestions: [
+      {
+        type: "Computation",
+        q: "Evaluate: 3 + 4 × 2 − (6÷3)²",
+        identify: "Multi-operation — strict PEMDAS order",
+        method: "P→E→MD→AS",
+        steps: ["P: (6÷3)=2", "E: 2²=4", "MD: 4×2=8", "AS: 3+8−4=7", "Answer: 7"]
+      },
+      {
+        type: "Common Error",
+        q: "What is 12 ÷ 3 × 4?",
+        identify: "Division and multiplication at same level — left to right",
+        method: "L-to-R, don't multiply first",
+        steps: ["12÷3=4", "4×4=16", "Answer: 16 (NOT 1 — common mistake: doing × before ÷)"]
+      },
+      {
+        type: "Algebra",
+        q: "If a=2 and b=3, evaluate: a(b+a)² − b",
+        identify: "Expression evaluation — follow PEMDAS with substitution",
+        method: "Substitute then apply PEMDAS",
+        steps: ["b+a=5", "5²=25", "a×25=2×25=50", "50−b=50−3=47", "Answer: 47"]
+      }
     ]
   }
 ];
@@ -1233,6 +1600,36 @@ topics.forEach((topic, i) => {
     </div>
   `).join('');
 
+  const methodsHTML = topic.methods.map(m => `
+    <div class="method-item">
+      <div class="method-name">${m.name}</div>
+      <div class="method-when"><em>Use when:</em> ${m.when}</div>
+      <ol class="method-steps">
+        ${m.steps.map(s => `<li>${s}</li>`).join('')}
+      </ol>
+      ${m.tip ? `<div class="method-tip">💡 ${m.tip}</div>` : ''}
+    </div>
+  `).join('');
+
+  const tqHTML = topic.typicalQuestions.map((tq, j) => `
+    <div class="tq-item" id="tq-${i}-${j}">
+      <div class="tq-header" onclick="toggleTQ('tq-${i}-${j}')">
+        <div class="tq-type-badge">${tq.type}</div>
+        <div class="tq-question">${tq.q}</div>
+        <div class="tq-cta">Tap to see how to solve ▼</div>
+      </div>
+      <div class="tq-solution">
+        <div class="tq-sol-section"><strong>🔍 Identify:</strong> ${tq.identify}</div>
+        <div class="tq-sol-section"><strong>📐 Method:</strong> ${tq.method}</div>
+        <div class="tq-sol-section"><strong>📋 Steps:</strong>
+          <ol class="tq-steps">
+            ${tq.steps.map(s => `<li>${s}</li>`).join('')}
+          </ol>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
   card.innerHTML = `
     <div class="card-header" onclick="toggleCard(${i})">
       <div class="card-icon">${topic.icon}</div>
@@ -1247,6 +1644,8 @@ topics.forEach((topic, i) => {
       <div class="detail-tabs">
         <button class="tab-btn active" onclick="switchTab(event,${i},'eq')">📐 Equations</button>
         <button class="tab-btn" onclick="switchTab(event,${i},'detail')">📖 Rules</button>
+        <button class="tab-btn" onclick="switchTab(event,${i},'methods')">🔧 Key Methods</button>
+        <button class="tab-btn" onclick="switchTab(event,${i},'tq')">❓ Typical Questions</button>
         <button class="tab-btn" onclick="switchTab(event,${i},'practice')">✏️ Practice</button>
       </div>
       <div class="tab-content active" id="tab-eq-${i}">
@@ -1254,6 +1653,12 @@ topics.forEach((topic, i) => {
       </div>
       <div class="tab-content" id="tab-detail-${i}">
         ${detailHTML}
+      </div>
+      <div class="tab-content" id="tab-methods-${i}">
+        <div class="method-list">${methodsHTML}</div>
+      </div>
+      <div class="tab-content" id="tab-tq-${i}">
+        <div class="tq-list">${tqHTML}</div>
       </div>
       <div class="tab-content" id="tab-practice-${i}">
         <div class="practice-list">${practiceHTML}</div>
@@ -1295,6 +1700,11 @@ function switchTab(e, i, tab) {
   card.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   e.target.classList.add('active');
   document.getElementById(`tab-${tab}-${i}`).classList.add('active');
+}
+
+function toggleTQ(id) {
+  const item = document.getElementById(id);
+  item.classList.toggle('open');
 }
 
 function toggleAnswer(i, j) {

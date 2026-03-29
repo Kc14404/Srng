@@ -16,7 +16,7 @@
     })">
   </script>
   <style>
-    /* ── BASE (Deep Space — default) ── */
+    /* ── BASE ── */
     :root {
       --bg: #0f1117;
       --surface: #1a1d27;
@@ -27,91 +27,181 @@
       --muted: #8b90a7;
       --border: #2e3248;
       --radius: 12px;
-      --header-grad-a: #1a1d27;
-      --header-grad-b: #0f1117;
+      --font: 'Segoe UI', system-ui, sans-serif;
+      --shadow: 0 4px 20px rgba(108,99,255,0.12);
+      --glow: rgba(108,99,255,0.25);
+      --body-bg: #0f1117;
+      --body-bg-image: radial-gradient(ellipse at 20% 50%, rgba(108,99,255,0.05) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(0,212,170,0.05) 0%, transparent 60%);
+      --header-bg: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+      --card-border: 1px solid var(--border);
     }
 
-    /* ── THEMES ── */
+    /* ── DEEP SPACE (default) ── */
     [data-theme="deep-space"] {
       --bg: #0f1117; --surface: #1a1d27; --card: #22263a;
       --accent: #6c63ff; --accent2: #00d4aa;
       --text: #e8eaf0; --muted: #8b90a7; --border: #2e3248;
-      --header-grad-a: #1a1d27; --header-grad-b: #0f1117;
+      --radius: 12px;
+      --font: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+      --shadow: 0 4px 24px rgba(108,99,255,0.15);
+      --glow: rgba(108,99,255,0.3);
+      --body-bg: #0f1117;
+      --body-bg-image: radial-gradient(ellipse at 15% 50%, rgba(108,99,255,0.07) 0%, transparent 55%), radial-gradient(ellipse at 85% 15%, rgba(0,212,170,0.07) 0%, transparent 55%);
+      --header-bg: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+      --card-border: 1px solid rgba(108,99,255,0.2);
     }
+
+    /* ── MIDNIGHT SCHOLAR ── */
     [data-theme="midnight-scholar"] {
       --bg: #0c0c0f; --surface: #161618; --card: #1f1f24;
       --accent: #f59e0b; --accent2: #fb923c;
       --text: #f0ede6; --muted: #9a9080; --border: #2a2a30;
-      --header-grad-a: #161618; --header-grad-b: #0c0c0f;
+      --radius: 10px;
+      --font: 'Playfair Display', 'Georgia', serif;
+      --shadow: 0 4px 24px rgba(245,158,11,0.12);
+      --glow: rgba(245,158,11,0.25);
+      --body-bg: #0c0c0f;
+      --body-bg-image: radial-gradient(ellipse at 50% 0%, rgba(245,158,11,0.06) 0%, transparent 60%), radial-gradient(ellipse at 100% 100%, rgba(251,146,60,0.04) 0%, transparent 50%);
+      --header-bg: linear-gradient(180deg, #1a1810 0%, #0c0c0f 100%);
+      --card-border: 1px solid rgba(245,158,11,0.15);
     }
+
+    /* ── ELECTRIC BLUE ── */
     [data-theme="electric-blue"] {
       --bg: #050d1a; --surface: #0a1628; --card: #0f1f3d;
       --accent: #3b82f6; --accent2: #06b6d4;
       --text: #e0eeff; --muted: #7090b0; --border: #1e3a5f;
-      --header-grad-a: #0a1628; --header-grad-b: #050d1a;
+      --radius: 6px;
+      --font: 'Share Tech Mono', 'Courier New', monospace;
+      --shadow: 0 2px 12px rgba(59,130,246,0.25), 0 0 0 1px rgba(59,130,246,0.1);
+      --glow: rgba(59,130,246,0.4);
+      --body-bg: #050d1a;
+      --body-bg-image: linear-gradient(0deg, rgba(59,130,246,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+      --header-bg: linear-gradient(180deg, #0d1f3a 0%, #050d1a 100%);
+      --card-border: 1px solid rgba(59,130,246,0.2);
     }
+
+    /* ── SAKURA ── */
     [data-theme="sakura"] {
       --bg: #130a0f; --surface: #1f1016; --card: #2a1520;
       --accent: #f472b6; --accent2: #e879f9;
-      --text: #f9e8f0; --muted: #a07080; --border: #3d1a2a;
-      --header-grad-a: #1f1016; --header-grad-b: #130a0f;
+      --text: #f9e8f0; --muted: #b07090; --border: #3d1a2a;
+      --radius: 20px;
+      --font: 'Nunito', 'Verdana', sans-serif;
+      --shadow: 0 8px 32px rgba(244,114,182,0.2);
+      --glow: rgba(244,114,182,0.35);
+      --body-bg: #130a0f;
+      --body-bg-image: radial-gradient(circle at 20% 80%, rgba(244,114,182,0.08) 0%, transparent 40%), radial-gradient(circle at 80% 20%, rgba(232,121,249,0.07) 0%, transparent 40%), radial-gradient(circle at 50% 50%, rgba(244,114,182,0.03) 0%, transparent 60%);
+      --header-bg: linear-gradient(135deg, #2a1520 0%, #1a0d14 50%, #130a0f 100%);
+      --card-border: 1px solid rgba(244,114,182,0.25);
     }
+
+    /* ── NEON CANDY ── */
     [data-theme="neon-candy"] {
       --bg: #0a0a12; --surface: #12121e; --card: #1a1a2c;
       --accent: #ff6b9d; --accent2: #00f5ff;
       --text: #f0f0ff; --muted: #8080aa; --border: #2a2a40;
-      --header-grad-a: #12121e; --header-grad-b: #0a0a12;
+      --radius: 14px;
+      --font: 'Fredoka One', 'Trebuchet MS', sans-serif;
+      --shadow: 0 0 20px rgba(255,107,157,0.15), 0 0 40px rgba(0,245,255,0.08);
+      --glow: rgba(255,107,157,0.4);
+      --body-bg: #0a0a12;
+      --body-bg-image: radial-gradient(circle at 30% 70%, rgba(255,107,157,0.08) 0%, transparent 45%), radial-gradient(circle at 70% 30%, rgba(0,245,255,0.06) 0%, transparent 45%);
+      --header-bg: linear-gradient(135deg, #1a1030 0%, #0a0a12 100%);
+      --card-border: 1px solid rgba(255,107,157,0.2);
     }
+
+    /* ── SUNSET ── */
     [data-theme="sunset"] {
       --bg: #0f080a; --surface: #1a1015; --card: #241820;
       --accent: #f97316; --accent2: #a855f7;
       --text: #f5eaf0; --muted: #9a7080; --border: #3a1a28;
-      --header-grad-a: #1a1015; --header-grad-b: #0f080a;
+      --radius: 14px;
+      --font: 'Raleway', 'Trebuchet MS', sans-serif;
+      --shadow: 0 4px 24px rgba(249,115,22,0.15);
+      --glow: rgba(249,115,22,0.3);
+      --body-bg: #0f080a;
+      --body-bg-image: linear-gradient(160deg, rgba(168,85,247,0.08) 0%, transparent 40%), linear-gradient(340deg, rgba(249,115,22,0.08) 0%, transparent 40%);
+      --header-bg: linear-gradient(135deg, #2a1020 0%, #1a0c10 50%, #0f080a 100%);
+      --card-border: 1px solid rgba(249,115,22,0.15);
     }
+
+    /* ── LAVENDER DREAM ── */
     [data-theme="lavender-dream"] {
       --bg: #0d0b14; --surface: #16122a; --card: #1e1838;
       --accent: #a78bfa; --accent2: #f0abfc;
       --text: #ede8ff; --muted: #8878aa; --border: #2e2050;
-      --header-grad-a: #16122a; --header-grad-b: #0d0b14;
+      --radius: 16px;
+      --font: 'Quicksand', 'Century Gothic', sans-serif;
+      --shadow: 0 8px 40px rgba(167,139,250,0.15);
+      --glow: rgba(167,139,250,0.3);
+      --body-bg: #0d0b14;
+      --body-bg-image: radial-gradient(ellipse at 30% 30%, rgba(167,139,250,0.1) 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, rgba(240,171,252,0.08) 0%, transparent 50%);
+      --header-bg: linear-gradient(160deg, #1e1838 0%, #0d0b14 100%);
+      --card-border: 1px solid rgba(167,139,250,0.2);
     }
+
+    /* ── FOREST ── */
     [data-theme="forest"] {
       --bg: #060e08; --surface: #0d1a0f; --card: #132016;
       --accent: #22c55e; --accent2: #86efac;
       --text: #e8f5ec; --muted: #6a9070; --border: #1a3a20;
-      --header-grad-a: #0d1a0f; --header-grad-b: #060e08;
+      --radius: 10px;
+      --font: 'Lora', 'Georgia', serif;
+      --shadow: 0 4px 20px rgba(34,197,94,0.1);
+      --glow: rgba(34,197,94,0.25);
+      --body-bg: #060e08;
+      --body-bg-image: radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.06) 0%, transparent 55%), radial-gradient(ellipse at 0% 100%, rgba(134,239,172,0.05) 0%, transparent 50%);
+      --header-bg: linear-gradient(180deg, #0d1a0f 0%, #060e08 100%);
+      --card-border: 1px solid rgba(34,197,94,0.15);
     }
+
+    /* ── OCEAN DRIFT ── */
     [data-theme="ocean-drift"] {
       --bg: #040c14; --surface: #081828; --card: #0d2540;
       --accent: #22d3ee; --accent2: #60a5fa;
       --text: #e0f5ff; --muted: #6090aa; --border: #103050;
-      --header-grad-a: #081828; --header-grad-b: #040c14;
+      --radius: 12px;
+      --font: 'DM Sans', 'Helvetica Neue', sans-serif;
+      --shadow: 0 4px 24px rgba(34,211,238,0.12);
+      --glow: rgba(34,211,238,0.3);
+      --body-bg: #040c14;
+      --body-bg-image: radial-gradient(ellipse at 50% 100%, rgba(34,211,238,0.07) 0%, transparent 55%), radial-gradient(ellipse at 100% 0%, rgba(96,165,250,0.06) 0%, transparent 50%);
+      --header-bg: linear-gradient(180deg, #081828 0%, #040c14 100%);
+      --card-border: 1px solid rgba(34,211,238,0.15);
     }
+
+    /* ── CLEAN LIGHT ── */
     [data-theme="clean-light"] {
       --bg: #f8fafc; --surface: #f1f5f9; --card: #ffffff;
       --accent: #4f46e5; --accent2: #0891b2;
       --text: #1e293b; --muted: #64748b; --border: #e2e8f0;
-      --header-grad-a: #f1f5f9; --header-grad-b: #e2e8f0;
+      --radius: 10px;
+      --font: 'Inter', 'Helvetica Neue', sans-serif;
+      --shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+      --glow: rgba(79,70,229,0.15);
+      --body-bg: #f8fafc;
+      --body-bg-image: none;
+      --header-bg: linear-gradient(180deg, #f1f5f9 0%, #e9eef5 100%);
+      --card-border: 1px solid #e2e8f0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
+      font-family: var(--font);
+      background-color: var(--body-bg);
+      background-image: var(--body-bg-image);
       color: var(--text);
       min-height: 100vh;
     }
+    [data-theme="electric-blue"] body {
+      background-size: 40px 40px;
+    }
 
     header {
-      background: linear-gradient(135deg, var(--header-grad-a) 0%, var(--header-grad-b) 100%);
+      background: var(--header-bg);
       border-bottom: 1px solid var(--border);
       padding: 32px 24px 28px;
       text-align: center;
-      position: relative;
-    }
-    .theme-picker {
-      position: absolute;
-      top: 50%;
-      right: 24px;
-      transform: translateY(-50%);
     }
     header h1 {
       font-size: 2rem;
@@ -134,14 +224,15 @@
 
     .topic-card {
       background: var(--card);
-      border: 1px solid var(--border);
+      border: var(--card-border);
       border-radius: var(--radius);
+      box-shadow: var(--shadow);
       cursor: pointer;
       transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
       overflow: hidden;
       min-width: 0;
     }
-    .topic-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 8px 30px rgba(108,99,255,0.15); }
+    .topic-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px var(--glow); }
     .topic-card.active { border-color: var(--accent2); }
 
     .card-header {
@@ -453,110 +544,156 @@
       header { display: none; }
     }
 
-    /* ── THEME PICKER ── */
-    .theme-trigger {
+    /* ── SETTINGS BUTTON ── */
+    .settings-btn {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 900;
+      box-shadow: var(--shadow);
+      transition: color 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .settings-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--glow);
+      transform: rotate(30deg);
+    }
+
+    /* ── SETTINGS OVERLAY ── */
+    .settings-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 950;
+      backdrop-filter: blur(2px);
+    }
+    .settings-overlay.open { display: block; }
+
+    /* ── SETTINGS PANEL ── */
+    .settings-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 300px;
+      max-width: 90vw;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      z-index: 1000;
+      padding: 0;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      overflow-y: auto;
+      box-shadow: -8px 0 40px rgba(0,0,0,0.3);
+    }
+    .settings-panel.open { transform: translateX(0); }
+
+    .settings-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+    }
+    .settings-panel-header h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
       display: flex;
       align-items: center;
       gap: 8px;
-      background: var(--card);
+    }
+    .settings-close {
+      background: none;
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 6px 14px 6px 10px;
-      cursor: pointer;
-      color: var(--text);
-      font-size: 0.85rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      user-select: none;
-      white-space: nowrap;
-    }
-    .theme-trigger:hover {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(108,99,255,0.1);
-    }
-    .theme-trigger .dots {
-      display: flex;
-      gap: 3px;
-    }
-    .theme-trigger .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      display: inline-block;
-    }
-    .theme-trigger .chevron {
-      margin-left: 2px;
-      font-size: 0.7rem;
-      opacity: 0.6;
-      transition: transform 0.2s;
-    }
-    .theme-picker.open .chevron { transform: rotate(180deg); }
-
-    .theme-dropdown {
-      display: none;
-      position: absolute;
-      top: calc(100% + 8px);
-      right: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 8px;
-      min-width: 210px;
-      z-index: 1000;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-      animation: dropIn 0.15s ease;
-    }
-    @keyframes dropIn {
-      from { opacity: 0; transform: translateY(-6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .theme-picker.open .theme-dropdown { display: block; }
-
-    .theme-group-label {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      border-radius: 6px;
       color: var(--muted);
-      padding: 6px 10px 4px;
-      margin-top: 4px;
-    }
-    .theme-group-label:first-child { margin-top: 0; }
-
-    .theme-option {
+      font-size: 0.9rem;
+      width: 28px;
+      height: 28px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 10px;
-      border-radius: 9px;
+      justify-content: center;
       cursor: pointer;
-      transition: background 0.15s;
-      color: var(--text);
-      font-size: 0.875rem;
+      transition: color 0.2s, border-color 0.2s;
     }
-    .theme-option:hover { background: var(--card); }
-    .theme-option.selected {
-      background: var(--card);
-      font-weight: 600;
+    .settings-close:hover { color: var(--text); border-color: var(--accent); }
+
+    .settings-section { padding: 16px 20px; }
+    .settings-section + .settings-section { border-top: 1px solid var(--border); }
+    .settings-section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
     }
-    .theme-option .swatch {
+
+    /* ── THEME GRID ── */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .theme-tile {
       display: flex;
-      gap: 3px;
-      flex-shrink: 0;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 8px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      background: var(--card);
+      text-align: center;
     }
-    .theme-option .swatch span {
-      width: 12px;
-      height: 12px;
+    .theme-tile:hover { border-color: var(--border); }
+    .theme-tile.selected { border-color: var(--accent); }
+    .theme-tile .swatch-row {
+      display: flex;
+      gap: 4px;
+    }
+    .theme-tile .swatch-row span {
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.1);
       display: block;
-      border: 1px solid rgba(255,255,255,0.08);
     }
-    .theme-option .check {
-      margin-left: auto;
-      font-size: 0.75rem;
-      color: var(--accent2);
-      opacity: 0;
+    .theme-tile .tile-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.2;
     }
-    .theme-option.selected .check { opacity: 1; }
+    .theme-tile.selected .tile-label { color: var(--accent); font-weight: 600; }
+
+    /* ── FUTURE SETTINGS STUB ── */
+    .settings-stub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+      text-align: center;
+      padding: 8px 0;
+    }
   </style>
   <script src="/js/loader.js"></script>
 </head>
@@ -573,69 +710,6 @@
 <header>
   <h1>GMAT Focus — Data Insights</h1>
   <p>Click any topic to explore frameworks, rules, and practice problems.</p>
-  <div class="theme-picker" id="themePicker">
-    <div class="theme-trigger" id="themeTrigger">
-      <span class="dots">
-        <span class="dot" id="triggerDot1"></span>
-        <span class="dot" id="triggerDot2"></span>
-      </span>
-      <span id="triggerLabel">Theme</span>
-      <span class="chevron">▼</span>
-    </div>
-    <div class="theme-dropdown" id="themeDropdown">
-
-      <div class="theme-group-label">Dark / Focus</div>
-      <div class="theme-option" data-theme="deep-space" data-c1="#6c63ff" data-c2="#00d4aa" data-label="Deep Space">
-        <div class="swatch"><span style="background:#6c63ff"></span><span style="background:#00d4aa"></span></div>
-        Deep Space <span class="check">✓</span>
-      </div>
-      <div class="theme-option" data-theme="midnight-scholar" data-c1="#f59e0b" data-c2="#fb923c" data-label="Midnight Scholar">
-        <div class="swatch"><span style="background:#f59e0b"></span><span style="background:#fb923c"></span></div>
-        Midnight Scholar <span class="check">✓</span>
-      </div>
-      <div class="theme-option" data-theme="electric-blue" data-c1="#3b82f6" data-c2="#06b6d4" data-label="Electric Blue">
-        <div class="swatch"><span style="background:#3b82f6"></span><span style="background:#06b6d4"></span></div>
-        Electric Blue <span class="check">✓</span>
-      </div>
-
-      <div class="theme-group-label">Cutesy</div>
-      <div class="theme-option" data-theme="sakura" data-c1="#f472b6" data-c2="#e879f9" data-label="🌸 Sakura">
-        <div class="swatch"><span style="background:#f472b6"></span><span style="background:#e879f9"></span></div>
-        🌸 Sakura <span class="check">✓</span>
-      </div>
-      <div class="theme-option" data-theme="neon-candy" data-c1="#ff6b9d" data-c2="#00f5ff" data-label="🍬 Neon Candy">
-        <div class="swatch"><span style="background:#ff6b9d"></span><span style="background:#00f5ff"></span></div>
-        🍬 Neon Candy <span class="check">✓</span>
-      </div>
-
-      <div class="theme-group-label">Colorful</div>
-      <div class="theme-option" data-theme="sunset" data-c1="#f97316" data-c2="#a855f7" data-label="🌅 Sunset">
-        <div class="swatch"><span style="background:#f97316"></span><span style="background:#a855f7"></span></div>
-        🌅 Sunset <span class="check">✓</span>
-      </div>
-      <div class="theme-option" data-theme="lavender-dream" data-c1="#a78bfa" data-c2="#f0abfc" data-label="💜 Lavender Dream">
-        <div class="swatch"><span style="background:#a78bfa"></span><span style="background:#f0abfc"></span></div>
-        💜 Lavender Dream <span class="check">✓</span>
-      </div>
-
-      <div class="theme-group-label">Friendly</div>
-      <div class="theme-option" data-theme="forest" data-c1="#22c55e" data-c2="#86efac" data-label="🌿 Forest">
-        <div class="swatch"><span style="background:#22c55e"></span><span style="background:#86efac"></span></div>
-        🌿 Forest <span class="check">✓</span>
-      </div>
-      <div class="theme-option" data-theme="ocean-drift" data-c1="#22d3ee" data-c2="#60a5fa" data-label="🌊 Ocean Drift">
-        <div class="swatch"><span style="background:#22d3ee"></span><span style="background:#60a5fa"></span></div>
-        🌊 Ocean Drift <span class="check">✓</span>
-      </div>
-
-      <div class="theme-group-label">Light</div>
-      <div class="theme-option" data-theme="clean-light" data-c1="#4f46e5" data-c2="#0891b2" data-label="☀️ Clean Light">
-        <div class="swatch"><span style="background:#4f46e5"></span><span style="background:#0891b2"></span></div>
-        ☀️ Clean Light <span class="check">✓</span>
-      </div>
-
-    </div>
-  </div>
 </header>
 
 <div class="hub topics-grid" id="hub"></div>
@@ -927,65 +1001,157 @@ function initDesktopLayout() {
   }
 }
 </script>
+<!-- Settings Button -->
+<button class="settings-btn" id="settingsBtn" title="Settings">⚙</button>
+
+<!-- Settings Overlay -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+
+<!-- Settings Panel -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-panel-header">
+    <h3>⚙ Settings</h3>
+    <button class="settings-close" id="settingsClose">✕</button>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-title">Appearance</div>
+    <div class="theme-grid" id="themeGrid">
+
+      <div class="theme-tile" data-theme="deep-space">
+        <div class="swatch-row"><span style="background:#6c63ff"></span><span style="background:#00d4aa"></span><span style="background:#0f1117"></span></div>
+        <div class="tile-label">🌌 Deep Space</div>
+      </div>
+
+      <div class="theme-tile" data-theme="midnight-scholar">
+        <div class="swatch-row"><span style="background:#f59e0b"></span><span style="background:#fb923c"></span><span style="background:#0c0c0f"></span></div>
+        <div class="tile-label">🌙 Midnight Scholar</div>
+      </div>
+
+      <div class="theme-tile" data-theme="electric-blue">
+        <div class="swatch-row"><span style="background:#3b82f6"></span><span style="background:#06b6d4"></span><span style="background:#050d1a"></span></div>
+        <div class="tile-label">⚡ Electric Blue</div>
+      </div>
+
+      <div class="theme-tile" data-theme="sakura">
+        <div class="swatch-row"><span style="background:#f472b6"></span><span style="background:#e879f9"></span><span style="background:#130a0f"></span></div>
+        <div class="tile-label">🌸 Sakura</div>
+      </div>
+
+      <div class="theme-tile" data-theme="neon-candy">
+        <div class="swatch-row"><span style="background:#ff6b9d"></span><span style="background:#00f5ff"></span><span style="background:#0a0a12"></span></div>
+        <div class="tile-label">🍬 Neon Candy</div>
+      </div>
+
+      <div class="theme-tile" data-theme="sunset">
+        <div class="swatch-row"><span style="background:#f97316"></span><span style="background:#a855f7"></span><span style="background:#0f080a"></span></div>
+        <div class="tile-label">🌅 Sunset</div>
+      </div>
+
+      <div class="theme-tile" data-theme="lavender-dream">
+        <div class="swatch-row"><span style="background:#a78bfa"></span><span style="background:#f0abfc"></span><span style="background:#0d0b14"></span></div>
+        <div class="tile-label">💜 Lavender Dream</div>
+      </div>
+
+      <div class="theme-tile" data-theme="forest">
+        <div class="swatch-row"><span style="background:#22c55e"></span><span style="background:#86efac"></span><span style="background:#060e08"></span></div>
+        <div class="tile-label">🌿 Forest</div>
+      </div>
+
+      <div class="theme-tile" data-theme="ocean-drift">
+        <div class="swatch-row"><span style="background:#22d3ee"></span><span style="background:#60a5fa"></span><span style="background:#040c14"></span></div>
+        <div class="tile-label">🌊 Ocean Drift</div>
+      </div>
+
+      <div class="theme-tile" data-theme="clean-light">
+        <div class="swatch-row"><span style="background:#4f46e5"></span><span style="background:#0891b2"></span><span style="background:#f8fafc;border:1px solid #ccc"></span></div>
+        <div class="tile-label">☀️ Clean Light</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-title">More settings</div>
+    <div class="settings-stub">Font size, layout options coming soon</div>
+  </div>
+</div>
+
 <script>
 (function() {
   const THEMES = {
-    'deep-space':       { c1: '#6c63ff', c2: '#00d4aa', label: 'Deep Space' },
-    'midnight-scholar': { c1: '#f59e0b', c2: '#fb923c', label: 'Midnight Scholar' },
-    'electric-blue':    { c1: '#3b82f6', c2: '#06b6d4', label: 'Electric Blue' },
-    'sakura':           { c1: '#f472b6', c2: '#e879f9', label: '🌸 Sakura' },
-    'neon-candy':       { c1: '#ff6b9d', c2: '#00f5ff', label: '🍬 Neon Candy' },
-    'sunset':           { c1: '#f97316', c2: '#a855f7', label: '🌅 Sunset' },
-    'lavender-dream':   { c1: '#a78bfa', c2: '#f0abfc', label: '💜 Lavender Dream' },
-    'forest':           { c1: '#22c55e', c2: '#86efac', label: '🌿 Forest' },
-    'ocean-drift':      { c1: '#22d3ee', c2: '#60a5fa', label: '🌊 Ocean Drift' },
-    'clean-light':      { c1: '#4f46e5', c2: '#0891b2', label: '☀️ Clean Light' },
+    'deep-space':       { c1:'#6c63ff', c2:'#00d4aa', font:'Space+Grotesk:wght@400;600;700', bgSize: null },
+    'midnight-scholar': { c1:'#f59e0b', c2:'#fb923c', font:'Playfair+Display:wght@400;600;700', bgSize: null },
+    'electric-blue':    { c1:'#3b82f6', c2:'#06b6d4', font:'Share+Tech+Mono', bgSize: '40px 40px' },
+    'sakura':           { c1:'#f472b6', c2:'#e879f9', font:'Nunito:wght@400;600;700', bgSize: null },
+    'neon-candy':       { c1:'#ff6b9d', c2:'#00f5ff', font:'Fredoka+One', bgSize: null },
+    'sunset':           { c1:'#f97316', c2:'#a855f7', font:'Raleway:wght@400;600;700', bgSize: null },
+    'lavender-dream':   { c1:'#a78bfa', c2:'#f0abfc', font:'Quicksand:wght@400;600;700', bgSize: null },
+    'forest':           { c1:'#22c55e', c2:'#86efac', font:'Lora:wght@400;600;700', bgSize: null },
+    'ocean-drift':      { c1:'#22d3ee', c2:'#60a5fa', font:'DM+Sans:wght@400;600;700', bgSize: null },
+    'clean-light':      { c1:'#4f46e5', c2:'#0891b2', font:'Inter:wght@400;600;700', bgSize: null },
   };
+
+  function loadFont(id, query) {
+    if (document.querySelector('link[data-font="'+id+'"]')) return;
+    const l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family='+query+'&display=swap';
+    l.setAttribute('data-font', id);
+    document.head.appendChild(l);
+  }
 
   function applyTheme(id) {
     const t = THEMES[id] || THEMES['deep-space'];
     document.documentElement.setAttribute('data-theme', id);
     localStorage.setItem('srng-theme', id);
-
-    // Update trigger dots and label
-    const d1 = document.getElementById('triggerDot1');
-    const d2 = document.getElementById('triggerDot2');
-    const lbl = document.getElementById('triggerLabel');
-    if (d1) d1.style.background = t.c1;
-    if (d2) d2.style.background = t.c2;
-    if (lbl) lbl.textContent = t.label;
-
-    // Update selected state
-    document.querySelectorAll('.theme-option').forEach(el => {
+    // Load font
+    if (t.font) loadFont(id, t.font);
+    // Background size for grid themes
+    if (t.bgSize) {
+      document.body.style.backgroundSize = t.bgSize;
+    } else {
+      document.body.style.backgroundSize = '';
+    }
+    // Update tile selected state
+    document.querySelectorAll('.theme-tile').forEach(el => {
       el.classList.toggle('selected', el.dataset.theme === id);
     });
   }
 
-  // Init on load
+  // Apply saved theme immediately (before paint)
   const saved = localStorage.getItem('srng-theme') || 'deep-space';
   applyTheme(saved);
 
-  // Picker toggle
-  const picker = document.getElementById('themePicker');
-  const trigger = document.getElementById('themeTrigger');
-  if (trigger) {
-    trigger.addEventListener('click', function(e) {
-      e.stopPropagation();
-      picker.classList.toggle('open');
-    });
+  // Settings panel
+  const btn = document.getElementById('settingsBtn');
+  const panel = document.getElementById('settingsPanel');
+  const overlay = document.getElementById('settingsOverlay');
+  const closeBtn = document.getElementById('settingsClose');
+
+  function openSettings() {
+    panel.classList.add('open');
+    overlay.classList.add('open');
+  }
+  function closeSettings() {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
   }
 
-  // Option click
-  document.querySelectorAll('.theme-option').forEach(el => {
+  if (btn) btn.addEventListener('click', openSettings);
+  if (closeBtn) closeBtn.addEventListener('click', closeSettings);
+  if (overlay) overlay.addEventListener('click', closeSettings);
+
+  // Theme tile clicks
+  document.querySelectorAll('.theme-tile').forEach(el => {
     el.addEventListener('click', function() {
       applyTheme(this.dataset.theme);
-      picker.classList.remove('open');
     });
   });
 
-  // Close on outside click
-  document.addEventListener('click', function() {
-    if (picker) picker.classList.remove('open');
+  // Keyboard close
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeSettings();
   });
 })();
 </script>

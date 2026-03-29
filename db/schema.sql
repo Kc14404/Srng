@@ -63,11 +63,25 @@ CREATE TABLE IF NOT EXISTS methods (
 );
 
 -- ============================================================
+-- PASSAGES (RC reading passages)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS passages (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  text TEXT NOT NULL,
+  source_type TEXT NOT NULL,        -- 'Science', 'Business', 'Social Science', 'Humanities'
+  word_count INT,
+  difficulty TEXT DEFAULT 'Medium',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================================
 -- QUESTIONS (Typical Questions tab — 2-layer expand)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS questions (
   id SERIAL PRIMARY KEY,
   topic_id INT REFERENCES topics(id) ON DELETE CASCADE,
+  passage_id INT REFERENCES passages(id), -- RC passage link
   subtype TEXT NOT NULL,           -- e.g. "Rate-Time: Catch-Up Problem"
   q_text TEXT NOT NULL,            -- full question with (A)-(E) choices
   question_type TEXT,              -- what GMAT tests (1 sentence)
@@ -116,6 +130,7 @@ ON CONFLICT (slug) DO NOTHING;
 -- ============================================================
 ALTER TABLE sections      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE topics        ENABLE ROW LEVEL SECURITY;
+ALTER TABLE passages      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE equations     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rules         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE methods       ENABLE ROW LEVEL SECURITY;
@@ -125,6 +140,7 @@ ALTER TABLE practice_items ENABLE ROW LEVEL SECURITY;
 -- Public read access (anon key can SELECT)
 CREATE POLICY "public_read_sections"       ON sections       FOR SELECT USING (true);
 CREATE POLICY "public_read_topics"         ON topics         FOR SELECT USING (true);
+CREATE POLICY "public_read_passages"       ON passages       FOR SELECT USING (true);
 CREATE POLICY "public_read_equations"      ON equations      FOR SELECT USING (true);
 CREATE POLICY "public_read_rules"          ON rules          FOR SELECT USING (true);
 CREATE POLICY "public_read_methods"        ON methods        FOR SELECT USING (true);

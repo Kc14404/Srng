@@ -560,6 +560,9 @@
         padding: 16px;
         border-bottom: 1px solid var(--border);
       }
+      .dt-rail-logo-row { display: flex; align-items: center; justify-content: space-between; }
+      .dt-rail-gear { background: none; border: none; color: var(--muted); font-size: 1rem; cursor: pointer; padding: 4px 6px; border-radius: 6px; transition: color 0.2s, background 0.15s; line-height: 1; }
+      .dt-rail-gear:hover { color: var(--accent); background: var(--border); }
       .dt-rail-logo {
         font-size: 0.85rem; font-weight: 700;
         color: var(--accent);
@@ -1018,7 +1021,7 @@ function buildRailHTML(topics) {
   var isDI = path.endsWith('di.html');
   var isLog = path.endsWith('log.html');
   var html = '<div class="dt-rail-section">';
-  html += '<div class="dt-rail-logo">\u26A1 GMAT Hub</div>';
+  html += '<div class="dt-rail-logo-row"><div class="dt-rail-logo">\u26A1 GMAT Hub</div><button class="dt-rail-gear" id="dt-rail-settings" title="Settings">&#9881;</button></div>';
   html += '<div class="dt-rail-nav">';
   html += '<a href="index.html" class="dt-rail-link'+(isIndex?' active':'')+'"><span>\uD83D\uDCD0</span> Math</a>';
   html += '<a href="verbal.html" class="dt-rail-link'+(isVerbal?' active':'')+'"><span>\uD83D\uDCAC</span> Verbal</a>';
@@ -1030,7 +1033,7 @@ function buildRailHTML(topics) {
     html += '<div class="dt-topic-item" data-idx="'+i+'"><span class="dt-topic-icon">'+(t.icon||'')+'</span><span>'+t.title+'</span></div>';
   });
   html += '</div>';
-  html += '<div class="dt-rail-footer"><button id="dt-rail-analyzer" class="dt-footer-btn">\uD83D\uDD0D Analyzer</button><button id=\"dt-rail-settings\" class=\"dt-footer-btn\" style=\"margin-top:6px\">⚙ Settings</button></div>';
+  html += '<div class="dt-rail-footer"><button id="dt-rail-analyzer" class="dt-footer-btn">\uD83D\uDD0D Analyzer</button></div>';
   return html;
 }
 

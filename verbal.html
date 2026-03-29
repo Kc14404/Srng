@@ -765,6 +765,7 @@
     }
   </style>
   <script src="/js/loader.js"></script>
+<script src="/js/glossary.js"></script>
 </head>
 <body>
 
@@ -972,6 +973,7 @@ async function toggleCard(i) {
           throwOnError: false
         });
       }
+      if (window.applyGlossary) applyGlossary(panel);
     } catch(err) {
       panel.innerHTML = `<div style="padding:20px;color:#f87171">Failed to load: ${err.message}</div>`;
     }
@@ -1082,6 +1084,7 @@ async function dtSelectTopic(i) {
         throwOnError: false
       });
     }
+    if (window.applyGlossary) applyGlossary(detail);
   } catch(err) {
     detail.innerHTML = `<div style="padding:20px;color:#f87171">Failed to load: ${err.message}</div>`;
   }

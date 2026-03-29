@@ -1051,11 +1051,11 @@ applyFilters();
   const overlay = document.getElementById('settingsOverlay');
   const closeBtn = document.getElementById('settingsClose');
 
-  function openSettings() {
+  window.openSettings = function openSettings() {
     panel.classList.add('open');
     overlay.classList.add('open');
   }
-  function closeSettings() {
+  window.closeSettings = function closeSettings() {
     panel.classList.remove('open');
     overlay.classList.remove('open');
   }

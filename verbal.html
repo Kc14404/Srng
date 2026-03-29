@@ -182,41 +182,55 @@
       --card-border: 1px solid #d8e0ea;
     }
 
-    /* ── SAKURA: per-card petal palette ── */
-    [data-theme="sakura"] .topic-card:nth-child(4n+1) { --card-border: 1px solid rgba(244,114,182,0.4); }
-    [data-theme="sakura"] .topic-card:nth-child(4n+2) { --card-border: 1px solid rgba(232,121,249,0.4); }
-    [data-theme="sakura"] .topic-card:nth-child(4n+3) { --card-border: 1px solid rgba(251,113,133,0.4); }
-    [data-theme="sakura"] .topic-card:nth-child(4n+4) { --card-border: 1px solid rgba(196,181,253,0.35); }
-    [data-theme="sakura"] .topic-card:nth-child(4n+1) .card-icon { background: rgba(244,114,182,0.15); }
-    [data-theme="sakura"] .topic-card:nth-child(4n+2) .card-icon { background: rgba(232,121,249,0.15); }
-    [data-theme="sakura"] .topic-card:nth-child(4n+3) .card-icon { background: rgba(251,113,133,0.15); }
-    [data-theme="sakura"] .topic-card:nth-child(4n+4) .card-icon { background: rgba(196,181,253,0.12); }
+    /* FUN THEMES: per-card distinct backgrounds */
 
-    /* ── NEON CANDY: per-card vivid palette ── */
-    [data-theme="neon-candy"] .topic-card:nth-child(4n+1) { --card-border: 1px solid rgba(255,107,157,0.4); }
-    [data-theme="neon-candy"] .topic-card:nth-child(4n+2) { --card-border: 1px solid rgba(0,245,255,0.35); }
-    [data-theme="neon-candy"] .topic-card:nth-child(4n+3) { --card-border: 1px solid rgba(167,139,250,0.4); }
-    [data-theme="neon-candy"] .topic-card:nth-child(4n+4) { --card-border: 1px solid rgba(74,222,128,0.35); }
-    [data-theme="neon-candy"] .topic-card:nth-child(4n+1) .card-icon { background: rgba(255,107,157,0.18); }
-    [data-theme="neon-candy"] .topic-card:nth-child(4n+2) .card-icon { background: rgba(0,245,255,0.15); }
-    [data-theme="neon-candy"] .topic-card:nth-child(4n+3) .card-icon { background: rgba(167,139,250,0.18); }
-    [data-theme="neon-candy"] .topic-card:nth-child(4n+4) .card-icon { background: rgba(74,222,128,0.15); }
+    /* SAKURA: rose, magenta, crimson, lavender */
+    [data-theme="sakura"] .topic-card:nth-child(4n+1) { background: linear-gradient(145deg, #3d1428 0%, #2c1020 100%); border: 1px solid rgba(244,114,182,0.55); }
+    [data-theme="sakura"] .topic-card:nth-child(4n+2) { background: linear-gradient(145deg, #3c1040 0%, #2a1032 100%); border: 1px solid rgba(232,121,249,0.55); }
+    [data-theme="sakura"] .topic-card:nth-child(4n+3) { background: linear-gradient(145deg, #3a0e20 0%, #280e18 100%); border: 1px solid rgba(251,113,133,0.55); }
+    [data-theme="sakura"] .topic-card:nth-child(4n+4) { background: linear-gradient(145deg, #251438 0%, #1e1030 100%); border: 1px solid rgba(196,181,253,0.45); }
+    [data-theme="sakura"] .topic-card:nth-child(4n+1) .card-icon { background: rgba(244,114,182,0.22); }
+    [data-theme="sakura"] .topic-card:nth-child(4n+2) .card-icon { background: rgba(232,121,249,0.22); }
+    [data-theme="sakura"] .topic-card:nth-child(4n+3) .card-icon { background: rgba(251,113,133,0.22); }
+    [data-theme="sakura"] .topic-card:nth-child(4n+4) .card-icon { background: rgba(196,181,253,0.20); }
 
-    /* ── SUNSET: per-card warm-to-cool palette ── */
-    [data-theme="sunset"] .topic-card:nth-child(4n+1) { --card-border: 1px solid rgba(249,115,22,0.35); }
-    [data-theme="sunset"] .topic-card:nth-child(4n+2) { --card-border: 1px solid rgba(239,68,68,0.35); }
-    [data-theme="sunset"] .topic-card:nth-child(4n+3) { --card-border: 1px solid rgba(168,85,247,0.35); }
-    [data-theme="sunset"] .topic-card:nth-child(4n+4) { --card-border: 1px solid rgba(251,191,36,0.35); }
-    [data-theme="sunset"] .topic-card:nth-child(4n+1) .card-icon { background: rgba(249,115,22,0.15); }
-    [data-theme="sunset"] .topic-card:nth-child(4n+2) .card-icon { background: rgba(239,68,68,0.15); }
-    [data-theme="sunset"] .topic-card:nth-child(4n+3) .card-icon { background: rgba(168,85,247,0.15); }
-    [data-theme="sunset"] .topic-card:nth-child(4n+4) .card-icon { background: rgba(251,191,36,0.12); }
+    /* NEON CANDY: hot-pink, cyan, purple, lime */
+    [data-theme="neon-candy"] .topic-card:nth-child(4n+1) { background: linear-gradient(145deg, #2e0822 0%, #1c1038 100%); border: 1px solid rgba(255,107,157,0.6); box-shadow: 0 0 20px rgba(255,107,157,0.14); }
+    [data-theme="neon-candy"] .topic-card:nth-child(4n+2) { background: linear-gradient(145deg, #062030 0%, #0a1830 100%); border: 1px solid rgba(0,245,255,0.5); box-shadow: 0 0 20px rgba(0,245,255,0.12); }
+    [data-theme="neon-candy"] .topic-card:nth-child(4n+3) { background: linear-gradient(145deg, #1c082e 0%, #18083a 100%); border: 1px solid rgba(167,139,250,0.55); box-shadow: 0 0 20px rgba(167,139,250,0.12); }
+    [data-theme="neon-candy"] .topic-card:nth-child(4n+4) { background: linear-gradient(145deg, #061e12 0%, #0a1820 100%); border: 1px solid rgba(74,222,128,0.5); box-shadow: 0 0 20px rgba(74,222,128,0.12); }
+    [data-theme="neon-candy"] .topic-card:nth-child(4n+1) .card-icon { background: rgba(255,107,157,0.24); }
+    [data-theme="neon-candy"] .topic-card:nth-child(4n+2) .card-icon { background: rgba(0,245,255,0.20); }
+    [data-theme="neon-candy"] .topic-card:nth-child(4n+3) .card-icon { background: rgba(167,139,250,0.24); }
+    [data-theme="neon-candy"] .topic-card:nth-child(4n+4) .card-icon { background: rgba(74,222,128,0.20); }
 
-    /* ── LAVENDER DREAM: per-card dream palette ── */
-    [data-theme="lavender-dream"] .topic-card:nth-child(4n+1) { --card-border: 1px solid rgba(167,139,250,0.4); }
-    [data-theme="lavender-dream"] .topic-card:nth-child(4n+2) { --card-border: 1px solid rgba(240,171,252,0.35); }
-    [data-theme="lavender-dream"] .topic-card:nth-child(4n+3) { --card-border: 1px solid rgba(129,140,248,0.4); }
-    [data-theme="lavender-dream"] .topic-card:nth-child(4n+4) { --card-border: 1px solid rgba(196,181,253,0.35); }
+    /* SUNSET: amber, crimson, violet, gold */
+    [data-theme="sunset"] .topic-card:nth-child(4n+1) { background: linear-gradient(145deg, #3a1808 0%, #2c1210 100%); border: 1px solid rgba(249,115,22,0.55); }
+    [data-theme="sunset"] .topic-card:nth-child(4n+2) { background: linear-gradient(145deg, #380810 0%, #2a0c10 100%); border: 1px solid rgba(239,68,68,0.50); }
+    [data-theme="sunset"] .topic-card:nth-child(4n+3) { background: linear-gradient(145deg, #28083a 0%, #200830 100%); border: 1px solid rgba(168,85,247,0.50); }
+    [data-theme="sunset"] .topic-card:nth-child(4n+4) { background: linear-gradient(145deg, #3a2808 0%, #2e2008 100%); border: 1px solid rgba(251,191,36,0.50); }
+    [data-theme="sunset"] .topic-card:nth-child(4n+1) .card-icon { background: rgba(249,115,22,0.22); }
+    [data-theme="sunset"] .topic-card:nth-child(4n+2) .card-icon { background: rgba(239,68,68,0.22); }
+    [data-theme="sunset"] .topic-card:nth-child(4n+3) .card-icon { background: rgba(168,85,247,0.22); }
+    [data-theme="sunset"] .topic-card:nth-child(4n+4) .card-icon { background: rgba(251,191,36,0.20); }
+
+    /* LAVENDER DREAM: violet, pink, indigo, periwinkle */
+    [data-theme="lavender-dream"] .topic-card:nth-child(4n+1) { background: linear-gradient(145deg, #241840 0%, #1c1432 100%); border: 1px solid rgba(167,139,250,0.55); }
+    [data-theme="lavender-dream"] .topic-card:nth-child(4n+2) { background: linear-gradient(145deg, #2e1438 0%, #241032 100%); border: 1px solid rgba(240,171,252,0.50); }
+    [data-theme="lavender-dream"] .topic-card:nth-child(4n+3) { background: linear-gradient(145deg, #182040 0%, #141838 100%); border: 1px solid rgba(129,140,248,0.55); }
+    [data-theme="lavender-dream"] .topic-card:nth-child(4n+4) { background: linear-gradient(145deg, #20183a 0%, #1c1430 100%); border: 1px solid rgba(196,181,253,0.45); }
+    [data-theme="lavender-dream"] .topic-card:nth-child(4n+1) .card-icon { background: rgba(167,139,250,0.24); }
+    [data-theme="lavender-dream"] .topic-card:nth-child(4n+2) .card-icon { background: rgba(240,171,252,0.22); }
+    [data-theme="lavender-dream"] .topic-card:nth-child(4n+3) .card-icon { background: rgba(129,140,248,0.24); }
+    [data-theme="lavender-dream"] .topic-card:nth-child(4n+4) .card-icon { background: rgba(196,181,253,0.20); }
+
+    /* SERIOUS THEMES: distinct card gradients */
+    [data-theme="midnight-scholar"] .topic-card { background: linear-gradient(145deg, #2a2612 0%, #1e1c0e 100%); }
+    [data-theme="electric-blue"] .topic-card { background: linear-gradient(145deg, #0f2545 0%, #0a1832 100%); border-left: 3px solid rgba(59,130,246,0.5); }
+    [data-theme="forest"] .topic-card { background: linear-gradient(145deg, #162a18 0%, #101e12 100%); }
+    [data-theme="ocean-drift"] .topic-card { background: linear-gradient(145deg, #0e2a42 0%, #081a30 100%); }
+    [data-theme="deep-space"] .topic-card { background: linear-gradient(145deg, #242840 0%, #1c2030 100%); }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: var(--font);

@@ -72,8 +72,8 @@ export default async function handler(req, res) {
       };
     }));
 
-    // Cache: 5 min CDN, 1 min stale-while-revalidate
-    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=60');
+    // No CDN/browser cache — always serve fresh DB content
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.status(200).json(full);
 
   } catch (err) {

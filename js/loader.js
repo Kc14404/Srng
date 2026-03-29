@@ -1,40 +1,20 @@
 /**
  * GMAT Hub — Topics Loader
- * Fetches topics from /api/topics?section=<slug>
- * Falls back to localStorage cache (1hr TTL)
- * Calls window.renderTopics(topics) when data is ready
+ * Always fetches fresh from /api/topics?section=<slug>
+ * No localStorage caching — content changes reflect immediately
  */
 
-const CACHE_TTL = 60 * 60 * 1000; // 1 hour
-const CACHE_VERSION = 'v3'; // bump to bust cache on content updates
-
 async function loadTopics(section) {
-  const cacheKey = `gmat_topics_${CACHE_VERSION}_${section}`;
-  // Clear old cache keys
-  ['v1','v2'].forEach(v => localStorage.removeItem(`gmat_topics_${v}_${section}`));
+  // Clear any old cache keys from previous versions
+  ['v1','v2','v3','v4'].forEach(v => {
+    localStorage.removeItem(`gmat_topics_${v}_${section}`);
+  });
   localStorage.removeItem(`gmat_topics_${section}`);
-  const cached = localStorage.getItem(cacheKey);
 
-  // Try cache first
-  if (cached) {
-    try {
-      const { data, ts } = JSON.parse(cached);
-      if (Date.now() - ts < CACHE_TTL && Array.isArray(data) && data.length > 0) {
-        console.log(`[loader] Cache hit for ${section}`);
-        return data;
-      }
-    } catch(e) {}
-  }
-
-  // Fetch from API
   console.log(`[loader] Fetching /api/topics?section=${section}`);
-  const res = await fetch(`/api/topics?section=${section}`);
+  const res = await fetch(`/api/topics?section=${section}`, { cache: 'no-store' });
   if (!res.ok) throw new Error(`API error ${res.status}`);
-  const data = await res.json();
-
-  // Cache it
-  localStorage.setItem(cacheKey, JSON.stringify({ data, ts: Date.now() }));
-  return data;
+  return res.json();
 }
 
 // Main entry — call this from each page
@@ -65,14 +45,4 @@ window.initPage = async function(section) {
         <div style="font-size:0.8rem;margin-top:8px;opacity:0.6">${err.message}</div>
       </div>`;
   }
-};
-
-// Cache busting helper — call to force refresh
-window.clearTopicsCache = function(section) {
-  if (section) {
-    localStorage.removeItem(`gmat_topics_${section}`);
-  } else {
-    ['math','verbal','di'].forEach(s => localStorage.removeItem(`gmat_topics_${s}`));
-  }
-  location.reload();
 };

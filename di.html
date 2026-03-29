@@ -16,6 +16,7 @@
     })">
   </script>
   <style>
+    /* ── BASE (Deep Space — default) ── */
     :root {
       --bg: #0f1117;
       --surface: #1a1d27;
@@ -26,6 +27,70 @@
       --muted: #8b90a7;
       --border: #2e3248;
       --radius: 12px;
+      --header-grad-a: #1a1d27;
+      --header-grad-b: #0f1117;
+    }
+
+    /* ── THEMES ── */
+    [data-theme="deep-space"] {
+      --bg: #0f1117; --surface: #1a1d27; --card: #22263a;
+      --accent: #6c63ff; --accent2: #00d4aa;
+      --text: #e8eaf0; --muted: #8b90a7; --border: #2e3248;
+      --header-grad-a: #1a1d27; --header-grad-b: #0f1117;
+    }
+    [data-theme="midnight-scholar"] {
+      --bg: #0c0c0f; --surface: #161618; --card: #1f1f24;
+      --accent: #f59e0b; --accent2: #fb923c;
+      --text: #f0ede6; --muted: #9a9080; --border: #2a2a30;
+      --header-grad-a: #161618; --header-grad-b: #0c0c0f;
+    }
+    [data-theme="electric-blue"] {
+      --bg: #050d1a; --surface: #0a1628; --card: #0f1f3d;
+      --accent: #3b82f6; --accent2: #06b6d4;
+      --text: #e0eeff; --muted: #7090b0; --border: #1e3a5f;
+      --header-grad-a: #0a1628; --header-grad-b: #050d1a;
+    }
+    [data-theme="sakura"] {
+      --bg: #130a0f; --surface: #1f1016; --card: #2a1520;
+      --accent: #f472b6; --accent2: #e879f9;
+      --text: #f9e8f0; --muted: #a07080; --border: #3d1a2a;
+      --header-grad-a: #1f1016; --header-grad-b: #130a0f;
+    }
+    [data-theme="neon-candy"] {
+      --bg: #0a0a12; --surface: #12121e; --card: #1a1a2c;
+      --accent: #ff6b9d; --accent2: #00f5ff;
+      --text: #f0f0ff; --muted: #8080aa; --border: #2a2a40;
+      --header-grad-a: #12121e; --header-grad-b: #0a0a12;
+    }
+    [data-theme="sunset"] {
+      --bg: #0f080a; --surface: #1a1015; --card: #241820;
+      --accent: #f97316; --accent2: #a855f7;
+      --text: #f5eaf0; --muted: #9a7080; --border: #3a1a28;
+      --header-grad-a: #1a1015; --header-grad-b: #0f080a;
+    }
+    [data-theme="lavender-dream"] {
+      --bg: #0d0b14; --surface: #16122a; --card: #1e1838;
+      --accent: #a78bfa; --accent2: #f0abfc;
+      --text: #ede8ff; --muted: #8878aa; --border: #2e2050;
+      --header-grad-a: #16122a; --header-grad-b: #0d0b14;
+    }
+    [data-theme="forest"] {
+      --bg: #060e08; --surface: #0d1a0f; --card: #132016;
+      --accent: #22c55e; --accent2: #86efac;
+      --text: #e8f5ec; --muted: #6a9070; --border: #1a3a20;
+      --header-grad-a: #0d1a0f; --header-grad-b: #060e08;
+    }
+    [data-theme="ocean-drift"] {
+      --bg: #040c14; --surface: #081828; --card: #0d2540;
+      --accent: #22d3ee; --accent2: #60a5fa;
+      --text: #e0f5ff; --muted: #6090aa; --border: #103050;
+      --header-grad-a: #081828; --header-grad-b: #040c14;
+    }
+    [data-theme="clean-light"] {
+      --bg: #f8fafc; --surface: #f1f5f9; --card: #ffffff;
+      --accent: #4f46e5; --accent2: #0891b2;
+      --text: #1e293b; --muted: #64748b; --border: #e2e8f0;
+      --header-grad-a: #f1f5f9; --header-grad-b: #e2e8f0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -36,10 +101,17 @@
     }
 
     header {
-      background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+      background: linear-gradient(135deg, var(--header-grad-a) 0%, var(--header-grad-b) 100%);
       border-bottom: 1px solid var(--border);
       padding: 32px 24px 28px;
       text-align: center;
+      position: relative;
+    }
+    .theme-picker {
+      position: absolute;
+      top: 50%;
+      right: 24px;
+      transform: translateY(-50%);
     }
     header h1 {
       font-size: 2rem;
@@ -380,6 +452,111 @@
       .hub { display: block; max-width: none; margin: 0; padding: 0; }
       header { display: none; }
     }
+
+    /* ── THEME PICKER ── */
+    .theme-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 14px 6px 10px;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .theme-trigger:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108,99,255,0.1);
+    }
+    .theme-trigger .dots {
+      display: flex;
+      gap: 3px;
+    }
+    .theme-trigger .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .theme-trigger .chevron {
+      margin-left: 2px;
+      font-size: 0.7rem;
+      opacity: 0.6;
+      transition: transform 0.2s;
+    }
+    .theme-picker.open .chevron { transform: rotate(180deg); }
+
+    .theme-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 8px;
+      min-width: 210px;
+      z-index: 1000;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      animation: dropIn 0.15s ease;
+    }
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .theme-picker.open .theme-dropdown { display: block; }
+
+    .theme-group-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 6px 10px 4px;
+      margin-top: 4px;
+    }
+    .theme-group-label:first-child { margin-top: 0; }
+
+    .theme-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: background 0.15s;
+      color: var(--text);
+      font-size: 0.875rem;
+    }
+    .theme-option:hover { background: var(--card); }
+    .theme-option.selected {
+      background: var(--card);
+      font-weight: 600;
+    }
+    .theme-option .swatch {
+      display: flex;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+    .theme-option .swatch span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: block;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .theme-option .check {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: var(--accent2);
+      opacity: 0;
+    }
+    .theme-option.selected .check { opacity: 1; }
   </style>
   <script src="/js/loader.js"></script>
 </head>
@@ -396,6 +573,69 @@
 <header>
   <h1>GMAT Focus — Data Insights</h1>
   <p>Click any topic to explore frameworks, rules, and practice problems.</p>
+  <div class="theme-picker" id="themePicker">
+    <div class="theme-trigger" id="themeTrigger">
+      <span class="dots">
+        <span class="dot" id="triggerDot1"></span>
+        <span class="dot" id="triggerDot2"></span>
+      </span>
+      <span id="triggerLabel">Theme</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="theme-dropdown" id="themeDropdown">
+
+      <div class="theme-group-label">Dark / Focus</div>
+      <div class="theme-option" data-theme="deep-space" data-c1="#6c63ff" data-c2="#00d4aa" data-label="Deep Space">
+        <div class="swatch"><span style="background:#6c63ff"></span><span style="background:#00d4aa"></span></div>
+        Deep Space <span class="check">✓</span>
+      </div>
+      <div class="theme-option" data-theme="midnight-scholar" data-c1="#f59e0b" data-c2="#fb923c" data-label="Midnight Scholar">
+        <div class="swatch"><span style="background:#f59e0b"></span><span style="background:#fb923c"></span></div>
+        Midnight Scholar <span class="check">✓</span>
+      </div>
+      <div class="theme-option" data-theme="electric-blue" data-c1="#3b82f6" data-c2="#06b6d4" data-label="Electric Blue">
+        <div class="swatch"><span style="background:#3b82f6"></span><span style="background:#06b6d4"></span></div>
+        Electric Blue <span class="check">✓</span>
+      </div>
+
+      <div class="theme-group-label">Cutesy</div>
+      <div class="theme-option" data-theme="sakura" data-c1="#f472b6" data-c2="#e879f9" data-label="🌸 Sakura">
+        <div class="swatch"><span style="background:#f472b6"></span><span style="background:#e879f9"></span></div>
+        🌸 Sakura <span class="check">✓</span>
+      </div>
+      <div class="theme-option" data-theme="neon-candy" data-c1="#ff6b9d" data-c2="#00f5ff" data-label="🍬 Neon Candy">
+        <div class="swatch"><span style="background:#ff6b9d"></span><span style="background:#00f5ff"></span></div>
+        🍬 Neon Candy <span class="check">✓</span>
+      </div>
+
+      <div class="theme-group-label">Colorful</div>
+      <div class="theme-option" data-theme="sunset" data-c1="#f97316" data-c2="#a855f7" data-label="🌅 Sunset">
+        <div class="swatch"><span style="background:#f97316"></span><span style="background:#a855f7"></span></div>
+        🌅 Sunset <span class="check">✓</span>
+      </div>
+      <div class="theme-option" data-theme="lavender-dream" data-c1="#a78bfa" data-c2="#f0abfc" data-label="💜 Lavender Dream">
+        <div class="swatch"><span style="background:#a78bfa"></span><span style="background:#f0abfc"></span></div>
+        💜 Lavender Dream <span class="check">✓</span>
+      </div>
+
+      <div class="theme-group-label">Friendly</div>
+      <div class="theme-option" data-theme="forest" data-c1="#22c55e" data-c2="#86efac" data-label="🌿 Forest">
+        <div class="swatch"><span style="background:#22c55e"></span><span style="background:#86efac"></span></div>
+        🌿 Forest <span class="check">✓</span>
+      </div>
+      <div class="theme-option" data-theme="ocean-drift" data-c1="#22d3ee" data-c2="#60a5fa" data-label="🌊 Ocean Drift">
+        <div class="swatch"><span style="background:#22d3ee"></span><span style="background:#60a5fa"></span></div>
+        🌊 Ocean Drift <span class="check">✓</span>
+      </div>
+
+      <div class="theme-group-label">Light</div>
+      <div class="theme-option" data-theme="clean-light" data-c1="#4f46e5" data-c2="#0891b2" data-label="☀️ Clean Light">
+        <div class="swatch"><span style="background:#4f46e5"></span><span style="background:#0891b2"></span></div>
+        ☀️ Clean Light <span class="check">✓</span>
+      </div>
+
+    </div>
+  </div>
 </header>
 
 <div class="hub topics-grid" id="hub"></div>
@@ -686,6 +926,68 @@ function initDesktopLayout() {
     });
   }
 }
+</script>
+<script>
+(function() {
+  const THEMES = {
+    'deep-space':       { c1: '#6c63ff', c2: '#00d4aa', label: 'Deep Space' },
+    'midnight-scholar': { c1: '#f59e0b', c2: '#fb923c', label: 'Midnight Scholar' },
+    'electric-blue':    { c1: '#3b82f6', c2: '#06b6d4', label: 'Electric Blue' },
+    'sakura':           { c1: '#f472b6', c2: '#e879f9', label: '🌸 Sakura' },
+    'neon-candy':       { c1: '#ff6b9d', c2: '#00f5ff', label: '🍬 Neon Candy' },
+    'sunset':           { c1: '#f97316', c2: '#a855f7', label: '🌅 Sunset' },
+    'lavender-dream':   { c1: '#a78bfa', c2: '#f0abfc', label: '💜 Lavender Dream' },
+    'forest':           { c1: '#22c55e', c2: '#86efac', label: '🌿 Forest' },
+    'ocean-drift':      { c1: '#22d3ee', c2: '#60a5fa', label: '🌊 Ocean Drift' },
+    'clean-light':      { c1: '#4f46e5', c2: '#0891b2', label: '☀️ Clean Light' },
+  };
+
+  function applyTheme(id) {
+    const t = THEMES[id] || THEMES['deep-space'];
+    document.documentElement.setAttribute('data-theme', id);
+    localStorage.setItem('srng-theme', id);
+
+    // Update trigger dots and label
+    const d1 = document.getElementById('triggerDot1');
+    const d2 = document.getElementById('triggerDot2');
+    const lbl = document.getElementById('triggerLabel');
+    if (d1) d1.style.background = t.c1;
+    if (d2) d2.style.background = t.c2;
+    if (lbl) lbl.textContent = t.label;
+
+    // Update selected state
+    document.querySelectorAll('.theme-option').forEach(el => {
+      el.classList.toggle('selected', el.dataset.theme === id);
+    });
+  }
+
+  // Init on load
+  const saved = localStorage.getItem('srng-theme') || 'deep-space';
+  applyTheme(saved);
+
+  // Picker toggle
+  const picker = document.getElementById('themePicker');
+  const trigger = document.getElementById('themeTrigger');
+  if (trigger) {
+    trigger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      picker.classList.toggle('open');
+    });
+  }
+
+  // Option click
+  document.querySelectorAll('.theme-option').forEach(el => {
+    el.addEventListener('click', function() {
+      applyTheme(this.dataset.theme);
+      picker.classList.remove('open');
+    });
+  });
+
+  // Close on outside click
+  document.addEventListener('click', function() {
+    if (picker) picker.classList.remove('open');
+  });
+})();
 </script>
 
 </body>

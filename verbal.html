@@ -622,32 +622,23 @@
       header { display: none; }
     }
 
-    /* ── SETTINGS BUTTON ── */
-    .settings-btn {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: var(--card);
-      border: 1px solid var(--border);
+        /* Settings button in nav bar */
+    .nav-settings-btn {
+      background: none;
+      border: none;
       color: var(--muted);
-      font-size: 1.2rem;
+      font-size: 1.1rem;
+      padding: 12px 14px;
       cursor: pointer;
+      margin-left: auto;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
-      justify-content: center;
-      z-index: 900;
-      box-shadow: var(--shadow);
-      transition: color 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      transition: color 0.2s;
+      font-family: inherit;
     }
-    .settings-btn:hover {
-      color: var(--accent);
-      border-color: var(--accent);
-      box-shadow: 0 0 20px var(--glow);
-      transform: rotate(30deg);
-    }
+    .nav-settings-btn:hover { color: var(--accent); }
+
 
     /* ── SETTINGS OVERLAY ── */
     .settings-overlay {
@@ -1079,9 +1070,6 @@ function initDesktopLayout() {
   }
 }
 </script>
-<!-- Settings Button -->
-<button class="settings-btn" id="settingsBtn" title="Settings">⚙</button>
-
 <!-- Settings Overlay -->
 <div class="settings-overlay" id="settingsOverlay"></div>
 

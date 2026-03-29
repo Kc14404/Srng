@@ -1,28 +1,36 @@
 /**
  * GMAT Hub — Topics Loader
- * Always fetches fresh from /api/topics?section=<slug>
- * No localStorage caching — content changes reflect immediately
+ * loadTopicList(section)    → slim list [{id,title,subtitle,icon}] — fast initial load
+ * loadTopicDetail(topicId)  → full data for one topic — fetched on demand
  */
 
-async function loadTopics(section) {
-  // Clear any old cache keys from previous versions
-  ['v1','v2','v3','v4'].forEach(v => {
-    localStorage.removeItem(`gmat_topics_${v}_${section}`);
-  });
-  localStorage.removeItem(`gmat_topics_${section}`);
+// In-memory cache for topic detail (survives tab switching within session)
+window._topicDetailCache = {};
 
-  console.log(`[loader] Fetching /api/topics?section=${section}`);
+async function loadTopicList(section) {
+  console.log(`[loader] Fetching topic list for ${section}`);
   const res = await fetch(`/api/topics?section=${section}`, { cache: 'no-store' });
   if (!res.ok) throw new Error(`API error ${res.status}`);
   return res.json();
 }
+
+window.loadTopicDetail = async function(topicId) {
+  if (window._topicDetailCache[topicId]) {
+    return window._topicDetailCache[topicId];
+  }
+  console.log(`[loader] Fetching topic detail id=${topicId}`);
+  const res = await fetch(`/api/topics?id=${topicId}`, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  const data = await res.json();
+  window._topicDetailCache[topicId] = data;
+  return data;
+};
 
 // Main entry — call this from each page
 window.initPage = async function(section) {
   const grid = document.querySelector('.topics-grid');
   if (!grid) return;
 
-  // Show skeleton
   grid.innerHTML = `
     <div style="padding:40px;text-align:center;color:var(--muted)">
       <div style="font-size:2rem;margin-bottom:12px">⏳</div>
@@ -30,7 +38,7 @@ window.initPage = async function(section) {
     </div>`;
 
   try {
-    const topics = await loadTopics(section);
+    const topics = await loadTopicList(section);
     if (typeof window.renderTopics === 'function') {
       window.renderTopics(topics);
     } else {

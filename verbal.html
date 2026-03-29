@@ -786,15 +786,8 @@
 
 <script>
 // Data now loaded from database via /api/topics
-window.renderTopics = function(topics) {
-const hub = document.getElementById('hub');
-hub.innerHTML = '';
-
-topics.forEach((topic, i) => {
-  const card = document.createElement('div');
-  card.className = 'topic-card';
-  card.id = `topic-${i}`;
-
+// ── Build full tab content from topic detail data ──────────────────────────
+window.buildTopicContent = function(topic, i) {
   const eqItems = (topic.equations || []).map(eq => {
     const textOnlyMatch = eq.formula ? eq.formula.match(/^\$\$\\text\{([^\\{}]+)\}\$\$$/) : null;
     const rendered = textOnlyMatch
@@ -871,61 +864,67 @@ topics.forEach((topic, i) => {
     </div>
   `).join('');
 
+  return `
+    <div class="detail-tabs">
+      <button class="tab-btn active" onclick="switchTab(event,${i},'eq')">📐 Equations</button>
+      <button class="tab-btn" onclick="switchTab(event,${i},'detail')">📖 Rules</button>
+      <button class="tab-btn" onclick="switchTab(event,${i},'methods')">🔧 Key Methods</button>
+      <button class="tab-btn" onclick="switchTab(event,${i},'tq')">❓ Typical Questions</button>
+      <button class="tab-btn" onclick="switchTab(event,${i},'practice')">✏️ Practice</button>
+    </div>
+    <div class="tab-content active" id="tab-eq-${i}">
+      <div class="eq-list">${eqItems}</div>
+    </div>
+    <div class="tab-content" id="tab-detail-${i}">
+      ${detailHTML}
+    </div>
+    <div class="tab-content" id="tab-methods-${i}">
+      <div class="method-list">${methodsHTML}</div>
+    </div>
+    <div class="tab-content" id="tab-tq-${i}">
+      <div class="tq-list">${tqHTML}</div>
+    </div>
+    <div class="tab-content" id="tab-practice-${i}">
+      <div class="practice-list">${practiceHTML}</div>
+    </div>`;
+};
+
+// ── Render slim topic cards (header only — content loaded on first click) ──
+window.renderTopics = function(topics) {
+const hub = document.getElementById('hub');
+hub.innerHTML = '';
+
+topics.forEach((topic, i) => {
+  const card = document.createElement('div');
+  card.className = 'topic-card';
+  card.id = `topic-${i}`;
+  card.dataset.topicId = topic.id;
+  card.dataset.loaded = 'false';
+
   card.innerHTML = `
     <div class="card-header" onclick="toggleCard(${i})">
       <div class="card-icon">${topic.icon || ''}</div>
       <div class="card-meta">
         <h2>${topic.title}</h2>
-        <div class="preview">${topic.preview || topic.subtitle || ''}</div>
-        <div class="desc">${topic.desc || ''}</div>
+        <div class="preview">${topic.subtitle || ''}</div>
       </div>
       <div class="expand-arrow">▼</div>
     </div>
-    <div class="detail-panel">
-      <div class="detail-tabs">
-        <button class="tab-btn active" onclick="switchTab(event,${i},'eq')">📋 Key Concepts</button>
-        <button class="tab-btn" onclick="switchTab(event,${i},'detail')">📖 Rules</button>
-        <button class="tab-btn" onclick="switchTab(event,${i},'methods')">🔧 Key Methods</button>
-        <button class="tab-btn" onclick="switchTab(event,${i},'tq')">❓ Typical Questions</button>
-        <button class="tab-btn" onclick="switchTab(event,${i},'practice')">✏️ Practice</button>
-      </div>
-      <div class="tab-content active" id="tab-eq-${i}">
-        <div class="eq-list">${eqItems}</div>
-      </div>
-      <div class="tab-content" id="tab-detail-${i}">
-        ${detailHTML}
-      </div>
-      <div class="tab-content" id="tab-methods-${i}">
-        <div class="method-list">${methodsHTML}</div>
-      </div>
-      <div class="tab-content" id="tab-tq-${i}">
-        <div class="tq-list">${tqHTML}</div>
-      </div>
-      <div class="tab-content" id="tab-practice-${i}">
-        <div class="practice-list">${practiceHTML}</div>
-      </div>
-    </div>
-  `;
+    <div class="detail-panel" id="detail-panel-${i}">
+      <div class="loading-dots" style="padding:24px;text-align:center;color:var(--muted)">⏳ Loading…</div>
+    </div>`;
 
   hub.appendChild(card);
 });
 
-document.querySelectorAll('.eq-item').forEach(function(el) {
-  el.addEventListener('click', function() { el.classList.toggle('open'); });
-});
-
+window._dtTopics = topics;
+if (window.innerWidth >= 1024) initDesktopLayout();
 if (window.renderMathInElement) {
   renderMathInElement(hub, {
-    delimiters: [
-      {left:'$$',right:'$$',display:true},
-      {left:'\\(',right:'\\)',display:false}
-    ],
+    delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
     throwOnError: false
   });
 }
-
-window._dtTopics = topics;
-initDesktopLayout();
 };
 
 // Ref-term tooltip toggle
@@ -940,12 +939,42 @@ document.addEventListener('click', function(e) {
   }
 });
 
-function toggleCard(i) {
+async function toggleCard(i) {
   if (window.innerWidth >= 1024) return;
   const card = document.getElementById(`topic-${i}`);
-  card.classList.toggle('active');
-  if (card.classList.contains('active')) {
-    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const panel = document.getElementById(`detail-panel-${i}`);
+  const isOpen = card.classList.contains('active');
+
+  // Close all others
+  document.querySelectorAll('.topic-card.active').forEach(c => {
+    if (c !== card) c.classList.remove('active');
+  });
+
+  if (isOpen) {
+    card.classList.remove('active');
+    return;
+  }
+
+  card.classList.add('active');
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Lazy-load content on first open
+  if (card.dataset.loaded === 'false') {
+    panel.innerHTML = '<div class="loading-dots" style="padding:24px;text-align:center;color:var(--muted)">⏳ Loading…</div>';
+    try {
+      const topicId = card.dataset.topicId;
+      const topic = await window.loadTopicDetail(topicId);
+      panel.innerHTML = window.buildTopicContent(topic, i);
+      card.dataset.loaded = 'true';
+      if (window.renderMathInElement) {
+        renderMathInElement(panel, {
+          delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+          throwOnError: false
+        });
+      }
+    } catch(err) {
+      panel.innerHTML = `<div style="padding:20px;color:#f87171">Failed to load: ${err.message}</div>`;
+    }
   }
 }
 
@@ -980,8 +1009,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <script>
-var _dtCurrentTopic = -1;
-
 function buildRailHTML(topics) {
   var path = window.location.pathname;
   var isIndex = path === '/' || path.endsWith('index.html') || path === '';
@@ -1014,22 +1041,50 @@ function buildMiddleHTML(topics) {
   return html;
 }
 
-function dtSelectTopic(i) {
+var _dtCurrentTopic = -1;
+
+async function dtSelectTopic(i) {
   if (window.innerWidth < 1024) return;
   if (i === _dtCurrentTopic) return;
-  var hub = document.getElementById('hub');
-  var detail = document.getElementById('dt-detail');
-  var prev = detail.querySelector('.topic-card');
-  if (prev) { prev.classList.remove('active'); hub.appendChild(prev); }
-  var card = document.getElementById('topic-' + i);
-  if (card) { card.classList.add('active'); detail.innerHTML = ''; detail.appendChild(card); }
   _dtCurrentTopic = i;
-  document.querySelectorAll('#dt-middle .dt-overview-card').forEach(function(el, idx) { el.classList.toggle('active', idx === i); });
-  document.querySelectorAll('.dt-topic-item').forEach(function(el, idx) { el.classList.toggle('active', idx === i); });
-  if (window.renderMathInElement) {
-    renderMathInElement(detail, { delimiters: [{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}], throwOnError: false });
-  }
+
+  const detail = document.getElementById('dt-detail');
+  const topics = window._dtTopics || [];
+  const slimTopic = topics[i];
+  if (!slimTopic) return;
+
+  // Sync active states
+  document.querySelectorAll('#dt-middle .dt-overview-card').forEach((el, idx) => el.classList.toggle('active', idx === i));
+  document.querySelectorAll('.dt-topic-item').forEach((el, idx) => el.classList.toggle('active', idx === i));
+
+  // Show loading state
+  detail.innerHTML = `<div style="padding:60px 20px;text-align:center;color:var(--muted)">⏳ Loading ${slimTopic.title}…</div>`;
   detail.scrollTo(0, 0);
+
+  try {
+    const topic = await window.loadTopicDetail(slimTopic.id);
+    detail.innerHTML = `
+      <div class="topic-card active" id="dt-topic-detail">
+        <div class="card-header">
+          <div class="card-icon">${topic.icon || ''}</div>
+          <div class="card-meta">
+            <h2>${topic.title}</h2>
+            <div class="preview">${topic.subtitle || ''}</div>
+          </div>
+        </div>
+        <div class="detail-panel">
+          ${window.buildTopicContent(topic, i)}
+        </div>
+      </div>`;
+    if (window.renderMathInElement) {
+      renderMathInElement(detail, {
+        delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+        throwOnError: false
+      });
+    }
+  } catch(err) {
+    detail.innerHTML = `<div style="padding:20px;color:#f87171">Failed to load: ${err.message}</div>`;
+  }
 }
 
 function initDesktopLayout() {

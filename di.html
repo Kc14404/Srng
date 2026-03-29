@@ -554,7 +554,7 @@
         width: 200px; flex-shrink: 0;
         background: var(--surface);
         border-right: 1px solid var(--border);
-        overflow-y: auto; display: flex; flex-direction: column;
+        overflow: hidden; display: flex; flex-direction: column;
       }
       .dt-rail-section {
         padding: 16px;
@@ -578,7 +578,7 @@
       .dt-rail-link:hover { background: var(--card); color: var(--text); }
       .dt-rail-link.active { background: var(--card); color: var(--accent); }
 
-      .dt-topics-section { padding: 8px 0; flex: 1; overflow-y: auto; }
+      .dt-topics-section { padding: 8px 0; flex: 1; overflow-y: auto; min-height: 0; }
       .dt-topics-label {
         padding: 6px 16px; font-size: 0.7rem; font-weight: 600;
         color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;

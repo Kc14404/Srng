@@ -1,5 +1,5 @@
 const SUPABASE_URL = 'https://ykllxaopintikehgtqnj.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrbGx4YW9waW50aWtlaGd0cW5qIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDY5MzgyNywiZXhwIjoyMDkwMjY5ODI3fQ.8tJ5-hfDRiFSv9_AF-Dqf1fP6R96yBY23LXALylR62Q';
+const SUPABASE_KEY = '<SUPABASE_KEY>';
 
 async function sb(table, method = 'GET', body = null, params = '') {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${params}`, {

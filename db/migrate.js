@@ -7,7 +7,7 @@
  */
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ykllxaopintikehgtqnj.supabase.co';
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrbGx4YW9waW50aWtlaGd0cW5qIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDY5MzgyNywiZXhwIjoyMDkwMjY5ODI3fQ.8tJ5-hfDRiFSv9_AF-Dqf1fP6R96yBY23LXALylR62Q';
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || '<SUPABASE_KEY>';
 
 const fs = require('fs');
 const path = require('path');

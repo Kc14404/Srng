@@ -10,7 +10,7 @@
     onload="renderMathInElement(document.body, {
       delimiters: [
         {left:'$$',right:'$$',display:true},
-        {left:'\\(',right:'\\)',display:false}
+        {left:'$',right:'$',display:false}
       ],
       throwOnError: false
     })">
@@ -1574,6 +1574,29 @@ function initDesktopLayout() {
     if (e.key === 'Escape') closeSettings();
   });
 })();
+</script>
+<script>
+function renderMath(el) {
+  if (typeof renderMathInElement !== 'undefined') {
+    renderMathInElement(el, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ],
+      throwOnError: false
+    });
+  }
+}
+
+// Re-render when question panels expand
+const mathObserver = new MutationObserver(function(mutations) {
+  mutations.forEach(function(m) {
+    m.addedNodes.forEach(function(node) {
+      if (node.nodeType === 1) renderMath(node);
+    });
+  });
+});
+mathObserver.observe(document.body, { childList: true, subtree: true });
 </script>
 </body>
 </html>

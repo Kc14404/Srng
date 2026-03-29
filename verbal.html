@@ -794,7 +794,7 @@ window.buildTopicContent = function(topic, i) {
       ? `<span class="eq-plain-text">${textOnlyMatch[1]}</span>`
       : (eq.formula || '');
     return `
-    <div class="eq-item">
+    <div class="eq-item" onclick="this.classList.toggle('open');event.stopPropagation()">
       <div class="eq-label">${eq.label}<span class="eq-chevron">▼</span></div>
       <div class="eq-formula">${rendered}</div>
       ${eq.note ? `<div class="eq-note">${eq.note}</div>` : ''}
